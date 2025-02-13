@@ -27,7 +27,7 @@ jobs:
         run: npm install
 
       - name: Run Tests
-        run: npm test || echo "Tests failed, but continuing..."
+        run: npm test
 
   build:
     name: Build APK
