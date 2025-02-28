@@ -28,5 +28,8 @@
         <data android:scheme="com.safetypin"/>
       </intent-filter>
     </activity>
+    <meta-data
+    android:name="com.google.android.gms.auth.api.signin"
+    android:value="@string/default_web_client_id"/>
   </application>
 </manifest>
