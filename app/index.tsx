@@ -1,5 +1,13 @@
 import { View, Alert } from "react-native";
 import LoginForm from "@/components/LoginForm";
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
+
+
+GoogleSignin.configure();
 
 export default function LoginScreen() {
   return (

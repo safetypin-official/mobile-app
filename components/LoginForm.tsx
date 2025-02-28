@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, SafeAreaVie
 import InputField from "@/components/InputField";
 import Button from "@/components/Button";
 import { SocialButton } from "@/components/SocialButton";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 interface LoginFormProps {
   onForgotPassword: () => void;
@@ -47,6 +48,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ onForgotPassword, onSignUp, onLog
     </SafeAreaView>
   );
 };
+
+export const onGoogleAuth = async () => {
+  try {
+    await GoogleSignin.hasPlayServices();
+    const userInfo = await GoogleSignin.signIn();
+    console.log(userInfo.data);
+  } catch (error: any) {
+    console.log("error");
+    console.log(error);
+  }
+}
 
 const styles = StyleSheet.create({
   safeContainer: {
