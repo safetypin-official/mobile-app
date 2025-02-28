@@ -1,6 +1,6 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
-import SocialButton from "@/components/SocialButton";
+import { SocialButton } from "@/components/SocialButton";
 
 describe("SocialButton Component", () => {
   it("renders Google icon correctly", () => {
