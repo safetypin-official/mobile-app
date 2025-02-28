@@ -2,15 +2,18 @@ import React from "react";
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, SafeAreaView } from "react-native";
 import InputField from "@/components/InputField";
 import Button from "@/components/Button";
+import { SocialButton } from "@/components/SocialButton";
 
 interface LoginFormProps {
   onForgotPassword: () => void;
   onSignUp: () => void;
   onLogIn: () => void;
+  onGoogleAuth: () => void;
+  onAppleAuth: () => void;
   testID: string;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onForgotPassword, onSignUp, onLogIn, testID }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onForgotPassword, onSignUp, onLogIn, onGoogleAuth, onAppleAuth, testID }) => {
   return (
     <SafeAreaView style={styles.safeContainer} testID={testID}>
       <View style={styles.container}>
@@ -21,15 +24,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onForgotPassword, onSignUp, onLog
           <InputField label="Password" placeholder="Password" secureTextEntry={true}></InputField>
 
           <View style={styles.row}>
-            <Image
-              source={{
-                uri: "https://cdn.builder.io/api/v1/image/assets/TEMP/0d4fe278128951f94532544c445b0cdf30497d337da8e6b3c45ec99601a976d8?apiKey=3d252c2866cb40ed8f1b49e6bfb91bab&",
-              }}
-              style={styles.avatar}
-            />
             <TouchableOpacity onPress={onForgotPassword}>
               <Text style={styles.forgotPassword}>Forgot password?</Text>
             </TouchableOpacity>
+          </View>
+
+          <View style={styles.socialButtonsContainer}>
+            <SocialButton icon="google" onPress={onGoogleAuth} testID="google-auth"/>
+            <SocialButton icon="apple" onPress={onAppleAuth} testID="apple-auth"/>
           </View>
 
           <Button children="Log In" onPress={onLogIn} testID="login-button"></Button>
@@ -73,6 +75,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  socialButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+    marginBottom: 24
+  },
   avatar: {
     width: 50,
     height: 50,
@@ -82,6 +90,7 @@ const styles = StyleSheet.create({
     color: "white",
     textDecorationLine: "underline",
   },
+  
   signupText: {
     marginTop: 30,
     color: "white",

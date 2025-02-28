@@ -7,7 +7,9 @@ export default function LoginScreen() {
       <LoginForm testID="login-screen"
         onForgotPassword={() => Alert.alert("Forgot Password Pressed!")} 
         onSignUp={() => Alert.alert("Sign Up Pressed!")} 
-        onLogIn={() => Alert.alert("Log In Pressed!")} 
+        onLogIn={() => Alert.alert("Log In Pressed!")}
+        onGoogleAuth={() => Alert.alert("Google Auth Pressed!")} 
+        onAppleAuth={() => Alert.alert("Apple Auth Pressed!")} 
       />
     </View>
   );
