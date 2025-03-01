@@ -6,11 +6,11 @@ import {
   GoogleSigninButton,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
-
+import { router } from 'expo-router';
 
 GoogleSignin.configure();
 
-export default function LoginScreen() {
+const LoginScreen = () => {
   const [email, setEmail] = useState("");
 
   const isValidEmail = (email: string): boolean => {
@@ -29,7 +29,7 @@ export default function LoginScreen() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <LoginForm testID="login-screen"
-        onForgotPassword={() => Alert.alert("Forgot Password Pressed!")} 
+        onForgotPassword={() => router.push('/forgotPassword')}
         onSignUp={() => Alert.alert("Sign Up Pressed!")} 
         onLogIn={handleLogin}
         onGoogleAuth={() => Alert.alert("Google Auth Pressed!")} 
@@ -38,4 +38,6 @@ export default function LoginScreen() {
       />
     </View>
   );
-}
+};
+
+export default LoginScreen;
