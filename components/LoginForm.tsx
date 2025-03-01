@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, SafeAreaView } from "react-native";
 import InputField from "@/components/InputField";
 import Button from "@/components/Button";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 
 interface LoginFormProps {
   onForgotPassword: () => void;
@@ -37,15 +37,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onForgotPassword, onSignUp, onLog
         </View>
 
         <Text style={styles.signupText}>
-          Don't have an account?{" "}
-          {/* <Text style={styles.signupLink} onPress={onSignUp}>
-            Sign up.
-          </Text> */}
-          {
-          <Link href = "./signup">
-            Sign Up.
-          </Link>
-          }
+          Already have an account?{" "}
+          <TouchableOpacity onPress={() => router.push('/signup')} testID="login-link">
+            <Text style={styles.signupLink}>Sign Up.</Text>
+          </TouchableOpacity>
         </Text>
       </View>
     </SafeAreaView>

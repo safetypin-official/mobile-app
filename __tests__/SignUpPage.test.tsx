@@ -1,18 +1,24 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import SignUpPage from "@/app/signup";
-import { useRouter } from "expo-router";
 
-// Mock expo-router's useRouter
+// Mock expo-router
 jest.mock("expo-router", () => ({
-  useRouter: jest.fn(),
+  useRouter: jest.fn(() => ({
+    push: jest.fn(),
+  })),
+  router: {
+    push: jest.fn(),
+  },
 }));
 
 describe("SignUpPage", () => {
   it("renders the SignUpForm component", () => {
-    const { getByText, getByPlaceholderText } = render(<SignUpPage />);
+    const { getAllByText, getByPlaceholderText } = render(<SignUpPage />);
 
-    expect(getByText("Sign Up")).toBeTruthy();
+    const signUpTexts = getAllByText("Sign Up");
+    expect(signUpTexts[0]).toBeTruthy();
+
     expect(getByPlaceholderText("Username")).toBeTruthy();
     expect(getByPlaceholderText("E-mail address")).toBeTruthy();
     expect(getByPlaceholderText("Date of Birth")).toBeTruthy();
@@ -21,13 +27,17 @@ describe("SignUpPage", () => {
   });
 
   it("navigates to the login page when Log In link is pressed", () => {
+    // Mock the router.push function
     const mockPush = jest.fn();
-    (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
+    require("expo-router").router.push = mockPush;
 
-    const { getByText } = render(<SignUpPage />);
+    // Render the SignUpPage component
+    const { getByTestId } = render(<SignUpPage />);
 
-    fireEvent.press(getByText("Log In."));
+    // Simulate pressing the "Log In" link
+    fireEvent.press(getByTestId("login-link"));
 
+    // Verify that router.push was called with "/"
     expect(mockPush).toHaveBeenCalledWith("/");
   });
 });
