@@ -35,4 +35,20 @@ describe("LoginScreen", () => {
     
     expect(Alert.alert).toHaveBeenCalledWith("Log In Pressed!");
   });
+
+  it("triggers google auth alert when the google auth button is pressed", () => {
+    const { getByTestId } = render(<LoginScreen />);
+    
+    fireEvent.press(getByTestId("google-auth"));
+    
+    expect(Alert.alert).toHaveBeenCalledWith("Google Auth Pressed!");
+  });
+
+  it("triggers apple auth alert when the apple auth button is pressed", () => {
+    const { getByTestId } = render(<LoginScreen />);
+    
+    fireEvent.press(getByTestId("apple-auth"));
+    
+    expect(Alert.alert).toHaveBeenCalledWith("Apple Auth Pressed!");
+  });
 });
