@@ -12,16 +12,21 @@ interface LoginFormProps {
   onGoogleAuth: () => void;
   onAppleAuth: () => void;
   testID: string;
+  setEmail: (email: string) => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onForgotPassword, onSignUp, onLogIn, onGoogleAuth, onAppleAuth, testID }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onForgotPassword, onSignUp, onLogIn, onGoogleAuth, onAppleAuth, testID, setEmail }) => {
   return (
     <SafeAreaView style={styles.safeContainer} testID={testID}>
       <View style={styles.container}>
         <Text style={styles.title}>Log In</Text>
 
         <View style={styles.form}>
-          <InputField label="Username/E-mail" placeholder="Username/E-mail address"></InputField>
+          <InputField
+            label="Username/E-mail"
+            placeholder="Username/E-mail address"
+            onChangeText={setEmail}
+          ></InputField>
           <InputField label="Password" placeholder="Password" secureTextEntry={true}></InputField>
 
           <View style={styles.row}>
