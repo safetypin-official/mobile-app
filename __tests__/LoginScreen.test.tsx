@@ -28,9 +28,19 @@ describe("LoginScreen", () => {
     expect(Alert.alert).toHaveBeenCalledWith("Sign Up Pressed!");
   });
 
-  it("triggers log in alert when the login button is pressed", () => {
-    const { getByTestId } = render(<LoginScreen />);
+  it("shows error alert when email format is invalid", () => {
+    const { getByTestId, getByPlaceholderText } = render(<LoginScreen />);
     
+    fireEvent.changeText(getByPlaceholderText("Username/E-mail address"), "invalid-email");
+    fireEvent.press(getByTestId("login-button"));
+    
+    expect(Alert.alert).toHaveBeenCalledWith("Invalid email format!");
+  });
+
+  it("triggers log in alert when a valid email is entered", () => {
+    const { getByTestId, getByPlaceholderText } = render(<LoginScreen />);
+    
+    fireEvent.changeText(getByPlaceholderText("Username/E-mail address"), "user@example.com");
     fireEvent.press(getByTestId("login-button"));
     
     expect(Alert.alert).toHaveBeenCalledWith("Log In Pressed!");
