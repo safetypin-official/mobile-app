@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, SafeAreaView } from "react-native";
 import InputField from "@/components/InputField";
 import Button from "@/components/Button";
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 
 interface LoginFormProps {
   onForgotPassword: () => void;

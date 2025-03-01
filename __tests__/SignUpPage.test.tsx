@@ -1,8 +1,10 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import SignUpPage from "@/app/signup";
+import { Alert } from "react-native";
 
-// Mock expo-router
+jest.spyOn(Alert, "alert").mockImplementation(() => {});
+
 jest.mock("expo-router", () => ({
   useRouter: jest.fn(() => ({
     push: jest.fn(),
@@ -27,17 +29,21 @@ describe("SignUpPage", () => {
   });
 
   it("navigates to the login page when Log In link is pressed", () => {
-    // Mock the router.push function
     const mockPush = jest.fn();
     require("expo-router").router.push = mockPush;
 
-    // Render the SignUpPage component
     const { getByTestId } = render(<SignUpPage />);
 
-    // Simulate pressing the "Log In" link
     fireEvent.press(getByTestId("login-link"));
 
-    // Verify that router.push was called with "/"
     expect(mockPush).toHaveBeenCalledWith("/");
+  });
+
+  it("triggers sign up alert when the sign up button is pressed", () => {
+    const { getByTestId } = render(<SignUpPage />);
+    
+    fireEvent.press(getByTestId("signup-button"));
+    
+    expect(Alert.alert).toHaveBeenCalledWith("Sign Up Pressed!");
   });
 });

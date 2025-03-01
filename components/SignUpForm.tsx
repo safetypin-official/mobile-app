@@ -11,7 +11,7 @@ interface SignUpFormProps {
 
 const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn, testID }) => {
   const handleSignUp = () => {
-    onSignUp(); // Call the onSignUp prop
+    onSignUp();
   };
 
   return (
