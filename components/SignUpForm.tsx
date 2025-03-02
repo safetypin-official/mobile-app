@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity } from "react-native";
 import InputField from "./InputField";
 import Button from "@/components/Button";
@@ -10,8 +10,83 @@ interface SignUpFormProps {
 }
 
 const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn, testID }) => {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
   const handleSignUp = () => {
-    onSignUp();
+    const validationErrors = validateInputs();
+    if (Object.keys(validationErrors).length === 0) {
+      onSignUp();
+    } else {
+      setErrors(validationErrors);
+    }
+  };
+
+  const validateInputs = () => {
+    const errors: { [key: string]: string } = {};
+    if (!username) {
+      errors.username = "Username is required";
+    }
+
+    if (!email) {
+      errors.email = "Email is required";
+    } else if (!isValidEmail(email)) {
+      errors.email = "Invalid email address";
+    }
+
+    if (!password) {
+      errors.password = "Password is required";
+    } else if (!isStrongPassword(password)) {
+      errors.password =
+        "Password must be at least 8 characters long and include a number, a special character, and an uppercase letter";
+    }
+
+    if (!confirmPassword) {
+      errors.confirmPassword = "Confirm Password is required";
+    } else if (confirmPassword !== password) {
+      errors.confirmPassword = "Passwords do not match";
+    }
+
+    if (!dateOfBirth) {
+      errors.dateOfBirth = "Date of Birth is required";
+    } else if (!isValidDateFormat(dateOfBirth)) {
+      errors.dateOfBirth = "Date of Birth must be in DD/MM/YYYY format";
+    } else if (!isAtLeast16(dateOfBirth)) {
+      errors.dateOfBirth = "You must be at least 16 years old";
+    }
+
+    return errors;
+  };
+
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isStrongPassword = (password: string) => {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+-])[A-Za-z\d!@#$%^&*()_+-]{8,}$/;
+    return passwordRegex.test(password);
+  };
+
+  const isAtLeast16 = (dateOfBirth: string) => {
+    const [day, month, year] = dateOfBirth.split("/");
+    const dob = new Date(`${year}-${month}-${day}`);
+    const today = new Date();
+    const age = today.getFullYear() - dob.getFullYear();
+    const monthDifference = today.getMonth() - dob.getMonth();
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < dob.getDate())) {
+      return age - 1 >= 16;
+    }
+    return age >= 16;
+  };
+
+  const isValidDateFormat = (date: string) => {
+    const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+    return dateRegex.test(date);
   };
 
   return (
@@ -20,11 +95,52 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn, testID }) =>
         <Text style={styles.title}>Sign Up</Text>
 
         <View style={styles.form}>
-          <InputField label="Username" placeholder="Username"></InputField>
-          <InputField label="E-mail" placeholder="E-mail address"></InputField>
-          <InputField label="Date of Birth" placeholder="Date of Birth"></InputField>
-          <InputField label="Password" placeholder="Password" secureTextEntry={true}></InputField>
-          <InputField label="Confirm Password" placeholder="Confirm Password" secureTextEntry={true}></InputField>
+          <View>
+            <InputField
+              label="Username"
+              placeholder="Username"
+              onChangeText={(text) => setUsername(text)}
+            />
+            {errors.username && <Text style={styles.error}>{errors.username}</Text>}
+          </View>
+
+          <View>
+            <InputField
+              label="E-mail"
+              placeholder="E-mail address"
+              onChangeText={(text) => setEmail(text)}
+            />
+            {errors.email && <Text style={styles.error}>{errors.email}</Text>}
+          </View>
+
+          <View>
+            <InputField
+              label="Date of Birth"
+              placeholder="Date of Birth"
+              onChangeText={(text) => setDateOfBirth(text)}
+            />
+            {errors.dateOfBirth && <Text style={styles.error}>{errors.dateOfBirth}</Text>}
+          </View>
+
+          <View>
+            <InputField
+              label="Password"
+              placeholder="Password"
+              secureTextEntry={true}
+              onChangeText={(text) => setPassword(text)}
+            />
+            {errors.password && <Text style={styles.error}>{errors.password}</Text>}
+          </View>
+
+          <View>
+            <InputField
+              label="Confirm Password"
+              placeholder="Confirm Password"
+              secureTextEntry={true}
+              onChangeText={(text) => setConfirmPassword(text)}
+            />
+            {errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword}</Text>}
+          </View>
 
           <View style={styles.row}>
             <Image
@@ -89,6 +205,15 @@ const styles = StyleSheet.create({
   loginLink: {
     color: "#e2c28c",
     fontWeight: "bold",
+  },
+  inputField: {
+    marginBottom: 0,
+  },
+  error: {
+    color: "#dd756c",
+    fontSize: 12,
+    marginTop: -10,
+    marginBottom: 4
   },
 });
 
