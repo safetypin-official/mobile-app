@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1740811107522" clover="3.2.0">
-  <project timestamp="1740811107522" name="All files">
-    <metrics statements="36" coveredstatements="36" conditionals="5" coveredconditionals="5" methods="12" coveredmethods="12" elements="53" coveredelements="53" complexity="0" loc="36" ncloc="36" packages="2" files="5" classes="5"/>
+<coverage generated="1740885936715" clover="3.2.0">
+  <project timestamp="1740885936715" name="All files">
+    <metrics statements="37" coveredstatements="37" conditionals="5" coveredconditionals="5" methods="12" coveredmethods="12" elements="54" coveredelements="54" complexity="0" loc="37" ncloc="37" packages="2" files="5" classes="5"/>
     <package name="app">
-      <metrics statements="15" coveredstatements="15" conditionals="2" coveredconditionals="2" methods="7" coveredmethods="7"/>
+      <metrics statements="16" coveredstatements="16" conditionals="2" coveredconditionals="2" methods="7" coveredmethods="7"/>
       <file name="index.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\app\index.tsx">
-        <metrics statements="15" coveredstatements="15" conditionals="2" coveredconditionals="2" methods="7" coveredmethods="7"/>
+        <metrics statements="16" coveredstatements="16" conditionals="2" coveredconditionals="2" methods="7" coveredmethods="7"/>
         <line num="11" count="1" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
         <line num="14" count="9" type="stmt"/>
         <line num="16" count="9" type="stmt"/>
         <line num="17" count="2" type="stmt"/>

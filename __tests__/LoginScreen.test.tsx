@@ -2,8 +2,18 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import LoginScreen from "@/app/index";
 import { Alert } from "react-native";
+import { router } from 'expo-router';
 
 jest.spyOn(Alert, "alert");
+
+jest.mock('expo-router', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+  }),
+  router: {
+    push: jest.fn(),
+  },
+}));
 
 describe("LoginScreen", () => {
   it("renders the LoginForm component", () => {
@@ -12,20 +22,20 @@ describe("LoginScreen", () => {
     expect(getByTestId("login-screen")).toBeTruthy();
   });
 
-  it("triggers forgot password alert when the button is pressed", () => {
+  it("navigates to forgotPassword screen on button press", () => {
     const { getByText } = render(<LoginScreen />);
     
     fireEvent.press(getByText("Forgot password?"));
     
-    expect(Alert.alert).toHaveBeenCalledWith("Forgot Password Pressed!");
+    expect(router.push).toHaveBeenCalledWith('/forgotPassword');
   });
 
-  it("triggers sign up alert when the sign-up text is pressed", () => {
+  it("navigates to sign up screen when sign-up text is pressed", () => {
     const { getByText } = render(<LoginScreen />);
     
     fireEvent.press(getByText("Sign up."));
     
-    expect(Alert.alert).toHaveBeenCalledWith("Sign Up Pressed!");
+    expect(router.push).toHaveBeenCalledWith('/signUp');
   });
 
   it("shows error alert when email format is invalid", () => {
