@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1740914724360" clover="3.2.0">
-  <project timestamp="1740914724360" name="All files">
-    <metrics statements="60" coveredstatements="60" conditionals="16" coveredconditionals="14" methods="21" coveredmethods="21" elements="97" coveredelements="95" complexity="0" loc="60" ncloc="60" packages="2" files="7" classes="7"/>
+<coverage generated="1740918844090" clover="3.2.0">
+  <project timestamp="1740918844090" name="All files">
+    <metrics statements="65" coveredstatements="65" conditionals="16" coveredconditionals="14" methods="24" coveredmethods="24" elements="105" coveredelements="103" complexity="0" loc="65" ncloc="65" packages="3" files="10" classes="10"/>
     <package name="app">
       <metrics statements="16" coveredstatements="16" conditionals="2" coveredconditionals="2" methods="7" coveredmethods="7"/>
       <file name="index.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\app\index.tsx">
@@ -22,6 +22,23 @@
         <line num="33" count="1" type="stmt"/>
         <line num="35" count="1" type="stmt"/>
         <line num="36" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.forgotPassword">
+      <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+      <file name="index.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\app\forgotPassword\index.tsx">
+        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="11" count="1" type="stmt"/>
+      </file>
+      <file name="newPasswordScreen.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\app\forgotPassword\newPasswordScreen.tsx">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="2" count="3" type="stmt"/>
+      </file>
+      <file name="otpVerificationScreen.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\app\forgotPassword\otpVerificationScreen.tsx">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="2" count="3" type="stmt"/>
       </file>
     </package>
     <package name="components">
