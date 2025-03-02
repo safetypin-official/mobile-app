@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1740918844090" clover="3.2.0">
-  <project timestamp="1740918844090" name="All files">
-    <metrics statements="65" coveredstatements="65" conditionals="16" coveredconditionals="14" methods="24" coveredmethods="24" elements="105" coveredelements="103" complexity="0" loc="65" ncloc="65" packages="3" files="10" classes="10"/>
+<coverage generated="1740918987688" clover="3.2.0">
+  <project timestamp="1740918987688" name="All files">
+    <metrics statements="86" coveredstatements="86" conditionals="20" coveredconditionals="18" methods="29" coveredmethods="29" elements="135" coveredelements="133" complexity="0" loc="86" ncloc="86" packages="3" files="10" classes="10"/>
     <package name="app">
       <metrics statements="16" coveredstatements="16" conditionals="2" coveredconditionals="2" methods="7" coveredmethods="7"/>
       <file name="index.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\app\index.tsx">
@@ -25,41 +25,62 @@
       </file>
     </package>
     <package name="app.forgotPassword">
-      <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+      <metrics statements="26" coveredstatements="26" conditionals="4" coveredconditionals="4" methods="8" coveredmethods="8"/>
       <file name="index.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\app\forgotPassword\index.tsx">
-        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="3" count="1" type="stmt"/>
-        <line num="4" count="3" type="stmt"/>
-        <line num="11" count="1" type="stmt"/>
+        <metrics statements="11" coveredstatements="11" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="3"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="5" type="stmt"/>
+        <line num="9" count="5" type="stmt"/>
+        <line num="10" count="2" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="14" count="5" type="stmt"/>
+        <line num="15" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="16" count="1" type="stmt"/>
+        <line num="17" count="1" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="22" count="5" type="stmt"/>
       </file>
       <file name="newPasswordScreen.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\app\forgotPassword\newPasswordScreen.tsx">
-        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="2" count="3" type="stmt"/>
+        <metrics statements="9" coveredstatements="9" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="7" type="stmt"/>
+        <line num="8" count="7" type="stmt"/>
+        <line num="10" count="7" type="stmt"/>
+        <line num="11" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="18" count="7" type="stmt"/>
+        <line num="48" count="1" type="stmt"/>
       </file>
       <file name="otpVerificationScreen.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\app\forgotPassword\otpVerificationScreen.tsx">
-        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="2" count="3" type="stmt"/>
+        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="9" count="3" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
       </file>
     </package>
     <package name="components">
       <metrics statements="44" coveredstatements="44" conditionals="14" coveredconditionals="12" methods="14" coveredmethods="14"/>
       <file name="Button.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\Button.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="11" count="5" type="stmt"/>
-        <line num="12" count="37" type="stmt"/>
-        <line num="19" count="5" type="stmt"/>
+        <line num="11" count="8" type="stmt"/>
+        <line num="12" count="56" type="stmt"/>
+        <line num="19" count="8" type="stmt"/>
       </file>
       <file name="ForgotPasswordForm.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\ForgotPasswordForm.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="12" count="1" type="stmt"/>
-        <line num="13" count="3" type="stmt"/>
-        <line num="36" count="1" type="stmt"/>
+        <line num="12" count="2" type="stmt"/>
+        <line num="13" count="8" type="stmt"/>
+        <line num="36" count="2" type="stmt"/>
       </file>
       <file name="InputField.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\InputField.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
-        <line num="11" count="4" type="cond" truecount="1" falsecount="0"/>
-        <line num="12" count="35" type="stmt"/>
-        <line num="26" count="4" type="stmt"/>
+        <line num="11" count="6" type="cond" truecount="1" falsecount="0"/>
+        <line num="12" count="54" type="stmt"/>
+        <line num="26" count="6" type="stmt"/>
       </file>
       <file name="LoginForm.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\LoginForm.tsx">
         <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
@@ -76,26 +97,26 @@
       </file>
       <file name="OTPVerification.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\OTPVerification.tsx">
         <metrics statements="20" coveredstatements="20" conditionals="11" coveredconditionals="9" methods="8" coveredmethods="8"/>
-        <line num="12" count="1" type="stmt"/>
-        <line num="13" count="16" type="stmt"/>
-        <line num="14" count="16" type="stmt"/>
-        <line num="16" count="16" type="stmt"/>
-        <line num="17" count="11" type="cond" truecount="1" falsecount="1"/>
-        <line num="19" count="11" type="stmt"/>
-        <line num="20" count="11" type="stmt"/>
-        <line num="21" count="11" type="stmt"/>
-        <line num="24" count="11" type="cond" truecount="4" falsecount="0"/>
-        <line num="25" count="8" type="stmt"/>
-        <line num="29" count="16" type="stmt"/>
+        <line num="12" count="2" type="stmt"/>
+        <line num="13" count="23" type="stmt"/>
+        <line num="14" count="23" type="stmt"/>
+        <line num="16" count="23" type="stmt"/>
+        <line num="17" count="15" type="cond" truecount="1" falsecount="1"/>
+        <line num="19" count="15" type="stmt"/>
+        <line num="20" count="15" type="stmt"/>
+        <line num="21" count="15" type="stmt"/>
+        <line num="24" count="15" type="cond" truecount="4" falsecount="0"/>
+        <line num="25" count="11" type="stmt"/>
+        <line num="29" count="23" type="stmt"/>
         <line num="30" count="1" type="cond" truecount="4" falsecount="1"/>
         <line num="31" count="1" type="stmt"/>
-        <line num="35" count="16" type="stmt"/>
-        <line num="45" count="64" type="stmt"/>
-        <line num="47" count="128" type="stmt"/>
-        <line num="51" count="11" type="stmt"/>
+        <line num="35" count="23" type="stmt"/>
+        <line num="45" count="92" type="stmt"/>
+        <line num="47" count="184" type="stmt"/>
+        <line num="51" count="15" type="stmt"/>
         <line num="52" count="1" type="stmt"/>
-        <line num="62" count="1" type="stmt"/>
-        <line num="68" count="1" type="stmt"/>
+        <line num="62" count="2" type="stmt"/>
+        <line num="68" count="2" type="stmt"/>
       </file>
       <file name="SocialButton.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\SocialButton.tsx">
         <metrics statements="5" coveredstatements="5" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>

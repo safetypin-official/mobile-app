@@ -1,23 +1,33 @@
-import { Text, View, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import { View, Alert } from "react-native";
+import ForgotPasswordForm from "@/components/ForgotPasswordForm";
+import { router } from 'expo-router';
 
 const ForgotPasswordScreen = () => {
+  const [email, setEmail] = useState("");
+
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const sendEmail = () => {
+    if (!isValidEmail(email)) {
+      Alert.alert("Invalid email format!");
+      return;
+    }
+    Alert.alert("Send button Pressed!");
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Forgot Password Screen</Text>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <ForgotPasswordForm
+        testID="forgot-password"
+        onSend={sendEmail}
+        setEmail={setEmail}
+      />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#25292e',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    color: '#fff',
-  },
-});
 
 export default ForgotPasswordScreen;
