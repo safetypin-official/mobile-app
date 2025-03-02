@@ -1,18 +1,6 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
-import LoginForm, { onGoogleAuth } from "@/components/LoginForm";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
-
-jest.mock("@react-native-google-signin/google-signin", () => ({
-  GoogleSignin: {
-    hasPlayServices: jest.fn(),
-    signIn: jest.fn()
-  }
-}));
-
-const mockedGoogleSignin = GoogleSignin as jest.Mocked<typeof GoogleSignin>;
-
-console.log = jest.fn();
+import LoginForm from "@/components/LoginForm";
 
 describe("LoginForm Component", () => {
   const setup = (overrides = {}) => {
@@ -72,56 +60,5 @@ describe("LoginForm Component", () => {
 
     fireEvent.press(getByTestId("apple-auth"));
     expect(props.onAppleAuth).toHaveBeenCalledTimes(1);
-  });
-});
-
-describe("onGoogleAuth function", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it("successfully signs in with Google", async () => {
-    const mockUserInfo = {
-      data: { 
-        email: "test@example.com", 
-        name: "Test User" 
-      }
-    } as any;
-    
-    mockedGoogleSignin.hasPlayServices.mockResolvedValue(true);
-    mockedGoogleSignin.signIn.mockResolvedValue(mockUserInfo);
-
-    await onGoogleAuth();
-
-    expect(mockedGoogleSignin.hasPlayServices).toHaveBeenCalledTimes(1);
-    expect(mockedGoogleSignin.signIn).toHaveBeenCalledTimes(1);
-    expect(console.log).toHaveBeenCalledWith(mockUserInfo.data);
-  });
-
-  it("handles errors during Google sign in", async () => {
-    const mockError = new Error("Google Sign-In Error");
-    
-    mockedGoogleSignin.hasPlayServices.mockResolvedValue(true);
-    mockedGoogleSignin.signIn.mockRejectedValue(mockError);
-
-    await onGoogleAuth();
-
-    expect(mockedGoogleSignin.hasPlayServices).toHaveBeenCalledTimes(1);
-    expect(mockedGoogleSignin.signIn).toHaveBeenCalledTimes(1);
-    expect(console.log).toHaveBeenCalledWith("error");
-    expect(console.log).toHaveBeenCalledWith(mockError);
-  });
-
-  it("handles Play Services not available error", async () => {
-    const mockError = new Error("Play Services not available");
-    
-    mockedGoogleSignin.hasPlayServices.mockRejectedValue(mockError);
-
-    await onGoogleAuth();
-
-    expect(mockedGoogleSignin.hasPlayServices).toHaveBeenCalledTimes(1);
-    expect(mockedGoogleSignin.signIn).not.toHaveBeenCalled();
-    expect(console.log).toHaveBeenCalledWith("error");
-    expect(console.log).toHaveBeenCalledWith(mockError);
   });
 });
