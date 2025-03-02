@@ -9,7 +9,7 @@ import {
 GoogleSignin.configure({
   webClientId: '77998854438-h9gj1fsua39svfoh38gftrn2c7iro2r6.apps.googleusercontent.com',
   forceCodeForRefreshToken: true,
-  scopes: ["profile", "email"],
+  scopes: ["profile", "email", "https://www.googleapis.com/auth/user.birthday.read"],
 });
 
 export const onGoogleAuth = async () => {
