@@ -39,11 +39,17 @@ describe("SignUpPage", () => {
     expect(mockPush).toHaveBeenCalledWith("/");
   });
 
-  it("triggers sign up alert when the sign up button is pressed", () => {
-    const { getByTestId } = render(<SignUpPage />);
-    
+  it("triggers sign up alert when the sign up button is pressed with valid inputs", () => {
+    const { getByTestId, getByPlaceholderText } = render(<SignUpPage />);
+
+    fireEvent.changeText(getByPlaceholderText("Username"), "testuser");
+    fireEvent.changeText(getByPlaceholderText("E-mail address"), "test@example.com");
+    fireEvent.changeText(getByPlaceholderText("Date of Birth"), "1990-01-01");
+    fireEvent.changeText(getByPlaceholderText("Password"), "StrongPassword1!");
+    fireEvent.changeText(getByPlaceholderText("Confirm Password"), "StrongPassword1!");
+
     fireEvent.press(getByTestId("signup-button"));
-    
+
     expect(Alert.alert).toHaveBeenCalledWith("Sign Up Pressed!");
   });
 });
