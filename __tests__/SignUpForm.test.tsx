@@ -40,7 +40,7 @@ describe("SignUpForm", () => {
   it("calls onSignUp when the Sign Up button is pressed with valid inputs", () => {
     fireEvent.changeText(screen.getByPlaceholderText("Username"), "testuser");
     fireEvent.changeText(screen.getByPlaceholderText("E-mail address"), "test@example.com");
-    fireEvent.changeText(screen.getByPlaceholderText("Date of Birth"), "1990-01-01");
+    fireEvent.changeText(screen.getByPlaceholderText("Date of Birth"), "01/01/1990"); // Correct format
     fireEvent.changeText(screen.getByPlaceholderText("Password"), "StrongPassword1!");
     fireEvent.changeText(screen.getByPlaceholderText("Confirm Password"), "StrongPassword1!");
 
@@ -80,8 +80,15 @@ describe("SignUpForm", () => {
     expect(screen.getByText("Date of Birth is required")).toBeTruthy();
   });
 
+  it("displays error messages for invalid date of birth format", () => {
+    fireEvent.changeText(screen.getByPlaceholderText("Date of Birth"), "1990-01-01");
+    fireEvent.press(screen.getByTestId("signup-button"));
+
+    expect(screen.getByText("Date of Birth must be in DD/MM/YYYY format")).toBeTruthy();
+  });
+
   it("displays error messages for age less than 16", () => {
-    fireEvent.changeText(screen.getByPlaceholderText("Date of Birth"), "2020-01-01");
+    fireEvent.changeText(screen.getByPlaceholderText("Date of Birth"), "01/01/2020");
     fireEvent.press(screen.getByTestId("signup-button"));
 
     expect(screen.getByText("You must be at least 16 years old")).toBeTruthy();
@@ -102,7 +109,7 @@ describe("SignUpForm", () => {
     it("returns true if the user is exactly 16 years old today", () => {
       const today = new Date();
       const dob = new Date(today.getFullYear() - 16, today.getMonth(), today.getDate());
-      const dateOfBirth = dob.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+      const dateOfBirth = `${String(dob.getDate()).padStart(2, "0")}/${String(dob.getMonth() + 1).padStart(2, "0")}/${dob.getFullYear()}`; // Correct format
 
       fireEvent.changeText(screen.getByPlaceholderText("Date of Birth"), dateOfBirth);
       fireEvent.press(screen.getByTestId("signup-button"));
@@ -113,7 +120,7 @@ describe("SignUpForm", () => {
     it("returns true if the user is older than 16", () => {
       const today = new Date();
       const dob = new Date(today.getFullYear() - 17, today.getMonth(), today.getDate());
-      const dateOfBirth = dob.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+      const dateOfBirth = `${String(dob.getDate()).padStart(2, "0")}/${String(dob.getMonth() + 1).padStart(2, "0")}/${dob.getFullYear()}`; // Correct format
 
       fireEvent.changeText(screen.getByPlaceholderText("Date of Birth"), dateOfBirth);
       fireEvent.press(screen.getByTestId("signup-button"));
@@ -124,7 +131,7 @@ describe("SignUpForm", () => {
     it("returns false if the user is younger than 16", () => {
       const today = new Date();
       const dob = new Date(today.getFullYear() - 15, today.getMonth(), today.getDate());
-      const dateOfBirth = dob.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+      const dateOfBirth = `${String(dob.getDate()).padStart(2, "0")}/${String(dob.getMonth() + 1).padStart(2, "0")}/${dob.getFullYear()}`; // Correct format
 
       fireEvent.changeText(screen.getByPlaceholderText("Date of Birth"), dateOfBirth);
       fireEvent.press(screen.getByTestId("signup-button"));
@@ -135,7 +142,7 @@ describe("SignUpForm", () => {
     it("returns false if the user's birthday hasn't occurred yet this year", () => {
       const today = new Date();
       const dob = new Date(today.getFullYear() - 16, today.getMonth() + 1, today.getDate());
-      const dateOfBirth = dob.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+      const dateOfBirth = `${String(dob.getDate()).padStart(2, "0")}/${String(dob.getMonth() + 1).padStart(2, "0")}/${dob.getFullYear()}`; // Correct format
 
       fireEvent.changeText(screen.getByPlaceholderText("Date of Birth"), dateOfBirth);
       fireEvent.press(screen.getByTestId("signup-button"));

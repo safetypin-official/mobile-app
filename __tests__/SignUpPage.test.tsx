@@ -44,7 +44,7 @@ describe("SignUpPage", () => {
 
     fireEvent.changeText(getByPlaceholderText("Username"), "testuser");
     fireEvent.changeText(getByPlaceholderText("E-mail address"), "test@example.com");
-    fireEvent.changeText(getByPlaceholderText("Date of Birth"), "1990-01-01");
+    fireEvent.changeText(getByPlaceholderText("Date of Birth"), "01/01/1990");
     fireEvent.changeText(getByPlaceholderText("Password"), "StrongPassword1!");
     fireEvent.changeText(getByPlaceholderText("Confirm Password"), "StrongPassword1!");
 
