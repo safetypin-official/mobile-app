@@ -30,7 +30,7 @@ const LoginScreen = () => {
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <LoginForm testID="login-screen"
         onForgotPassword={() => router.push('/forgotPassword')}
-        onSignUp={() => Alert.alert("Sign Up Pressed!")} 
+        onSignUp={() => router.push('/signUp')}
         onLogIn={handleLogin}
         onGoogleAuth={() => Alert.alert("Google Auth Pressed!")} 
         onAppleAuth={() => Alert.alert("Apple Auth Pressed!")} 
