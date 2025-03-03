@@ -50,9 +50,9 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn,  onGoogleAut
     }
 
     if (!password) {
-      errors.password = "Password is required";
+      errors.passwordMessage = "Password is required";
     } else if (!isStrongPassword(password)) {
-      errors.password =
+      errors.passwordMessage =
         "Password must be at least 8 characters long and include a number, a special character, and an uppercase letter";
     }
 
@@ -141,7 +141,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn,  onGoogleAut
                 secureTextEntry={true}
                 onChangeText={(text) => setPassword(text)}
               />
-              {errors.password && <Text style={styles.error}>{errors.password}</Text>}
+              {errors.passwordMessage && <Text style={styles.error}>{errors.passwordMessage}</Text>}
             </View>
 
             <View>
