@@ -20,7 +20,7 @@ interface SignUpFormProps {
   testID: string;
 }
 
-const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn, onGoogleAuth, onAppleAuth, testID }) => {
+const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn,  onGoogleAuth, onAppleAuth, testID }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
@@ -155,14 +155,10 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn, onGoogleAuth
               {errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword}</Text>}
             </View>
 
-            <View style={styles.row}>
-              <Image
-                source={{
-                  uri: "https://cdn.builder.io/api/v1/image/assets/TEMP/0d4fe278128951f94532544c445b0cdf30497d337da8e6b3c45ec99601a976d8?apiKey=3d252c2866cb40ed8f1b49e6bfb91bab&",
-                }}
-                style={styles.avatar}
-              />
-            </View>
+          <View style={styles.socialButtonsContainer}>
+            <SocialButton icon="google" onPress={onGoogleAuth} testID="google-auth"/>
+            <SocialButton icon="apple" onPress={onAppleAuth} testID="apple-auth"/>
+          </View>
 
             <Button children="Sign Up" onPress={handleSignUp} testID="signup-button"></Button>
           </View>
@@ -233,6 +229,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: -10,
     marginBottom: 4,
+  },
+  socialButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+    marginBottom: 24
   },
 });
 
