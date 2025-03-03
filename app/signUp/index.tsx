@@ -3,7 +3,6 @@ import { router } from "expo-router";
 import { Alert } from "react-native";
 import {
   GoogleSignin,
-  statusCodes,
 } from "@react-native-google-signin/google-signin";
 
 GoogleSignin.configure({

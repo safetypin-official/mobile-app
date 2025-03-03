@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
-  Image,
   TouchableOpacity,
   ScrollView,
 } from "react-native";
@@ -159,8 +158,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn,  onGoogleAut
             <SocialButton icon="google" onPress={onGoogleAuth} testID="google-auth"/>
             <SocialButton icon="apple" onPress={onAppleAuth} testID="apple-auth"/>
           </View>
-
-            <Button children="Sign Up" onPress={handleSignUp} testID="signup-button"></Button>
+            <Button onPress={handleSignUp} testID="signup-button">Sign Up</Button>
           </View>
 
           <Text style={styles.loginText}>

@@ -2,7 +2,6 @@ import React from "react";
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, SafeAreaView } from "react-native";
 import InputField from "@/components/InputField";
 import Button from "@/components/Button";
-import { router } from "expo-router";
 import { SocialButton } from "@/components/SocialButton";
 
 interface LoginFormProps {
