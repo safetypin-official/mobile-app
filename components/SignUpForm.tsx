@@ -10,14 +10,17 @@ import {
 } from "react-native";
 import InputField from "./InputField";
 import Button from "@/components/Button";
+import { SocialButton } from "./SocialButton";
 
 interface SignUpFormProps {
   onSignUp: () => void;
   onLogIn: () => void;
+  onGoogleAuth: () => void;
+  onAppleAuth: () => void;
   testID: string;
 }
 
-const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn, testID }) => {
+const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn, onGoogleAuth, onAppleAuth, testID }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
