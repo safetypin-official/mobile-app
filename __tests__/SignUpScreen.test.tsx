@@ -1,6 +1,6 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
-import SignUpPage from "@/app/signup";
+import SignUpScreen from "@/app/signUp";
 import { Alert } from "react-native";
 
 jest.spyOn(Alert, "alert").mockImplementation(() => {});
@@ -14,9 +14,9 @@ jest.mock("expo-router", () => ({
   },
 }));
 
-describe("SignUpPage", () => {
+describe("SignUpScreen", () => {
   it("renders the SignUpForm component", () => {
-    const { getAllByText, getByPlaceholderText } = render(<SignUpPage />);
+    const { getAllByText, getByPlaceholderText } = render(<SignUpScreen />);
 
     const signUpTexts = getAllByText("Sign Up");
     expect(signUpTexts[0]).toBeTruthy();
@@ -32,7 +32,7 @@ describe("SignUpPage", () => {
     const mockPush = jest.fn();
     require("expo-router").router.push = mockPush;
 
-    const { getByTestId } = render(<SignUpPage />);
+    const { getByTestId } = render(<SignUpScreen />);
 
     fireEvent.press(getByTestId("login-link"));
 
@@ -40,7 +40,7 @@ describe("SignUpPage", () => {
   });
 
   it("triggers sign up alert when the sign up button is pressed with valid inputs", () => {
-    const { getByTestId, getByPlaceholderText } = render(<SignUpPage />);
+    const { getByTestId, getByPlaceholderText } = render(<SignUpScreen />);
 
     fireEvent.changeText(getByPlaceholderText("Username"), "testuser");
     fireEvent.changeText(getByPlaceholderText("E-mail address"), "test@example.com");

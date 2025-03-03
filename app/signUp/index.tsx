@@ -2,7 +2,7 @@ import SignUpForm from "@/components/SignUpForm";
 import { router } from "expo-router";
 import { Alert } from "react-native";
 
-export default function SignUpPage() {
+export default function SignUpScreen() {
   const handleLogIn = () => {
     router.push("/");
   };
