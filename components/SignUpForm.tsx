@@ -10,6 +10,7 @@ import {
 import InputField from "./InputField";
 import Button from "@/components/Button";
 import { SocialButton } from "./SocialButton";
+import validator from "validator";
 
 interface SignUpFormProps {
   onSignUp: () => void;
@@ -74,8 +75,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn,  onGoogleAut
   };
 
   const isValidEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return validator.isEmail(email);
   };
 
   const isStrongPassword = (password: string) => {
