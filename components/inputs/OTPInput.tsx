@@ -2,7 +2,6 @@ import React from "react";
 import { TextInput, StyleSheet, View } from "react-native";
 
 interface OTPInputProps {
-  length: number;
   otp: string[];
   inputRefs: React.MutableRefObject<(TextInput | null)[]>;
   handleChange: (text: string, index: number) => void;
@@ -10,7 +9,7 @@ interface OTPInputProps {
   testID?: string;
 }
 
-const OTPInput: React.FC<OTPInputProps> = ({ length, otp, inputRefs, handleChange, handleKeyPress, testID = "otp-input" }) => {
+const OTPInput: React.FC<OTPInputProps> = ({ otp, inputRefs, handleChange, handleKeyPress, testID = "otp-input" }) => {
   return (
     <View style={styles.otpContainer}>
       {otp.map((digit, index) => (

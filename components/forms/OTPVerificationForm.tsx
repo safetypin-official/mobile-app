@@ -21,7 +21,7 @@ const OTPVerification: React.FC<OTPVerificationProps> = ({ onVerify, onResend, t
         <Text style={styles.title}>Verification</Text>
         <Text style={styles.subtitle}>Enter the verification code sent to your email.</Text>
 
-        <OTPInput length={otpLength} otp={otp} inputRefs={inputRefs} handleChange={handleChange} handleKeyPress={handleKeyPress} />
+        <OTPInput otp={otp} inputRefs={inputRefs} handleChange={handleChange} handleKeyPress={handleKeyPress} />
 
         <TouchableOpacity onPress={onResend}>
           <Text style={styles.resendText}>Didn't receive a code? <Text style={styles.resendLink}>Resend.</Text></Text>
