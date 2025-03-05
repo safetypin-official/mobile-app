@@ -11,6 +11,7 @@ import InputField from "@/components/inputs/InputField";
 import Button from "@/components/buttons/Button";
 import { SocialButton } from "@/components/buttons/SocialButton";
 import validator from "validator";
+import { googleIcon, appleIcon } from "@/assets/icons";
 
 interface SignUpFormProps {
   onSignUp: () => void;
@@ -155,8 +156,8 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn,  onGoogleAut
             </View>
 
           <View style={styles.socialButtonsContainer}>
-            <SocialButton icon="google" onPress={onGoogleAuth} testID="google-auth"/>
-            <SocialButton icon="apple" onPress={onAppleAuth} testID="apple-auth"/>
+            <SocialButton iconXml={googleIcon} onPress={onGoogleAuth} testID="google-auth"/>
+            <SocialButton iconXml={appleIcon} onPress={onAppleAuth} testID="apple-auth"/>
           </View>
             <Button onPress={handleSignUp} testID="signup-button">Sign Up</Button>
           </View>

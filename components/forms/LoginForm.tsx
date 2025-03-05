@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, SafeAreaVie
 import InputField from "@/components/inputs/InputField";
 import Button from "@/components/buttons/Button";
 import { SocialButton } from "@/components/buttons/SocialButton";
+import { googleIcon, appleIcon } from "@/assets/icons";
 
 interface LoginFormProps {
   onForgotPassword: () => void;
@@ -35,8 +36,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onForgotPassword, onSignUp, onLog
           </View>
 
           <View style={styles.socialButtonsContainer}>
-            <SocialButton icon="google" onPress={onGoogleAuth} testID="google-auth"/>
-            <SocialButton icon="apple" onPress={onAppleAuth} testID="apple-auth"/>
+            <SocialButton iconXml={googleIcon} onPress={onGoogleAuth} testID="google-auth"/>
+            <SocialButton iconXml={appleIcon} onPress={onAppleAuth} testID="apple-auth"/>
           </View>
 
           <Button children="Log In" onPress={onLogIn} testID="login-button"></Button>
