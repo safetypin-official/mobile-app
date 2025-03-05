@@ -2,9 +2,19 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import LoginScreen, {onGoogleAuth} from "@/app/index";
 import { Alert } from "react-native";
+import { router } from 'expo-router';
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-
+        
 jest.spyOn(Alert, "alert");
+
+jest.mock('expo-router', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+  }),
+  router: {
+    push: jest.fn(),
+  },
+}));
 
 jest.mock("@react-native-google-signin/google-signin", () => ({
   GoogleSignin: {
@@ -25,25 +35,34 @@ describe("LoginScreen", () => {
     expect(getByTestId("login-screen")).toBeTruthy();
   });
 
-  it("triggers forgot password alert when the button is pressed", () => {
+  it("navigates to forgotPassword screen on button press", () => {
     const { getByText } = render(<LoginScreen />);
     
     fireEvent.press(getByText("Forgot password?"));
     
-    expect(Alert.alert).toHaveBeenCalledWith("Forgot Password Pressed!");
+    expect(router.push).toHaveBeenCalledWith('/forgotPassword');
   });
 
-  it("triggers sign up alert when the sign-up text is pressed", () => {
-    const { getByText } = render(<LoginScreen />);
-    
-    fireEvent.press(getByText("Sign up."));
-    
-    expect(Alert.alert).toHaveBeenCalledWith("Sign Up Pressed!");
-  });
-
-  it("triggers log in alert when the login button is pressed", () => {
+  it("navigates to sign up screen when sign-up text is pressed", () => {
     const { getByTestId } = render(<LoginScreen />);
     
+    fireEvent.press(getByTestId("signup-link"));
+    expect(router.push).toHaveBeenCalledWith('/signUp');
+  });
+
+  it("shows error alert when email format is invalid", () => {
+    const { getByTestId, getByPlaceholderText } = render(<LoginScreen />);
+    
+    fireEvent.changeText(getByPlaceholderText("Username/E-mail address"), "invalid-email");
+    fireEvent.press(getByTestId("login-button"));
+    
+    expect(Alert.alert).toHaveBeenCalledWith("Invalid email format!");
+  });
+
+  it("triggers log in alert when a valid email is entered", () => {
+    const { getByTestId, getByPlaceholderText } = render(<LoginScreen />);
+    
+    fireEvent.changeText(getByPlaceholderText("Username/E-mail address"), "user@example.com");
     fireEvent.press(getByTestId("login-button"));
     
     expect(Alert.alert).toHaveBeenCalledWith("Log In Pressed!");

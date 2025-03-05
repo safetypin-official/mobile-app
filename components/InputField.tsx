@@ -5,9 +5,10 @@ interface InputFieldProps {
   label: string;
   placeholder: string;
   secureTextEntry?: boolean;
+  onChangeText?: (text: string) => void;
 }
 
-const InputField: React.FC<InputFieldProps> = ({ label, placeholder, secureTextEntry = false }) => {
+const InputField: React.FC<InputFieldProps> = ({ label, placeholder, secureTextEntry = false, onChangeText }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
@@ -16,6 +17,7 @@ const InputField: React.FC<InputFieldProps> = ({ label, placeholder, secureTextE
         placeholder={placeholder}
         placeholderTextColor="#904a47"
         secureTextEntry={secureTextEntry}
+        onChangeText={onChangeText}
       />
     </View>
   );
