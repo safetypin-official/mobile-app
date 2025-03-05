@@ -19,7 +19,6 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onSend, testID 
 
         <View style={styles.form}>
           <InputField
-            label=""
             placeholder="Enter email address"
             onChangeText={setEmail}
           ></InputField>

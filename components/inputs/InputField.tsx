@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 
 interface InputFieldProps {
-  label: string;
+  label?: string;
   placeholder: string;
   secureTextEntry?: boolean;
   onChangeText?: (text: string) => void;
@@ -12,7 +12,7 @@ interface InputFieldProps {
 const InputField: React.FC<InputFieldProps> = ({ label, placeholder, secureTextEntry = false, onChangeText, testID = "input-field" }) => {
   return (
     <View style={styles.container} testID={testID}>
-      <Text style={styles.label}>{label}</Text>
+      {label && <Text style={styles.label}>{label}</Text>}
       <TextInput
         style={styles.input}
         placeholder={placeholder}
