@@ -2,6 +2,7 @@
 
 # dependencies
 node_modules/
+coverage/
 
 # Expo
 .expo/
@@ -36,6 +37,3 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
-
-# coverage
-coverage/
