@@ -43,10 +43,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onForgotPassword, onSignUp, onLog
         </View>
 
         <Text style={styles.signupText}>
-          Don't have an account?{" "}
-          <Text style={styles.signupLink} onPress={onSignUp}>
-            Sign up.
-          </Text>
+          Already have an account?{" "}
+          <TouchableOpacity onPress={onSignUp} testID="signup-link">
+            <Text style={styles.signupLink}>Sign Up.</Text>
+          </TouchableOpacity>
         </Text>
       </View>
     </SafeAreaView>

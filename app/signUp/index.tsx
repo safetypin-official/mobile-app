@@ -1,23 +1,40 @@
-import { Text, View, StyleSheet } from 'react-native';
+import SignUpForm from "@/components/SignUpForm";
+import { router } from "expo-router";
+import { Alert } from "react-native";
+import {
+  GoogleSignin,
+} from "@react-native-google-signin/google-signin";
 
-const SignUpScreen = () => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Sign Up Screen</Text>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#25292e',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    color: '#fff',
-  },
+GoogleSignin.configure({
+  webClientId: '77998854438-h9gj1fsua39svfoh38gftrn2c7iro2r6.apps.googleusercontent.com',
+  forceCodeForRefreshToken: true,
+  scopes: ["profile", "email", "https://www.googleapis.com/auth/user.birthday.read"],
 });
 
-export default SignUpScreen;
+export const onGoogleAuth = async () => {
+  try {
+    await GoogleSignin.hasPlayServices();
+    const userInfo = await GoogleSignin.signIn();
+    console.log("success");
+    console.log(userInfo.data);
+  } catch (error: any) {
+    console.log("error");
+    console.log(error);
+  }
+}
+
+export default function SignUpScreen() {
+  const handleLogIn = () => {
+    router.push("/");
+  };
+
+  return (
+    <SignUpForm
+      onSignUp={() => Alert.alert("Sign Up Pressed!")}
+      onLogIn={handleLogIn}
+      testID="signup-form"
+      onGoogleAuth = {onGoogleAuth}
+      onAppleAuth = {() => Alert.alert("Apple Auth Pressed!")}
+    />
+  );
+}

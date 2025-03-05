@@ -44,10 +44,9 @@ describe("LoginScreen", () => {
   });
 
   it("navigates to sign up screen when sign-up text is pressed", () => {
-    const { getByText } = render(<LoginScreen />);
+    const { getByTestId } = render(<LoginScreen />);
     
-    fireEvent.press(getByText("Sign up."));
-    
+    fireEvent.press(getByTestId("signup-link"));
     expect(router.push).toHaveBeenCalledWith('/signUp');
   });
 
