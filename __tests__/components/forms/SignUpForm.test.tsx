@@ -1,6 +1,6 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
-import SignUpForm from "@/components/SignUpForm";
+import SignUpForm from "@/components/forms/SignUpForm";
 
 jest.mock("expo-router", () => ({
   router: {

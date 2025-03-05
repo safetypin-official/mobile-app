@@ -1,4 +1,4 @@
-import SignUpForm from "@/components/SignUpForm";
+import SignUpForm from "@/components/forms/SignUpForm";
 import { router } from "expo-router";
 import { Alert } from "react-native";
 import {
