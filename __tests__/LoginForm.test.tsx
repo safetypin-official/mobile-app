@@ -2,6 +2,12 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import LoginForm from "@/components/LoginForm";
 
+jest.mock('expo-router', () => ({
+  router: {
+    push: jest.fn(),
+  },
+}));
+
 describe("LoginForm Component", () => {
   const setup = (overrides = {}) => {
     const props = {
@@ -36,9 +42,9 @@ describe("LoginForm Component", () => {
   });
 
   it("calls onSignUp when 'Sign up.' is clicked", () => {
-    const { getByText, props } = setup();
+    const { getByTestId, props } = setup();
 
-    fireEvent.press(getByText("Sign up."));
+    fireEvent.press(getByTestId("signup-link"));
     expect(props.onSignUp).toHaveBeenCalledTimes(1);
   });
 
