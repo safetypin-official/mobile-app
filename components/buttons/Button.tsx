@@ -5,10 +5,10 @@ interface ButtonProps {
   children: React.ReactNode;
   onPress: () => void;
   style?: object;
-  testID: string;
+  testID?: string;
 }
 
-const Button: React.FC<ButtonProps> = ({ children, onPress, style, testID }) => {
+const Button: React.FC<ButtonProps> = ({ children, onPress, style, testID = "button" }) => {
   return (
     <TouchableOpacity style={[styles.button, style]} onPress={onPress} testID={testID}>
       <Text style={styles.text}>{children}</Text>

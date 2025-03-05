@@ -1,11 +1,10 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
-import ForgotPasswordForm from "@/components/ForgotPasswordForm";
+import ForgotPasswordForm from "@/components/forms/ForgotPasswordForm";
 
 describe("ForgotPasswordForm Component", () => {
   const setup = (overrides = {}) => {
     const props = {
-      testID: "forgot-password-test",
       onSend: jest.fn(),
       setEmail: jest.fn(),
       ...overrides,
@@ -19,7 +18,7 @@ describe("ForgotPasswordForm Component", () => {
   it("renders correctly", () => {
     const { getByTestId, getByPlaceholderText } = setup();
 
-    expect(getByTestId("forgot-password-test")).toBeTruthy();
+    expect(getByTestId("forgot-password-form")).toBeTruthy();
     expect(getByPlaceholderText("Enter email address")).toBeTruthy();
   });
 

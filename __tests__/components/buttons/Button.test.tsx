@@ -1,10 +1,10 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
-import Button from "@/components/Button";
+import Button from "@/components/buttons/Button";
 
 describe("Button Component", () => {
   it("renders correctly", () => {
-    const { getByText } = render(<Button testID="test-button" onPress={() => {}}>Click Me</Button>);
+    const { getByText } = render(<Button onPress={() => {}}>Click Me</Button>);
     expect(getByText("Click Me")).toBeTruthy();
   });
 
@@ -14,6 +14,11 @@ describe("Button Component", () => {
 
     fireEvent.press(getByText("Click Me"));
     expect(onPressMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders with default testID when not provided", () => {
+    const { getByTestId } = render(<Button onPress={() => {}}>Button</Button>);
+    expect(getByTestId("button")).toBeTruthy();
   });
 
   it("applies custom styles if provided", () => {

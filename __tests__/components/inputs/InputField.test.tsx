@@ -1,6 +1,6 @@
 import React from "react";
 import { render } from "@testing-library/react-native";
-import InputField from "@/components/InputField";
+import InputField from "@/components/inputs/InputField";
 
 describe("InputField Component", () => {
   it("renders correctly with given label and placeholder", () => {

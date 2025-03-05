@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, Alert } from 'react-native';
-import OTPVerification from '@/components/OTPVerification';
+import OTPVerification from '@/components/forms/OTPVerificationForm';
 
 const OTPVerificationScreen = () => {
   const handleVerify = (otp: string) => {

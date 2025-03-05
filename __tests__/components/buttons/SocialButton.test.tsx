@@ -1,8 +1,17 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
-import { SocialButton } from "@/components/SocialButton";
+import { SocialButton } from "@/components/buttons/SocialButton";
 
 describe("SocialButton Component", () => {
+  it("renders with default testID when not provided", () => {
+    const { getByTestId } = render(
+      <SocialButton icon="google" onPress={jest.fn()} />
+    );
+
+    const button = getByTestId("social-button");
+    expect(button).toBeTruthy();
+  });
+
   it("renders Google icon correctly", () => {
     const { getByTestId } = render(
       <SocialButton icon="google" onPress={jest.fn()} testID="google-auth" />

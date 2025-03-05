@@ -5,7 +5,7 @@ import { SvgXml } from 'react-native-svg';
 interface SocialButtonProps {
   icon: 'google' | 'apple';
   onPress: () => void;
-  testID: string;
+  testID?: string;
 }
 
 const googleIcon = `
@@ -23,7 +23,7 @@ const appleIcon = `
 </svg>
 `;
 
-export const SocialButton: React.FC<SocialButtonProps> = ({ icon, onPress, testID }) => {
+export const SocialButton: React.FC<SocialButtonProps> = ({ icon, onPress, testID = "social-button" }) => {
   return (
     <TouchableOpacity style={styles.button} onPress={onPress} testID={testID}>
       <SvgXml xml={icon === 'google' ? googleIcon : appleIcon} width={28} height={30} />

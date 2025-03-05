@@ -1,15 +1,15 @@
 import React from "react";
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, SafeAreaView } from "react-native";
-import InputField from "@/components/InputField";
-import Button from "@/components/Button";
+import InputField from "@/components/inputs/InputField";
+import Button from "@/components/buttons/Button";
 
 interface ForgotPasswordFormProps {
   onSend: () => void;
-  testID: string;
+  testID?: string;
   setEmail: (email: string) => void;
 }
 
-const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onSend, testID, setEmail }) => {
+const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onSend, testID = "forgot-password-form" , setEmail }) => {
   return (
     <SafeAreaView style={styles.safeContainer} testID={testID}>
       <View style={styles.container}>

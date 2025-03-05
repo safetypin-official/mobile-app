@@ -1,11 +1,10 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
-import LoginForm from "@/components/LoginForm";
+import LoginForm from "@/components/forms/LoginForm";
 
 describe("LoginForm Component", () => {
   const setup = (overrides = {}) => {
     const props = {
-      testID: "login-test",
       onForgotPassword: jest.fn(),
       onSignUp: jest.fn(),
       onLogIn: jest.fn(),
@@ -19,6 +18,12 @@ describe("LoginForm Component", () => {
 
     return { ...utils, props };
   };
+
+  it("renders with default testID when not provided", () => {
+    const { getByTestId, getByPlaceholderText } = setup();
+
+    expect(getByTestId("login-form")).toBeTruthy();
+  });
 
   it("renders correctly", () => {
     const { getByTestId, getByPlaceholderText } = setup();

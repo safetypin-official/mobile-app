@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Alert } from "react-native";
-import LoginForm from "@/components/LoginForm";
+import LoginForm from "@/components/forms/LoginForm";
 import {
   GoogleSignin,
   statusCodes,

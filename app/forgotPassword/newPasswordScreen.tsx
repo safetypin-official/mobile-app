@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Alert, SafeAreaView } from "react-native";
-import InputField from "@/components/InputField";
-import Button from "@/components/Button";
+import InputField from "@/components/inputs/InputField";
+import Button from "@/components/buttons/Button";
 
 const NewPasswordScreen: React.FC = () => {
   const [newPassword, setNewPassword] = useState("");
@@ -46,15 +46,16 @@ const NewPasswordScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    safeContainer: {
-        flex: 1,
-        backgroundColor: "#7B241C",
-        width: "100%",
-    },
+  safeContainer: {
+    flex: 1,
+    backgroundColor: "#7B241C",
+    width: "100%",
+  },
   container: {
     flex: 1,
     padding: 20,
     justifyContent: "center",
+    paddingHorizontal: "10%",
   },
   title: {
     fontSize: 24,

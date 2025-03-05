@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, SafeAreaView } from "react-native";
-import InputField from "@/components/InputField";
-import Button from "@/components/Button";
-import { SocialButton } from "@/components/SocialButton";
+import InputField from "@/components/inputs/InputField";
+import Button from "@/components/buttons/Button";
+import { SocialButton } from "@/components/buttons/SocialButton";
 
 interface LoginFormProps {
   onForgotPassword: () => void;
@@ -10,11 +10,11 @@ interface LoginFormProps {
   onLogIn: () => void;
   onGoogleAuth: () => void;
   onAppleAuth: () => void;
-  testID: string;
+  testID?: string;
   setEmail: (email: string) => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onForgotPassword, onSignUp, onLogIn, onGoogleAuth, onAppleAuth, testID, setEmail }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onForgotPassword, onSignUp, onLogIn, onGoogleAuth, onAppleAuth, testID = "login-form" , setEmail }) => {
   return (
     <SafeAreaView style={styles.safeContainer} testID={testID}>
       <View style={styles.container}>
