@@ -1,55 +1,69 @@
 import React, { useState } from "react";
 import { View, Alert } from "react-native";
 import LoginForm from "@/components/LoginForm";
-import {
-  GoogleSignin,
-  statusCodes,
-} from "@react-native-google-signin/google-signin";
 import { router } from 'expo-router';
-
-GoogleSignin.configure({
-  webClientId: '77998854438-h9gj1fsua39svfoh38gftrn2c7iro2r6.apps.googleusercontent.com',
-  forceCodeForRefreshToken: true,
-  scopes: ["profile", "email", "https://www.googleapis.com/auth/user.birthday.read"],
-});
-
-export const onGoogleAuth = async () => {
-  try {
-    await GoogleSignin.hasPlayServices();
-    const userInfo = await GoogleSignin.signIn();
-    console.log("success");
-    console.log(userInfo.data);
-  } catch (error: any) {
-    console.log("error");
-    console.log(error);
-  }
-}
+import { onGoogleAuth, onAppleIDAuth, isValidEmail, loginWithEmail } from "@/utils/auth";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const isValidEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!isValidEmail(email)) {
-      Alert.alert("Invalid email format!");
+      Alert.alert("Invalid Email", "Please enter a valid email address.");
       return;
     }
-    Alert.alert("Log In Pressed!");
+    
+    if (!password || password.trim() === "") {
+      Alert.alert("Password Required", "Please enter your password.");
+      return;
+    }
+    
+    console.log(email);
+    console.log(password);
+
+    try {
+      const result = await loginWithEmail(email, password);
+      console.log("Email login successful:", result);
+      // Navigate to home or dashboard after successful login
+      // router.push('/dashboard');
+    } catch (error: any) {
+      // Errors are handled in the loginWithEmail function
+      console.error("Email login failed:", error);
+    }
+  };
+
+  const handleGoogleAuth = async () => {
+    try {
+      const result = await onGoogleAuth();
+      console.log("Google auth successful:", result);
+    } catch (error) {
+      // The alerts are already handled in the onGoogleAuth function
+      console.error("Google auth failed in component:", error);
+    }
+  };
+
+  const handleAppleAuth = async () => {
+    try {
+      const result = await onAppleIDAuth();
+      console.log("Apple auth successful:", result);
+    } catch (error) {
+      // The alerts are already handled in the onAppleIDAuth function
+      console.error("Apple auth failed in component:", error);
+    }
   };
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <LoginForm testID="login-screen"
+      <LoginForm 
+        testID="login-screen"
         onForgotPassword={() => router.push('/forgotPassword')}
         onSignUp={() => router.push('/signUp')}
         onLogIn={handleLogin}
-        onGoogleAuth={onGoogleAuth} 
-        onAppleAuth={() => Alert.alert("Apple Auth Pressed!")} 
+        onGoogleAuth={handleGoogleAuth}
+        onAppleAuth={handleAppleAuth}
         setEmail={setEmail}
+        setPassword={setPassword}
       />
     </View>
   );
