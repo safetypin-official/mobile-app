@@ -13,14 +13,19 @@ import { SocialButton } from "./SocialButton";
 import validator from "validator";
 
 interface SignUpFormProps {
-  onSignUp: () => void;
+  onSignUp: (userData: {
+    username: string;
+    email: string;
+    dateOfBirth: string;
+    password: string;
+  }) => void;
   onLogIn: () => void;
   onGoogleAuth: () => void;
   onAppleAuth: () => void;
   testID: string;
 }
 
-const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn,  onGoogleAuth, onAppleAuth, testID }) => {
+const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn, onGoogleAuth, onAppleAuth, testID }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
@@ -31,7 +36,13 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn,  onGoogleAut
   const handleSignUp = () => {
     const validationErrors = validateInputs();
     if (Object.keys(validationErrors).length === 0) {
-      onSignUp();
+      // Pass form data to the onSignUp handler
+      onSignUp({
+        username,
+        email,
+        dateOfBirth,
+        password
+      });
     } else {
       setErrors(validationErrors);
     }
@@ -51,9 +62,9 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn,  onGoogleAut
     }
 
     if (!password) {
-      errors.passwordMessage = "Password is required";
+      errors.password = "Password is required";
     } else if (!isStrongPassword(password)) {
-      errors.passwordMessage =
+      errors.password =
         "Password must be at least 8 characters long and include a number, a special character, and an uppercase letter";
     }
 
@@ -74,35 +85,39 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn,  onGoogleAut
     return errors;
   };
 
-  const isValidEmail = (email: string) => {
-    return validator.isEmail(email);
+  const isValidEmail = (email: string): boolean => {
+    return !!validator.isEmail(email);
   };
 
-  const isStrongPassword = (password: string) => {
+  const isStrongPassword = (password: string): boolean => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+-])[A-Za-z\d!@#$%^&*()_+-]{8,}$/;
-    return passwordRegex.test(password);
+    return !!passwordRegex.test(password);
   };
 
-  const isAtLeast16 = (dateOfBirth: string) => {
+  const isAtLeast16 = (dateOfBirth: string): boolean => {
     const [day, month, year] = dateOfBirth.split("/");
+  
+    // Create date object
     const dob = new Date(`${year}-${month}-${day}`);
+
     const today = new Date();
     const age = today.getFullYear() - dob.getFullYear();
     const monthDifference = today.getMonth() - dob.getMonth();
+    
     if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < dob.getDate())) {
       return age - 1 >= 16;
     }
     return age >= 16;
   };
 
-  const isValidDateFormat = (date: string) => {
+  const isValidDateFormat = (date: string): boolean => {
     const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-    return dateRegex.test(date);
+    return !!dateRegex.test(date);
   };
 
   return (
     <SafeAreaView style={styles.safeContainer} testID={testID}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}> {/* Wrap content in ScrollView */}
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
           <Text style={styles.title}>Sign Up</Text>
 
@@ -113,7 +128,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn,  onGoogleAut
                 placeholder="Username"
                 onChangeText={(text) => setUsername(text)}
               />
-              {errors.username && <Text style={styles.error}>{errors.username}</Text>}
+              {!!errors.username && <Text style={styles.error}>{errors.username}</Text>}
             </View>
 
             <View>
@@ -122,16 +137,16 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn,  onGoogleAut
                 placeholder="E-mail address"
                 onChangeText={(text) => setEmail(text)}
               />
-              {errors.email && <Text style={styles.error}>{errors.email}</Text>}
+              {!!errors.email && <Text style={styles.error}>{errors.email}</Text>}
             </View>
 
             <View>
               <InputField
                 label="Date of Birth"
-                placeholder="Date of Birth"
+                placeholder="DD/MM/YYYY"
                 onChangeText={(text) => setDateOfBirth(text)}
               />
-              {errors.dateOfBirth && <Text style={styles.error}>{errors.dateOfBirth}</Text>}
+              {!!errors.dateOfBirth && <Text style={styles.error}>{errors.dateOfBirth}</Text>}
             </View>
 
             <View>
@@ -141,7 +156,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn,  onGoogleAut
                 secureTextEntry={true}
                 onChangeText={(text) => setPassword(text)}
               />
-              {errors.passwordMessage && <Text style={styles.error}>{errors.passwordMessage}</Text>}
+              {!!errors.password && <Text style={styles.error}>{errors.password}</Text>}
             </View>
 
             <View>
@@ -151,7 +166,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn,  onGoogleAut
                 secureTextEntry={true}
                 onChangeText={(text) => setConfirmPassword(text)}
               />
-              {errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword}</Text>}
+              {!!errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword}</Text>}
             </View>
 
           <View style={styles.socialButtonsContainer}>
