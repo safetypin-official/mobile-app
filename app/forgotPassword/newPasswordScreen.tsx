@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, Alert, SafeAreaView } from "react-native";
 import InputField from "@/components/inputs/InputField";
 import Button from "@/components/buttons/Button";
+import { router } from "expo-router";
 
 const NewPasswordScreen: React.FC = () => {
   const [newPassword, setNewPassword] = useState("");
@@ -10,6 +11,7 @@ const NewPasswordScreen: React.FC = () => {
   const handleUpdate = () => {
     if (newPassword === confirmPassword) {
       Alert.alert("Password updated successfully!");
+      router.push('/')
     } else {
       Alert.alert("Passwords do not match.");
     }

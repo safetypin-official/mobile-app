@@ -1,9 +1,11 @@
 import { Text, View, StyleSheet, Alert } from 'react-native';
 import OTPVerification from '@/components/forms/OTPVerificationForm';
+import { router } from 'expo-router';
 
 const OTPVerificationScreen = () => {
   const handleVerify = (otp: string) => {
     Alert.alert("Entered OTP", `Your OTP is: ${otp}`);
+    router.push('/forgotPassword/newPasswordScreen')
   };
 
   return (
