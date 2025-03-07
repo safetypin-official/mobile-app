@@ -2,8 +2,18 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import NewPasswordScreen from "@/app/forgotPassword/newPasswordScreen";
 import { Alert } from "react-native";
+import { router } from "expo-router";
 
 jest.spyOn(Alert, "alert");
+
+jest.mock('expo-router', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+  }),
+  router: {
+    push: jest.fn(),
+  },
+}));
 
 describe("NewPasswordScreen", () => {
   it("renders correctly", () => {
@@ -22,6 +32,7 @@ describe("NewPasswordScreen", () => {
     fireEvent.press(getByTestId("update-button"));
 
     expect(Alert.alert).toHaveBeenCalledWith("Password updated successfully!");
+    expect(router.push).toHaveBeenCalledWith('/');
   });
 
   it("shows error alert when passwords do not match", () => {
