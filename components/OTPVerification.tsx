@@ -41,25 +41,33 @@ const OTPVerification: React.FC<OTPVerificationProps> = ({ onVerify, onResend, t
         </Text>
 
         <View style={styles.otpContainer}>
-          {otp.map((digit, index) => (
-            <TextInput testID="otp-input"
-              key={index}
-              ref={(el) => (inputRefs.current[index] = el)}
-              style={styles.otpInput}
-              keyboardType="number-pad"
-              maxLength={1}
-              onChangeText={(text) => handleChange(text, index)}
-              onKeyPress={(e) => handleKeyPress(e, index)}
-              value={digit}
-            />
-          ))}
+          {otp.map((digit, _index) => {
+            // Generate a stable ID based on position in the OTP sequence
+            const digitPosition = _index + 1; // 1-based position
+            
+            return (
+              <TextInput 
+                testID={`otp-input-position-${digitPosition}`}
+                key={`otp-digit-position-${digitPosition}`}
+                ref={(el) => (inputRefs.current[_index] = el)}
+                style={styles.otpInput}
+                keyboardType="number-pad"
+                maxLength={1}
+                onChangeText={(text) => handleChange(text, _index)}
+                onKeyPress={(e) => handleKeyPress(e, _index)}
+                value={digit}
+              />
+            );
+          })}
         </View>
 
         <TouchableOpacity onPress={onResend}>
           <Text style={styles.resendText}>Didn't receive a code? <Text style={styles.resendLink}>Resend.</Text></Text>
         </TouchableOpacity>
 
-        <Button testID="verify-button" onPress={() => onVerify(otp.join(""))} children="Verify" />
+        <Button testID="verify-button" onPress={() => onVerify(otp.join(""))}>
+          Verify
+        </Button>
       </View>
     </SafeAreaView>
   );
