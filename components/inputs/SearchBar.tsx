@@ -44,12 +44,15 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    width: "100%",
+    position: "absolute",
+    top: 20,
+    left: "5%",
+    right: "5%",
+    width: "90%",
     height: 50,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 43,
+    zIndex: 100, // Ensures it stays on top
   },
   searchField: {
     width: "92%",
