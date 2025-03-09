@@ -1,10 +1,18 @@
 import React from "react";
 import { render } from "@testing-library/react-native";
 import MapScreen from "@/app/map/index";
-import { View } from "react-native";
 
-jest.mock("@/components/inputs/SearchBar", () => () => <View testID="search-bar" />);
-jest.mock("@/components/views/CustomMapView", () => () => <View testID="custom-map-view" />);
+jest.mock("@/components/inputs/SearchBar", () => {
+  const React = require("react");
+  const { View } = require("react-native");
+  return () => <View testID="search-bar" />;
+});
+
+jest.mock("@/components/views/CustomMapView", () => {
+  const React = require("react");
+  const { View } = require("react-native");
+  return () => <View testID="custom-map-view" />;
+});
 
 describe("MapScreen", () => {
   it("renders the MapScreen container", () => {
