@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, SafeAreaView } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
 import InputField from "@/components/InputField";
 import Button from "@/components/Button";
 import { SocialButton } from "@/components/SocialButton";
@@ -54,7 +54,9 @@ const LoginForm: React.FC<LoginFormProps> = ({
             <SocialButton icon="apple" onPress={onAppleAuth} testID="apple-auth"/>
           </View>
 
-          <Button children="Log In" onPress={onLogIn} testID="login-button" />
+          <Button onPress={onLogIn} testID="login-button">
+            Log In
+          </Button>
         </View>
 
         <Text style={styles.signupText}>
