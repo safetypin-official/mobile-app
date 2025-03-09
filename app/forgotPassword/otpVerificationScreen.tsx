@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import OTPVerification from '@/components/forms/OTPVerificationForm';
 import { router } from 'expo-router';
 

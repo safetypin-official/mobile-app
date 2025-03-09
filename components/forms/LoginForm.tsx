@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, SafeAreaView } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
 import InputField from "@/components/inputs/InputField";
 import Button from "@/components/buttons/Button";
 import { SocialButton } from "@/components/buttons/SocialButton";
