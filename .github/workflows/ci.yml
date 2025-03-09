@@ -1,4 +1,4 @@
-name: Run, Build, and Publish Android App
+name: Run, Build, and Publish Expo App
 
 on:
   push:
@@ -28,18 +28,12 @@ jobs:
         run: npm test
 
   build:
-    name: Build APK with Gradle
+    name: Build APK
     needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -49,15 +43,11 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Make Gradlew Executable
-        run: chmod +x ./android/gradlew
+      - name: Install Expo CLI
+        run: npm install -g eas-cli
 
-      - name: Build Android APK
-        run: cd android && ./gradlew assembleRelease
+      - name: Authenticate with Expo
+        run: npx expo login -u ${{ secrets.EXPO_USERNAME }} -p ${{ secrets.EXPO_PASSWORD }}
 
-      - name: Upload APK Artifact to GitHub
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release
-          path: android/app/build/outputs/apk/release/*.apk
-          retention-days: 90
+      - name: Build APK
+        run: npx eas-cli build -p android --non-interactive --profile preview
