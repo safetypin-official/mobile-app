@@ -6,9 +6,7 @@ on:
       - staging
       - main
   pull_request:
-    branches:
-      - staging
-      - main
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -33,7 +31,6 @@ jobs:
     name: Build APK
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/main'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -54,9 +51,3 @@ jobs:
 
       - name: Build APK
         run: npx eas-cli build -p android --non-interactive --profile preview
-
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release
-          path: dist/*.apk

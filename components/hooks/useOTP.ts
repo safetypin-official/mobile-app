@@ -6,6 +6,8 @@ export const useOTP = (length: number) => {
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
   const handleChange = (text: string, index: number) => {
+    if (text.length > 1) return; // Prevent entering more than one character
+    
     const newOtp = [...otp];
     newOtp[index] = text;
     setOtp(newOtp);

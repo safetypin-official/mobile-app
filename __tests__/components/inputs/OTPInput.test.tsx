@@ -18,12 +18,13 @@ describe("OTPInput Component", () => {
 
   it("renders the correct number of OTP input fields", () => {
     const { getAllByTestId, props } = setup(6);
-    expect(getAllByTestId("otp-input")).toHaveLength(props.length);
+    expect(getAllByTestId(/^otp-input-position-/)).toHaveLength(props.length);
   });
 
   it("calls handleChange when a user enters a digit", () => {
     const { getAllByTestId, props } = setup();
-    const inputs = getAllByTestId("otp-input");
+    const inputs = getAllByTestId(/^otp-input-position-/);
+
 
     fireEvent.changeText(inputs[0], "1");
     expect(props.handleChange).toHaveBeenCalledWith("1", 0);
@@ -31,7 +32,8 @@ describe("OTPInput Component", () => {
 
   it("calls handleKeyPress when Backspace is pressed", () => {
     const { getAllByTestId, props } = setup();
-    const inputs = getAllByTestId("otp-input");
+    const inputs = getAllByTestId(/^otp-input-position-/);
+
 
     fireEvent(inputs[1], "keyPress", { nativeEvent: { key: "Backspace" } });
     expect(props.handleKeyPress).toHaveBeenCalledWith(expect.any(Object), 1);

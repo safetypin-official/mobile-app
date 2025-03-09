@@ -12,18 +12,19 @@ interface OTPInputProps {
 const OTPInput: React.FC<OTPInputProps> = ({ otp, inputRefs, handleChange, handleKeyPress, testID = "otp-input" }) => {
   return (
     <View style={styles.otpContainer}>
-      {otp.map((digit, index) => (
-        <TextInput
-          testID={testID}
-          key={index}
-          ref={(el) => (inputRefs.current[index] = el)}
-          style={styles.otpInput}
-          keyboardType="number-pad"
-          maxLength={1}
-          onChangeText={(text) => handleChange(text, index)}
-          onKeyPress={(e) => handleKeyPress(e, index)}
-          value={digit}
-        />
+      {otp.map((digit, _index) => (
+        
+          <TextInput 
+            testID={`otp-input-position-${_index + 1}`}
+            key={`otp-digit-position-${_index + 1}`}
+            ref={(el) => (inputRefs.current[_index] = el)}
+            style={styles.otpInput}
+            keyboardType="number-pad"
+            maxLength={1}
+            onChangeText={(text) => handleChange(text, _index)}
+            onKeyPress={(e) => handleKeyPress(e, _index)}
+            value={digit}
+          />
       ))}
     </View>
   );

@@ -31,9 +31,7 @@ const OTPVerification: React.FC<OTPVerificationProps> = ({ onVerify, onResend, t
           testID="verify-button"
           onPress={() => {
             const otpCode = otp.join("");
-            if (otpCode.length === otpLength) { 
-              onVerify(otpCode);
-            }
+            onVerify(otpCode);
           }}
           >Verify</Button>
       </View>

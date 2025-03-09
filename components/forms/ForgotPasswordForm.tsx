@@ -24,7 +24,7 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onSend, testID 
           ></InputField>
 
           <View style={styles.row}>
-          <Button children="Send" onPress={onSend} testID="send-button"></Button>
+          <Button onPress={onSend} testID="send-button">Send</Button>
           </View>
         </View>
       </View>

@@ -13,9 +13,19 @@ interface LoginFormProps {
   onAppleAuth: () => void;
   testID?: string;
   setEmail: (email: string) => void;
+  setPassword: (password: string) => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onForgotPassword, onSignUp, onLogIn, onGoogleAuth, onAppleAuth, testID = "login-form" , setEmail }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ 
+  onForgotPassword, 
+  onSignUp, 
+  onLogIn, 
+  onGoogleAuth, 
+  onAppleAuth, 
+  testID = "login-form", 
+  setEmail,
+  setPassword 
+}) => {
   return (
     <SafeAreaView style={styles.safeContainer} testID={testID}>
       <View style={styles.container}>
@@ -26,8 +36,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onForgotPassword, onSignUp, onLog
             label="Username/E-mail"
             placeholder="Username/E-mail address"
             onChangeText={setEmail}
-          ></InputField>
-          <InputField label="Password" placeholder="Password" secureTextEntry={true}></InputField>
+          />
+          <InputField 
+            label="Password" 
+            placeholder="Password" 
+            secureTextEntry={true}
+            onChangeText={setPassword}
+          />
 
           <View style={styles.row}>
             <TouchableOpacity onPress={onForgotPassword}>
@@ -40,11 +55,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onForgotPassword, onSignUp, onLog
             <SocialButton iconXml={appleIcon} onPress={onAppleAuth} testID="apple-auth"/>
           </View>
 
-          <Button children="Log In" onPress={onLogIn} testID="login-button"></Button>
+          <Button onPress={onLogIn} testID="login-button">
+            Log In
+          </Button>
         </View>
 
         <Text style={styles.signupText}>
-          Already have an account?{" "}
+          Don't have an account?{" "}
           <TouchableOpacity onPress={onSignUp} testID="signup-link">
             <Text style={styles.signupLink}>Sign Up.</Text>
           </TouchableOpacity>
