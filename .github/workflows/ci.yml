@@ -6,9 +6,7 @@ on:
       - staging
       - main
   pull_request:
-    branches:
-      - staging
-      - main
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -33,7 +31,6 @@ jobs:
     name: Build APK
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/main'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
