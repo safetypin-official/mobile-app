@@ -13,7 +13,7 @@ interface OTPVerificationProps {
 }
 
 const OTPVerification: React.FC<OTPVerificationProps> = ({ onVerify, onResend, testID = "otp-verification-form" , otpLength = 4 }) => {
-  const { otp, setOtp, inputRefs, handleChange, handleKeyPress } = useOTP(otpLength);
+  const { otp, inputRefs, handleChange, handleKeyPress } = useOTP(otpLength);
 
   return (
     <SafeAreaView style={styles.safeContainer} testID={testID}>
@@ -35,7 +35,7 @@ const OTPVerification: React.FC<OTPVerificationProps> = ({ onVerify, onResend, t
               onVerify(otpCode);
             }
           }}
-          children="Verify" />
+          >Verify</Button>
       </View>
     </SafeAreaView>
   );

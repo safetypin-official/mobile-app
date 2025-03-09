@@ -31,15 +31,15 @@ const NavContainer: React.FC<NavContainerProps> = ({
     <View style={styles.container} testID={testID}>
       <View style={styles.content}>
         <View style={styles.leftSection}>
-          <NavButton type="home" active={activeTab === "home"} onPress={onHomePress} />
-          <NavButton type="chat" active={activeTab === "chat"} onPress={onChatPress} />
+          <NavButton type="home" active={currentTab === "home"} onPress={onHomePress} />
+          <NavButton type="chat" active={currentTab === "chat"} onPress={onChatPress} />
         </View>
 
-        <MapButton active={activeTab === "map"} onPress={onMapPress} />
+        <MapButton active={currentTab === "map"} onPress={onMapPress} />
 
         <View style={styles.rightSection}>
-          <NavButton type="notifications" active={activeTab === "notifications"} onPress={onNotificationsPress} />
-          <NavButton type="profile" active={activeTab === "profile"} onPress={onProfilePress} />
+          <NavButton type="notifications" active={currentTab === "notifications"} onPress={onNotificationsPress} />
+          <NavButton type="profile" active={currentTab === "profile"} onPress={onProfilePress} />
         </View>
       </View>
     </View>

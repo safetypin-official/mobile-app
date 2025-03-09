@@ -1,7 +1,6 @@
-import { Stack } from "expo-router";
+import { Stack, usePathname } from "expo-router";
 import { View } from "react-native";
 import NavContainer from "@/components/displays/NavContainer";
-import { usePathname } from "expo-router";
 import { useState } from "react";
 
 export default function Layout() {
