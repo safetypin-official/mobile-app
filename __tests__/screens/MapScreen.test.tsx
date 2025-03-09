@@ -1,14 +1,13 @@
 import React from "react";
 import { render } from "@testing-library/react-native";
 import MapScreen from "@/app/map/index";
+import { View } from "react-native";
 
-jest.mock("@expo/vector-icons", () => ({
-    Feather: (props: Record<string, unknown>) => `Feather ${JSON.stringify(props)}`,
-    FontAwesome: (props: Record<string, unknown>) => `FontAwesome ${JSON.stringify(props)}`,
-  }));
+jest.mock("@/components/inputs/SearchBar", () => () => <View testID="search-bar" />);
+jest.mock("@/components/views/CustomMapView", () => () => <View testID="custom-map-view" />);
 
 describe("MapScreen", () => {
-  it("renders the map screen", () => {
+  it("renders the MapScreen container", () => {
     const { getByTestId } = render(<MapScreen />);
     expect(getByTestId("map-screen")).toBeTruthy();
   });
@@ -16,5 +15,10 @@ describe("MapScreen", () => {
   it("renders the SearchBar inside MapScreen", () => {
     const { getByTestId } = render(<MapScreen />);
     expect(getByTestId("search-bar")).toBeTruthy();
+  });
+
+  it("renders the CustomMapView inside MapScreen", () => {
+    const { getByTestId } = render(<MapScreen />);
+    expect(getByTestId("custom-map-view")).toBeTruthy();
   });
 });
