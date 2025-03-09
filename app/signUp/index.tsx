@@ -25,6 +25,8 @@ export default function SignUpScreen() {
         userData.username,
         formattedBirthdate
       );
+
+      console.log(result);
       
       Alert.alert(
         "Registration Successful", 
@@ -40,6 +42,7 @@ export default function SignUpScreen() {
   const handleGoogleAuth = async () => {
     try {
       const result = await onGoogleAuth();
+      console.log(result);
       console.log("Google auth successful");
     } catch (error) {
       console.error("Google auth failed:", error);
@@ -50,6 +53,7 @@ export default function SignUpScreen() {
   const handleAppleAuth = async () => {
     try {
       const result = await onAppleIDAuth();
+      console.log(result);
       console.log("Apple auth successful");
     } catch (error) {
       console.error("Apple auth failed:", error);
