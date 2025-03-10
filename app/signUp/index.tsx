@@ -1,4 +1,4 @@
-import SignUpForm from "@/components/SignUpForm";
+import SignUpForm from "@/components/forms/SignUpForm";
 import { router } from "expo-router";
 import { Alert } from "react-native";
 import { onGoogleAuth, onAppleIDAuth, registerEmailPassword } from "@/utils/auth"; // Import auth functions
@@ -31,7 +31,7 @@ export default function SignUpScreen() {
       Alert.alert(
         "Registration Successful", 
         "Your account has been created successfully!",
-        // [{ text: "OK", onPress: () => router.push("/home") }]
+        [{ text: "OK", onPress: () => router.push("/") }]
       );
     } catch (error) {
       // Error handling is already done in registerEmailPassword
@@ -44,6 +44,8 @@ export default function SignUpScreen() {
       const result = await onGoogleAuth();
       console.log(result);
       console.log("Google auth successful");
+
+      router.push('/map');
     } catch (error) {
       console.error("Google auth failed:", error);
       // Error alerts are handled within onGoogleAuth
@@ -55,6 +57,8 @@ export default function SignUpScreen() {
       const result = await onAppleIDAuth();
       console.log(result);
       console.log("Apple auth successful");
+
+      router.push('/map');
     } catch (error) {
       console.error("Apple auth failed:", error);
       // Error alerts are handled within onAppleIDAuth

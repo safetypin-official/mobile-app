@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Alert } from "react-native";
-import ForgotPasswordForm from "@/components/ForgotPasswordForm";
+import ForgotPasswordForm from "@/components/forms/ForgotPasswordForm";
+import { router } from 'expo-router';
 
 const ForgotPasswordScreen = () => {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ const ForgotPasswordScreen = () => {
       Alert.alert("Invalid email format!");
       return;
     }
-    Alert.alert("Send button Pressed!");
+    router.push('/forgotPassword/otpVerificationScreen')
   };
 
   return (

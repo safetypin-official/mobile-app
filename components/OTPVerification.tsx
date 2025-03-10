@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
-import Button from "@/components/Button";
+import Button from "@/components/buttons/Button";
 
 interface OTPVerificationProps {
   onVerify: (otp: string) => void;
