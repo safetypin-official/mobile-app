@@ -57,7 +57,7 @@ jest.mock("@/components/forms/SignUpForm", () => {
   };
 });
 
-jest.spyOn(Alert, "alert");
+jest.spyOn(Alert, "alert").mockImplementation(() => {});
 
 console.log = jest.fn();
 console.error = jest.fn();
@@ -79,15 +79,13 @@ describe("SignUpScreen", () => {
   });
 
   it("calls registerEmailPassword and formats date properly when the Sign Up button is pressed", async () => {
-    // Setup the mocks
     const mockRegisterResult = { success: true };
     (registerEmailPassword as jest.Mock).mockResolvedValue(mockRegisterResult);
-
+  
     render(<SignUpScreen />);
-
-    // Submit the form
+  
     fireEvent.press(screen.getByTestId("signup-button"));
-
+  
     await waitFor(() => {
       expect(registerEmailPassword).toHaveBeenCalledWith(
         "test@example.com",
@@ -97,9 +95,16 @@ describe("SignUpScreen", () => {
       );
       expect(Alert.alert).toHaveBeenCalledWith(
         "Registration Successful",
-        "Your account has been created successfully!"
+        "Your account has been created successfully!",
+        [{ text: "OK", onPress: expect.any(Function) }]
       );
     });
+  
+    const alertArgs = (Alert.alert as jest.Mock).mock.calls[0]; 
+    const onPressOK = alertArgs[2][0].onPress; 
+    onPressOK(); // Simulate user clicking "OK"
+  
+    expect(router.push).toHaveBeenCalledWith("/");
   });
 
   it("handles registerEmailPassword errors", async () => {

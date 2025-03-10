@@ -7,7 +7,7 @@ export default function Layout() {
   const pathname = usePathname();
   const [activeTab, setActiveTab] = useState("map");
 
-  const hideNavBarRoutes = ["/", "/forgotPassword", "/signUp"];
+  const hideNavBarRoutes = ["/", "/forgotPassword", "/forgotPassword/newPasswordScreen", "/forgotPassword/otpVerificationScreen", "/signUp"];
 
   return (
     <View style={{ flex: 1 }}>
