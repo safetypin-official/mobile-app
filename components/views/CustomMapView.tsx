@@ -5,8 +5,15 @@ import * as Location from "expo-location";
 import UserLocationMarker from "@/components/displays/UserLocationMarker";
 
 const CustomMapView = () => {
-  const [region, setRegion] = useState<Region | undefined>(undefined);
+  // const [region, setRegion] = useState<Region | undefined>(undefined);
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
+
+  const [region, setRegion] = useState<Region>({
+    latitude: 37.78825,
+    longitude: -122.4324,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
 
   useEffect(() => {
     const getLocation = async () => {
@@ -17,16 +24,16 @@ const CustomMapView = () => {
       }
 
       const userLocation = await Location.getCurrentPositionAsync({});
-      setLocation(userLocation);
-      setRegion({
-        latitude: userLocation.coords.latitude,
-        longitude: userLocation.coords.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      });
+      // setLocation(userLocation);
+      // setRegion({
+      //   latitude: userLocation.coords.latitude,
+      //   longitude: userLocation.coords.longitude,
+      //   latitudeDelta: 0.01,
+      //   longitudeDelta: 0.01,
+      // });
     };
 
-    getLocation();
+    // getLocation();
   }, []);
 
   return (
@@ -45,7 +52,8 @@ const CustomMapView = () => {
 
 const styles = StyleSheet.create({
   map: {
-    flex: 1,
+    width: '100%',
+    height: '100%', // atau sesuaikan dengan kebutuhan
   },
 });
 
