@@ -13,6 +13,9 @@
       "bundleIdentifier": "com.safetypin",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
+      },
+      "config": {
+        "googleMapsApiKey": "AIzaSyA4StsrobpUsZu8fj_dpznEQmNJ7QysNMw"
       }
     },
     "android": {
@@ -20,6 +23,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyA4StsrobpUsZu8fj_dpznEQmNJ7QysNMw"
+        }
       }
     },
     "web": {
