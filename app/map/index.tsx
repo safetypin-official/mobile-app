@@ -1,4 +1,3 @@
-// app/explore.tsx
 import { StyleSheet, View, TouchableOpacity, Text, Modal, TextInput, Alert } from 'react-native';
 import MapView, { Marker, Callout } from 'react-native-maps';
 import { useState, useEffect } from 'react';
@@ -70,6 +69,7 @@ export default function ExploreScreen() {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         setErrorMsg('Permission to access location was denied');
+        console.log(errorMsg)
         return;
       }
 
