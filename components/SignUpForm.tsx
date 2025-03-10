@@ -13,7 +13,7 @@ import { SocialButton } from "./SocialButton";
 import validator from "validator";
 
 interface SignUpFormProps {
-  onSignUp: () => void;
+  onSignUp: (email: string) => void;
   onLogIn: () => void;
   onGoogleAuth: () => void;
   onAppleAuth: () => void;
@@ -31,7 +31,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn,  onGoogleAut
   const handleSignUp = () => {
     const validationErrors = validateInputs();
     if (Object.keys(validationErrors).length === 0) {
-      onSignUp();
+      onSignUp(email);
     } else {
       setErrors(validationErrors);
     }

@@ -28,9 +28,16 @@ export default function SignUpScreen() {
     router.push("/");
   };
 
+  const handleSignUp = (email: string) => {
+    router.push({
+      pathname: "../../signUp/otpVerificationScreen",
+      params: {email}
+    });
+  };
+
   return (
     <SignUpForm
-      onSignUp={() => Alert.alert("Sign Up Pressed!")}
+      onSignUp={handleSignUp}
       onLogIn={handleLogIn}
       testID="signup-form"
       onGoogleAuth = {onGoogleAuth}
