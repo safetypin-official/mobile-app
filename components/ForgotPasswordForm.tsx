@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 import InputField from "@/components/InputField";
 import Button from "@/components/Button";
 
@@ -25,7 +25,7 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onSend, testID,
           ></InputField>
 
           <View style={styles.row}>
-          <Button children="Send" onPress={onSend} testID="send-button"></Button>
+          <Button onPress={onSend} testID="send-button">Send</Button>
           </View>
         </View>
       </View>

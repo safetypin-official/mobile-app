@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View, Alert } from "react-native";
 import ForgotPasswordForm from "@/components/ForgotPasswordForm";
-import { router } from 'expo-router';
 
 const ForgotPasswordScreen = () => {
   const [email, setEmail] = useState("");

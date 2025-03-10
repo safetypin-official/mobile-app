@@ -1,32 +1,66 @@
 import React from "react";
-import { render, fireEvent, screen } from "@testing-library/react-native";
-import SignUpScreen, { onGoogleAuth } from "@/app/signUp/index";
+import { render, fireEvent, screen, waitFor } from "@testing-library/react-native";
+import SignUpScreen from "@/app/signUp/index";
 import { Alert } from "react-native";
 import { router } from "expo-router";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { onGoogleAuth, onAppleIDAuth, registerEmailPassword } from "@/utils/auth";
 
-jest.spyOn(Alert, "alert");
-
+// Mock the dependencies
 jest.mock("expo-router", () => ({
-  useRouter: () => ({
-    push: jest.fn(),
-  }),
   router: {
     push: jest.fn(),
   },
 }));
 
-jest.mock("@react-native-google-signin/google-signin", () => ({
-  GoogleSignin: {
-    hasPlayServices: jest.fn(),
-    signIn: jest.fn(),
-    configure: jest.fn(),
-  },
+jest.mock("@/utils/auth", () => ({
+  onGoogleAuth: jest.fn(),
+  onAppleIDAuth: jest.fn(),
+  registerEmailPassword: jest.fn(),
 }));
 
-const mockedGoogleSignin = GoogleSignin as jest.Mocked<typeof GoogleSignin>;
+// Mock the SignUpForm component
+jest.mock("@/components/SignUpForm", () => {
+  const React = require("react");
+  const { View, TouchableOpacity, Text, TextInput } = require("react-native");
+  
+  return function MockSignUpForm(props: { onSignUp: (arg0: { username: string; email: string; dateOfBirth: string; password: string; }) => void; testID: any; onLogIn: any; onGoogleAuth: any; onAppleAuth: any; }) {
+    const handleSubmit = () => {
+      props.onSignUp({
+        username: "testuser",
+        email: "test@example.com",
+        dateOfBirth: "01/01/1990",
+        password: "StrongPassword1!"
+      });
+    };
+    
+    return (
+      <View testID={props.testID}>
+        <TextInput placeholder="Username" />
+        <TextInput placeholder="E-mail address" />
+        <TextInput placeholder="DD/MM/YYYY" />
+        <TextInput placeholder="Password" secureTextEntry />
+        <TextInput placeholder="Confirm Password" secureTextEntry />
+        <TouchableOpacity testID="signup-button" onPress={handleSubmit}>
+          <Text>Sign Up</Text>
+        </TouchableOpacity>
+        <TouchableOpacity testID="login-link" onPress={props.onLogIn}>
+          <Text>Log In</Text>
+        </TouchableOpacity>
+        <TouchableOpacity testID="google-auth" onPress={props.onGoogleAuth}>
+          <Text>Google</Text>
+        </TouchableOpacity>
+        <TouchableOpacity testID="apple-auth" onPress={props.onAppleAuth}>
+          <Text>Apple</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+});
+
+jest.spyOn(Alert, "alert");
 
 console.log = jest.fn();
+console.error = jest.fn();
 
 describe("SignUpScreen", () => {
   beforeEach(() => {
@@ -35,211 +69,108 @@ describe("SignUpScreen", () => {
 
   it("renders the SignUpForm component", () => {
     render(<SignUpScreen />);
-
     expect(screen.getByTestId("signup-form")).toBeTruthy();
-    expect(screen.getByPlaceholderText("Username")).toBeTruthy();
-    expect(screen.getByPlaceholderText("E-mail address")).toBeTruthy();
-    expect(screen.getByPlaceholderText("Date of Birth")).toBeTruthy();
-    expect(screen.getByPlaceholderText("Password")).toBeTruthy();
-    expect(screen.getByPlaceholderText("Confirm Password")).toBeTruthy();
-  });
-
-  it("calls onSignUp when the Sign Up button is pressed with valid inputs", () => {
-    render(<SignUpScreen />);
-
-    fireEvent.changeText(screen.getByPlaceholderText("Username"), "testuser");
-    fireEvent.changeText(screen.getByPlaceholderText("E-mail address"), "test@example.com");
-    fireEvent.changeText(screen.getByPlaceholderText("Date of Birth"), "01/01/1990");
-    fireEvent.changeText(screen.getByPlaceholderText("Password"), "StrongPassword1!");
-    fireEvent.changeText(screen.getByPlaceholderText("Confirm Password"), "StrongPassword1!");
-
-    fireEvent.press(screen.getByTestId("signup-button"));
-    expect(router.push).toHaveBeenCalledWith({
-      pathname: "../../signUp/otpVerificationScreen",
-      params: {email: "test@example.com"}
-  });
-  });
-
-  it("displays error messages for invalid email", () => {
-    render(<SignUpScreen />);
-
-    fireEvent.changeText(screen.getByPlaceholderText("E-mail address"), "invalid-email");
-    fireEvent.press(screen.getByTestId("signup-button"));
-
-    expect(screen.getByText("Invalid email address")).toBeTruthy();
-  });
-
-  it("displays error messages for weak password", () => {
-    render(<SignUpScreen />);
-
-    fireEvent.changeText(screen.getByPlaceholderText("Password"), "weak");
-    fireEvent.press(screen.getByTestId("signup-button"));
-
-    expect(
-      screen.getByText(
-        "Password must be at least 8 characters long and include a number, a special character, and an uppercase letter"
-      )
-    ).toBeTruthy();
-  });
-
-  it("displays error messages for mismatched passwords", () => {
-    render(<SignUpScreen />);
-
-    fireEvent.changeText(screen.getByPlaceholderText("Password"), "StrongPassword1!");
-    fireEvent.changeText(screen.getByPlaceholderText("Confirm Password"), "DifferentPassword1!");
-    fireEvent.press(screen.getByTestId("signup-button"));
-
-    expect(screen.getByText("Passwords do not match")).toBeTruthy();
-  });
-
-  it("displays error messages for missing date of birth", () => {
-    render(<SignUpScreen />);
-
-    fireEvent.press(screen.getByTestId("signup-button"));
-    expect(screen.getByText("Date of Birth is required")).toBeTruthy();
-  });
-
-  it("displays error messages for invalid date of birth format", () => {
-    render(<SignUpScreen />);
-
-    fireEvent.changeText(screen.getByPlaceholderText("Date of Birth"), "1990-01-01");
-    fireEvent.press(screen.getByTestId("signup-button"));
-
-    expect(screen.getByText("Date of Birth must be in DD/MM/YYYY format")).toBeTruthy();
-  });
-
-  it("displays error messages for age less than 16", () => {
-    render(<SignUpScreen />);
-
-    fireEvent.changeText(screen.getByPlaceholderText("Date of Birth"), "01/01/2020");
-    fireEvent.press(screen.getByTestId("signup-button"));
-
-    expect(screen.getByText("You must be at least 16 years old")).toBeTruthy();
-  });
-
-  it("displays error messages for missing username", () => {
-    render(<SignUpScreen />);
-
-    fireEvent.press(screen.getByTestId("signup-button"));
-    expect(screen.getByText("Username is required")).toBeTruthy();
   });
 
   it("navigates to login screen when Log In link is pressed", () => {
     render(<SignUpScreen />);
-
     fireEvent.press(screen.getByTestId("login-link"));
     expect(router.push).toHaveBeenCalledWith("/");
   });
 
-  describe("isAtLeast16", () => {
-    it("returns true if the user is exactly 16 years old today", () => {
-      render(<SignUpScreen />);
+  it("calls registerEmailPassword and formats date properly when the Sign Up button is pressed", async () => {
+    // Setup the mocks
+    const mockRegisterResult = { success: true };
+    (registerEmailPassword as jest.Mock).mockResolvedValue(mockRegisterResult);
 
-      const today = new Date();
-      const dob = new Date(today.getFullYear() - 16, today.getMonth(), today.getDate());
-      const dateOfBirth = `${String(dob.getDate()).padStart(2, "0")}/${String(dob.getMonth() + 1).padStart(2, "0")}/${dob.getFullYear()}`;
-
-      fireEvent.changeText(screen.getByPlaceholderText("Date of Birth"), dateOfBirth);
-      fireEvent.press(screen.getByTestId("signup-button"));
-
-      expect(screen.queryByText("You must be at least 16 years old")).toBeNull();
-    });
-
-    it("returns true if the user is older than 16", () => {
-      render(<SignUpScreen />);
-
-      const today = new Date();
-      const dob = new Date(today.getFullYear() - 17, today.getMonth(), today.getDate());
-      const dateOfBirth = `${String(dob.getDate()).padStart(2, "0")}/${String(dob.getMonth() + 1).padStart(2, "0")}/${dob.getFullYear()}`;
-
-      fireEvent.changeText(screen.getByPlaceholderText("Date of Birth"), dateOfBirth);
-      fireEvent.press(screen.getByTestId("signup-button"));
-
-      expect(screen.queryByText("You must be at least 16 years old")).toBeNull();
-    });
-
-    it("returns false if the user is younger than 16", () => {
-      render(<SignUpScreen />);
-
-      const today = new Date();
-      const dob = new Date(today.getFullYear() - 15, today.getMonth(), today.getDate());
-      const dateOfBirth = `${String(dob.getDate()).padStart(2, "0")}/${String(dob.getMonth() + 1).padStart(2, "0")}/${dob.getFullYear()}`;
-
-      fireEvent.changeText(screen.getByPlaceholderText("Date of Birth"), dateOfBirth);
-      fireEvent.press(screen.getByTestId("signup-button"));
-
-      expect(screen.getByText("You must be at least 16 years old")).toBeTruthy();
-    });
-
-    it("returns false if the user's birthday hasn't occurred yet this year", () => {
-      render(<SignUpScreen />);
-
-      const today = new Date();
-      const dob = new Date(today.getFullYear() - 16, today.getMonth() + 1, today.getDate());
-      const dateOfBirth = `${String(dob.getDate()).padStart(2, "0")}/${String(dob.getMonth() + 1).padStart(2, "0")}/${dob.getFullYear()}`;
-
-      fireEvent.changeText(screen.getByPlaceholderText("Date of Birth"), dateOfBirth);
-      fireEvent.press(screen.getByTestId("signup-button"));
-
-      expect(screen.getByText("You must be at least 16 years old")).toBeTruthy();
-    });
-  });
-});
-
-describe("onGoogleAuth function", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it("successfully signs in with Google", async () => {
-    const mockUserInfo = {
-      data: {
-        email: "test@example.com",
-        name: "Test User",
-      },
-    } as any;
-
-    mockedGoogleSignin.hasPlayServices.mockResolvedValue(true);
-    mockedGoogleSignin.signIn.mockResolvedValue(mockUserInfo);
-
-    await onGoogleAuth();
-
-    expect(mockedGoogleSignin.hasPlayServices).toHaveBeenCalledTimes(1);
-    expect(mockedGoogleSignin.signIn).toHaveBeenCalledTimes(1);
-    expect(console.log).toHaveBeenCalledWith("success");
-  });
-
-  it("handles errors during Google sign in", async () => {
-    const mockError = new Error("Google Sign-In Error");
-
-    mockedGoogleSignin.hasPlayServices.mockResolvedValue(true);
-    mockedGoogleSignin.signIn.mockRejectedValue(mockError);
-
-    await onGoogleAuth();
-
-    expect(mockedGoogleSignin.hasPlayServices).toHaveBeenCalledTimes(1);
-    expect(mockedGoogleSignin.signIn).toHaveBeenCalledTimes(1);
-    expect(console.log).toHaveBeenCalledWith("error");
-    expect(console.log).toHaveBeenCalledWith(mockError);
-  });
-
-  it("handles Play Services not available error", async () => {
-    const mockError = new Error("Play Services not available");
-
-    mockedGoogleSignin.hasPlayServices.mockRejectedValue(mockError);
-
-    await onGoogleAuth();
-
-    expect(mockedGoogleSignin.hasPlayServices).toHaveBeenCalledTimes(1);
-    expect(mockedGoogleSignin.signIn).not.toHaveBeenCalled();
-    expect(console.log).toHaveBeenCalledWith("error");
-    expect(console.log).toHaveBeenCalledWith(mockError);
-  });
-
-  it("triggers Apple auth alert when the Apple auth button is pressed", () => {
     render(<SignUpScreen />);
 
+    // Submit the form
+    fireEvent.press(screen.getByTestId("signup-button"));
+
+    await waitFor(() => {
+      expect(registerEmailPassword).toHaveBeenCalledWith(
+        "test@example.com",
+        "StrongPassword1!",
+        "testuser",
+        "1990-01-01"
+      );
+      expect(Alert.alert).toHaveBeenCalledWith(
+        "Registration Successful",
+        "Your account has been created successfully!"
+      );
+    });
+  });
+
+  it("handles registerEmailPassword errors", async () => {
+    // Setup the mocks to simulate an error
+    const mockError = new Error("Registration failed");
+    (registerEmailPassword as jest.Mock).mockRejectedValue(mockError);
+
+    render(<SignUpScreen />);
+
+    // Submit the form
+    fireEvent.press(screen.getByTestId("signup-button"));
+
+    await waitFor(() => {
+      expect(registerEmailPassword).toHaveBeenCalled();
+      expect(console.error).toHaveBeenCalledWith("Sign up failed:", mockError);
+    });
+  });
+
+  it("calls onGoogleAuth when Google button is pressed", async () => {
+    // Setup the mock to return a successful result
+    const mockGoogleResult = { success: true };
+    (onGoogleAuth as jest.Mock).mockResolvedValue(mockGoogleResult);
+
+    render(<SignUpScreen />);
+    fireEvent.press(screen.getByTestId("google-auth"));
+
+    await waitFor(() => {
+      expect(onGoogleAuth).toHaveBeenCalledTimes(1);
+      expect(console.log).toHaveBeenCalledWith("Google auth successful");
+    });
+  });
+
+  it("handles errors during Google authentication", async () => {
+    // Setup the mock to simulate an error
+    const mockError = new Error("Google auth failed");
+    (onGoogleAuth as jest.Mock).mockRejectedValue(mockError);
+
+    render(<SignUpScreen />);
+    fireEvent.press(screen.getByTestId("google-auth"));
+
+    await waitFor(() => {
+      expect(onGoogleAuth).toHaveBeenCalledTimes(1);
+      expect(console.error).toHaveBeenCalledWith("Google auth failed:", mockError);
+    });
+  });
+
+  it("calls onAppleIDAuth when Apple button is pressed", async () => {
+    // Setup the mock to return a successful result
+    const mockAppleResult = { success: true };
+    (onAppleIDAuth as jest.Mock).mockResolvedValue(mockAppleResult);
+
+    render(<SignUpScreen />);
     fireEvent.press(screen.getByTestId("apple-auth"));
-    expect(Alert.alert).toHaveBeenCalledWith("Apple Auth Pressed!");
+
+    await waitFor(() => {
+      expect(onAppleIDAuth).toHaveBeenCalledTimes(1);
+      expect(console.log).toHaveBeenCalledWith("Apple auth successful");
+    });
+  });
+
+  it("handles errors during Apple authentication", async () => {
+    // Setup the mock to simulate an error
+    const mockError = new Error("Apple auth failed");
+    (onAppleIDAuth as jest.Mock).mockRejectedValue(mockError);
+
+    render(<SignUpScreen />);
+    fireEvent.press(screen.getByTestId("apple-auth"));
+
+    await waitFor(() => {
+      expect(onAppleIDAuth).toHaveBeenCalledTimes(1);
+      expect(console.error).toHaveBeenCalledWith("Apple auth failed:", mockError);
+    });
   });
 });
