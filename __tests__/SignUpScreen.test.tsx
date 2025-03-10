@@ -54,7 +54,10 @@ describe("SignUpScreen", () => {
     fireEvent.changeText(screen.getByPlaceholderText("Confirm Password"), "StrongPassword1!");
 
     fireEvent.press(screen.getByTestId("signup-button"));
-    expect(Alert.alert).toHaveBeenCalledWith("Sign Up Pressed!");
+    expect(router.push).toHaveBeenCalledWith({
+      pathname: "../../signUp/otpVerificationScreen",
+      params: {email: "test@example.com"}
+  });
   });
 
   it("displays error messages for invalid email", () => {
