@@ -1,5 +1,5 @@
 import { StyleSheet, View, TouchableOpacity, Text, Modal, TextInput, Alert } from 'react-native';
-import MapView, { Marker, Callout } from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import { useState, useEffect } from 'react';
 import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
