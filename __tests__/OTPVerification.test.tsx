@@ -83,4 +83,35 @@ describe("OTPVerification Component", () => {
     // Clean up the spy
     focusSpy.mockRestore();
   });
+
+  
+  it("does not move focus if multiple characters are entered", () => {
+    const { getAllByTestId } = setup();
+    const inputs = getAllByTestId("otp-input");
+    fireEvent.changeText(inputs[0], "12");
+    expect(inputs[0].props.value).toBe("");
+  });
+
+  it("does not move focus forward if last field is filled", () => {
+    const { getAllByTestId } = setup();
+    const inputs = getAllByTestId("otp-input");
+    fireEvent.changeText(inputs[3], "4");
+    expect(inputs[3].props.value).toBe("4");
+  });
+
+  it("handles backspace properly in the first field", () => {
+    const { getAllByTestId } = setup();
+    const inputs = getAllByTestId("otp-input");
+
+    fireEvent.changeText(inputs[0], "1");
+    fireEvent.changeText(inputs[0], "");
+    fireEvent(inputs[0], "keyPress", { nativeEvent: { key: "Backspace" } });
+    expect(inputs[0].props.value).toBe("");
+  });
+
+  it("displays the resend link and triggers resend function", () => {
+    const { getByText, props } = setup();
+    fireEvent.press(getByText("Resend."));
+    expect(props.onResend).toHaveBeenCalledTimes(1);
+  });
 });
