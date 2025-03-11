@@ -35,7 +35,7 @@ describe("LoginForm Component", () => {
     const { getByTestId, getByPlaceholderText } = setup();
 
     expect(getByTestId("login-button")).toBeTruthy();
-    expect(getByPlaceholderText("Username/E-mail address")).toBeTruthy();
+    expect(getByPlaceholderText("E-mail address")).toBeTruthy();
     expect(getByPlaceholderText("Password")).toBeTruthy();
   });
 
