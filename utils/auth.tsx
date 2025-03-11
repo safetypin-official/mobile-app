@@ -5,10 +5,6 @@ import {
 } from "@react-native-google-signin/google-signin";
 import * as AppleAuthentication from "expo-apple-authentication";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Constants from "expo-constants";
-import axios from "axios";
-
-const API_URL = Constants.expoConfig?.extra?.apiUrl || "http://10.0.2.2:8080";
 
 // Configure Google Sign-In once at the top level of your app
 GoogleSignin.configure({
@@ -203,6 +199,10 @@ export const onGoogleAuth = async () => {
     
     const idToken = userInfo.data?.idToken;
     const serverAuthCode = userInfo.data?.serverAuthCode;
+    const email = userInfo.data?.user.email;
+    const name = userInfo.data?.user.name;
+    
+    console.log('Google user info:', userInfo);
     
     if (!idToken) {
       throw new AuthError('No ID token received from Google');
@@ -211,8 +211,8 @@ export const onGoogleAuth = async () => {
     console.log('Google authentication successful');
     
     const response = await sendApiRequest(
-      "http://10.0.2.2:8080/api/auth/google", 
-      { idToken, serverAuthCode }
+      "http://34.87.94.247/api/auth/google", 
+      { idToken, serverAuthCode, email, name }
     );
     
     return await parseAndSaveAuthResponse(response, 'Google');
@@ -232,7 +232,7 @@ export const onAppleIDAuth = async () => {
     console.log('Apple authentication successful');
     
     const response = await sendApiRequest(
-      "http://10.0.2.2:8080/api/auth/apple",
+      "http://34.87.94.247/api/auth/apple",
       {
         identityToken: credential.identityToken,
         authorizationCode: credential.authorizationCode,
@@ -255,31 +255,30 @@ export const isValidEmail = (email: string): boolean => {
 // Email/Password Login Function
 export const loginWithEmail = async (email: string, password: string) => {
   try {
-    // Using URL parameters with axios
-    const response = await axios.post(
-      `${API_URL}/api/auth/login-email?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
-    );
+    const response = await sendApiRequest(
+      "http://34.87.94.247/api/auth/login-email",
+      {
+        email,
+        password,
+      }
+        );
     
     // Save token to secure storage or context
-    const { tokenValue } = response.data.data;
+    const responseData = await response.json();
+    console.log("Response Data: ", responseData);
+    const { tokenValue } = responseData.data;
 
     saveAuthData(tokenValue);
-    return response.data;
+    return responseData;
   } catch (error: any) {
-    if (axios.isAxiosError(error)) {
-      const errorMsg = error.response?.data?.message || "Login failed. Please try again.";
-      Alert.alert("Login Error", errorMsg);
-    } else {
-      Alert.alert("Login Error", "An unexpected error occurred. Please try again.");
-    }
-    throw error;
+    handleAuthError(error);
   }
 };
 
 export const registerEmailPassword = async (email: string, password: string, name: string, birthdate: string) => {
   try {
     const response = await sendApiRequest(
-      `${API_URL}/api/auth/register`,
+      "http://34.87.94.247/api/auth/register-email",
       {
         email,
         password,

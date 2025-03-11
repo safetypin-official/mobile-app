@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Alert } from "react-native";
-import LoginForm from "@/components/LoginForm";
+import LoginForm from "@/components/forms/LoginForm";
 import { router } from 'expo-router';
 import { onGoogleAuth, onAppleIDAuth, isValidEmail, loginWithEmail } from "@/utils/auth";
 
@@ -25,8 +25,8 @@ const LoginScreen = () => {
     try {
       const result = await loginWithEmail(email, password);
       console.log("Email login successful:", result);
-      // Navigate to home or dashboard after successful login
-      // router.push('/dashboard');
+      // Navigate to map screen after successful login
+      router.push('/map');
     } catch (error: any) {
       // Errors are handled in the loginWithEmail function
       console.error("Email login failed:", error);
@@ -37,6 +37,8 @@ const LoginScreen = () => {
     try {
       const result = await onGoogleAuth();
       console.log("Google auth successful:", result);
+
+      router.push('/map');
     } catch (error) {
       // The alerts are already handled in the onGoogleAuth function
       console.error("Google auth failed in component:", error);
@@ -47,6 +49,8 @@ const LoginScreen = () => {
     try {
       const result = await onAppleIDAuth();
       console.log("Apple auth successful:", result);
+
+      router.push('/map');
     } catch (error) {
       // The alerts are already handled in the onAppleIDAuth function
       console.error("Apple auth failed in component:", error);
