@@ -33,8 +33,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
         <View style={styles.form}>
           <InputField
-            label="Username/E-mail"
-            placeholder="Username/E-mail address"
+            label="E-mail"
+            placeholder="E-mail address"
             onChangeText={setEmail}
           />
           <InputField 
