@@ -3,7 +3,8 @@ name: Run, Build, and Publish Android App
 on:
   push:
     branches:
-      - '**'
+      - staging
+      - main
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -50,6 +51,11 @@ jobs:
 
       - name: Make Gradlew Executable
         run: chmod +x ./android/gradlew
+
+      - name: Create .env file
+        run: |
+          echo "YOUR_PUBLIC_BUILDER_KEY=${{ secrets.YOUR_PUBLIC_BUILDER_KEY }}" > .env
+          echo "GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}" >> .env
 
       - name: Build Android APK
         run: cd android && ./gradlew :app:assembleRelease
