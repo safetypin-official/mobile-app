@@ -17,6 +17,7 @@ describe("LoginForm Component", () => {
       onGoogleAuth: jest.fn(),
       onAppleAuth: jest.fn(),
       setEmail: jest.fn(),
+      setPassword: jest.fn(),
       ...overrides,
     };
 
