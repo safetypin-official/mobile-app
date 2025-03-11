@@ -104,7 +104,7 @@ describe("SignUpScreen", () => {
     const onPressOK = alertArgs[2][0].onPress; 
     onPressOK(); // Simulate user clicking "OK"
   
-    expect(router.push).toHaveBeenCalledWith("/");
+    expect(router.push).toHaveBeenCalledWith("/signUp/otp");
   });
 
   it("handles registerEmailPassword errors", async () => {
