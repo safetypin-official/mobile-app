@@ -31,7 +31,7 @@ export default function SignUpScreen() {
       Alert.alert(
         "Registration Successful", 
         "Your account has been created successfully!",
-        [{ text: "OK", onPress: () => router.push("/") }]
+        [{ text: "OK", onPress: () => router.push("/signUp/otp") }]
       );
     } catch (error) {
       // Error handling is already done in registerEmailPassword
