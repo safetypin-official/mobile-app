@@ -20,8 +20,8 @@ const MapButton: React.FC<MapButtonProps> = ({ active = false, onPress, testID =
 const styles = StyleSheet.create({
   centerButton: {
     position: "absolute",
-    right: "50%",
-    transform: [{ translateX: 27.5 }],
+    left: "50%", // Change right to left
+    transform: [{ translateX: -27.5 }],
     top: -22,
     width: 55,
     height: 55,
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
         elevation: 6,
       },
     }),
-  },
+  },  
 });
 
 export default MapButton;
