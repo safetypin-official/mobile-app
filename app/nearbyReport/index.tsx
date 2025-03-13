@@ -4,7 +4,6 @@ import UserInfo from "../../components/UserInfo";
 import ReportContent from "../../components/ReportContent";
 import CommentSection from "../../components/CommentSection";
 import CommentInput from "../../components/CommentInput";
-import { likeIcon, dislikeIcon } from "../../assets/userInteractions";
 
 const NearbyReport: React.FC = () => {
   return (
