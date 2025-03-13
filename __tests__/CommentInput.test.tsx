@@ -4,7 +4,31 @@ import CommentInput from "../components/CommentInput";
 import { Platform } from "react-native";
 
 describe("CommentInput Component", () => {
-  it("renders correctly", () => {
+    afterEach(() => {
+        jest.restoreAllMocks();
+      });
+    
+      it("renders correctly with behavior 'padding' on iOS", () => {
+        jest.replaceProperty(Platform, "OS", "ios");
+        const { getByTestId } = render(<CommentInput />);
+        
+        const keyboardAvoidingView = getByTestId("keyboard-avoiding-view");
+
+        const wrapper = getByTestId("keyboard-avoiding-wrapper");
+        expect(wrapper).toContainElement(keyboardAvoidingView);
+      });
+    
+      it("renders correctly with behavior 'height' on Android", () => {
+        jest.replaceProperty(Platform, "OS", "android");
+        const { getByTestId } = render(<CommentInput />);
+        
+        const keyboardAvoidingView = getByTestId("keyboard-avoiding-view");
+
+        const wrapper = getByTestId("keyboard-avoiding-wrapper");
+        expect(wrapper).toContainElement(keyboardAvoidingView);
+      });
+
+  it("renders CommentInput correctly", () => {
     const { getByPlaceholderText } = render(<CommentInput />);
     expect(getByPlaceholderText("Post a Comment")).toBeTruthy();
   });
