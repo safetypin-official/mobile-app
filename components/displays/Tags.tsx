@@ -1,67 +1,48 @@
-import React from 'react';
-import { TouchableOpacity } from 'react-native';
-import { SvgXml } from 'react-native-svg';
+import React from "react";
+import { TouchableOpacity, View } from "react-native";
+import { SvgXml } from "react-native-svg";
 import {
-    lostItemTag,
-    foundItemTag,
-    theftTag,
-    harassmentTag,
-    floodTag,
-    assaultTag,
-    fireTag,
-    otherDisasterTag,
-    earthquakeTag,
-    otherCrimeTag
-} from '@/assets/tags';
+  lostItemTag,
+  foundItemTag,
+  theftTag,
+  harassmentTag,
+  floodTag,
+  assaultTag,
+  fireTag,
+  otherDisasterTag,
+  earthquakeTag,
+  otherCrimeTag,
+} from "@/assets/tags";
 
 interface TagProps {
-    type?: string;
-    onPress: () => void;
+  type?: string;
+  onPress: () => void;
 }
 
+const TAGS_MAP: Record<string, string> = {
+  "lost-item": lostItemTag,
+  "found-item": foundItemTag,
+  "theft": theftTag,
+  "harassment": harassmentTag,
+  "flood": floodTag,
+  "assault": assaultTag,
+  "fire": fireTag,
+  "other-disaster": otherDisasterTag,
+  "earthquake": earthquakeTag,
+  "other-crime": otherCrimeTag,
+};
+
 const Tag: React.FC<TagProps> = ({ type = "other-crime", onPress }) => {
-    let pinXml;
+  const pinXml = TAGS_MAP.hasOwnProperty(type) ? TAGS_MAP[type] : otherCrimeTag;
+  const resolvedType = TAGS_MAP.hasOwnProperty(type) ? type : "other-crime"; // Ensures correct testID
 
-    switch (type) {
-        case 'lost-item':
-            pinXml = lostItemTag;
-            break;
-        case 'found-item':
-            pinXml = foundItemTag;
-            break;
-        case 'theft':
-            pinXml = theftTag;
-            break;
-        case 'harassment':
-            pinXml = harassmentTag;
-            break;
-        case 'flood':
-            pinXml = floodTag;
-            break;
-        case 'assault':
-            pinXml = assaultTag;
-            break;
-        case 'fire':
-            pinXml = fireTag;
-            break;
-        case 'other-disaster':
-            pinXml = otherDisasterTag;
-            break;
-        case 'earthquake':
-            pinXml = earthquakeTag;
-            break;
-        case 'other-crime':
-            pinXml = otherCrimeTag;
-            break;
-        default:
-            pinXml = otherCrimeTag;
-    }
-
-    return (
-        <TouchableOpacity onPress={onPress}>
-            <SvgXml xml={pinXml} />
-        </TouchableOpacity>
-    );
+  return (
+    <TouchableOpacity onPress={onPress} testID="tag-button">
+      <View testID={`tag-icon-${resolvedType}`}>
+        <SvgXml xml={pinXml} />
+      </View>
+    </TouchableOpacity>
+  );
 };
 
 export default Tag;

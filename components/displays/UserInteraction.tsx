@@ -1,36 +1,29 @@
-import React from 'react';
-import { TouchableOpacity } from 'react-native';
-import { SvgXml } from 'react-native-svg';
-
-import {
-    likeIcon,
-    dislikeIcon
-} from '@/assets/userInteractions';
+import React from "react";
+import { TouchableOpacity, View } from "react-native";
+import { SvgXml } from "react-native-svg";
+import { likeIcon, dislikeIcon } from "@/assets/userInteractions";
 
 interface UserInteractionProps {
-    type?: string;
-    onPress: () => void;
+  type?: string;
+  onPress: () => void;
 }
 
-const UserInteraction: React.FC<UserInteractionProps> = ({ type = "other-crime", onPress }) => {
-    let userInteractionXml;
+const INTERACTIONS_MAP: Record<string, string> = {
+  "like-icon": likeIcon,
+  "dislike-icon": dislikeIcon,
+};
 
-    switch (type) {
-        case 'like-icon':
-            userInteractionXml = likeIcon;
-            break;
-        case 'dislike-icon':
-            userInteractionXml = dislikeIcon;
-            break;
-        default:
-            userInteractionXml = likeIcon;
-    }
+const UserInteraction: React.FC<UserInteractionProps> = ({ type = "like-icon", onPress }) => {
+  const userInteractionXml = INTERACTIONS_MAP[type] || likeIcon;
+  const resolvedType = INTERACTIONS_MAP.hasOwnProperty(type) ? type : "like-icon"; // Ensures correct testID
 
-    return (
-        <TouchableOpacity onPress={onPress}>
-            <SvgXml xml={userInteractionXml} />
-        </TouchableOpacity>
-    );
+  return (
+    <TouchableOpacity onPress={onPress} testID="user-interaction-button">
+      <View testID={`user-interaction-${resolvedType}`}>
+        <SvgXml xml={userInteractionXml} />
+      </View>
+    </TouchableOpacity>
+  );
 };
 
 export default UserInteraction;
