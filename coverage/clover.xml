@@ -1,386 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1741876118473" clover="3.2.0">
-  <project timestamp="1741876118473" name="All files">
-    <metrics statements="294" coveredstatements="294" conditionals="97" coveredconditionals="97" methods="82" coveredmethods="79" elements="473" coveredelements="470" complexity="0" loc="294" ncloc="294" packages="6" files="23" classes="23"/>
-    <package name="app">
-      <metrics statements="29" coveredstatements="29" conditionals="6" coveredconditionals="6" methods="6" coveredmethods="6"/>
-      <file name="index.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\index.tsx">
-        <metrics statements="29" coveredstatements="29" conditionals="6" coveredconditionals="6" methods="6" coveredmethods="6"/>
-        <line num="7" count="1" type="stmt"/>
-        <line num="8" count="25" type="stmt"/>
-        <line num="9" count="25" type="stmt"/>
-        <line num="11" count="25" type="stmt"/>
-        <line num="12" count="6" type="cond" truecount="2" falsecount="0"/>
-        <line num="13" count="1" type="stmt"/>
-        <line num="14" count="1" type="stmt"/>
-        <line num="17" count="5" type="cond" truecount="4" falsecount="0"/>
-        <line num="18" count="2" type="stmt"/>
-        <line num="19" count="2" type="stmt"/>
-        <line num="22" count="3" type="stmt"/>
-        <line num="23" count="3" type="stmt"/>
-        <line num="25" count="3" type="stmt"/>
-        <line num="26" count="3" type="stmt"/>
-        <line num="27" count="2" type="stmt"/>
-        <line num="32" count="1" type="stmt"/>
-        <line num="36" count="25" type="stmt"/>
-        <line num="37" count="2" type="stmt"/>
-        <line num="38" count="2" type="stmt"/>
-        <line num="39" count="1" type="stmt"/>
-        <line num="42" count="1" type="stmt"/>
-        <line num="46" count="25" type="stmt"/>
-        <line num="47" count="2" type="stmt"/>
-        <line num="48" count="2" type="stmt"/>
-        <line num="49" count="1" type="stmt"/>
-        <line num="52" count="1" type="stmt"/>
-        <line num="56" count="25" type="stmt"/>
-        <line num="60" count="1" type="stmt"/>
-        <line num="61" count="1" type="stmt"/>
-      </file>
-    </package>
-    <package name="app.forgotPassword">
-      <metrics statements="26" coveredstatements="26" conditionals="4" coveredconditionals="4" methods="8" coveredmethods="8"/>
-      <file name="index.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\forgotPassword\index.tsx">
-        <metrics statements="11" coveredstatements="11" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="3"/>
-        <line num="5" count="1" type="stmt"/>
-        <line num="6" count="5" type="stmt"/>
-        <line num="8" count="5" type="stmt"/>
-        <line num="9" count="2" type="stmt"/>
-        <line num="10" count="2" type="stmt"/>
-        <line num="13" count="5" type="stmt"/>
-        <line num="14" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="15" count="1" type="stmt"/>
-        <line num="16" count="1" type="stmt"/>
-        <line num="18" count="1" type="stmt"/>
-        <line num="21" count="5" type="stmt"/>
-      </file>
-      <file name="newPasswordScreen.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\forgotPassword\newPasswordScreen.tsx">
-        <metrics statements="9" coveredstatements="9" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
-        <line num="6" count="1" type="stmt"/>
-        <line num="7" count="7" type="stmt"/>
-        <line num="8" count="7" type="stmt"/>
-        <line num="10" count="7" type="stmt"/>
-        <line num="11" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="12" count="1" type="stmt"/>
-        <line num="14" count="1" type="stmt"/>
-        <line num="18" count="7" type="stmt"/>
-        <line num="48" count="1" type="stmt"/>
-      </file>
-      <file name="otpVerificationScreen.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\forgotPassword\otpVerificationScreen.tsx">
-        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
-        <line num="4" count="1" type="stmt"/>
-        <line num="5" count="6" type="stmt"/>
-        <line num="6" count="2" type="stmt"/>
-        <line num="9" count="6" type="stmt"/>
-        <line num="13" count="1" type="stmt"/>
-        <line num="19" count="1" type="stmt"/>
-      </file>
-    </package>
-    <package name="app.signUp">
-      <metrics statements="23" coveredstatements="23" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="5"/>
-      <file name="index.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\signUp\index.tsx">
-        <metrics statements="23" coveredstatements="23" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="5"/>
-        <line num="7" count="8" type="stmt"/>
-        <line num="8" count="1" type="stmt"/>
-        <line num="11" count="8" type="stmt"/>
-        <line num="17" count="2" type="stmt"/>
-        <line num="19" count="2" type="stmt"/>
-        <line num="20" count="2" type="stmt"/>
-        <line num="22" count="2" type="stmt"/>
-        <line num="29" count="1" type="stmt"/>
-        <line num="31" count="1" type="stmt"/>
-        <line num="38" count="1" type="stmt"/>
-        <line num="42" count="8" type="stmt"/>
-        <line num="43" count="2" type="stmt"/>
-        <line num="44" count="2" type="stmt"/>
-        <line num="45" count="1" type="stmt"/>
-        <line num="46" count="1" type="stmt"/>
-        <line num="48" count="1" type="stmt"/>
-        <line num="53" count="8" type="stmt"/>
-        <line num="54" count="2" type="stmt"/>
-        <line num="55" count="2" type="stmt"/>
-        <line num="56" count="1" type="stmt"/>
-        <line num="57" count="1" type="stmt"/>
-        <line num="59" count="1" type="stmt"/>
-        <line num="64" count="8" type="stmt"/>
-      </file>
-    </package>
+<coverage generated="1741876877687" clover="3.2.0">
+  <project timestamp="1741876877687" name="All files">
+    <metrics statements="41" coveredstatements="41" conditionals="13" coveredconditionals="13" methods="3" coveredmethods="3" elements="57" coveredelements="57" complexity="0" loc="41" ncloc="41" packages="3" files="3" classes="3"/>
     <package name="assets">
-      <metrics statements="12" coveredstatements="12" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="tags.ts" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\assets\tags.ts">
         <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-        <line num="1" count="3" type="stmt"/>
-        <line num="7" count="3" type="stmt"/>
-        <line num="13" count="3" type="stmt"/>
-        <line num="19" count="3" type="stmt"/>
-        <line num="26" count="3" type="stmt"/>
-        <line num="32" count="3" type="stmt"/>
-        <line num="38" count="3" type="stmt"/>
-        <line num="44" count="3" type="stmt"/>
-        <line num="55" count="3" type="stmt"/>
-        <line num="61" count="3" type="stmt"/>
-      </file>
-      <file name="userInteractions.ts" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\assets\userInteractions.ts">
-        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="2" type="stmt"/>
         <line num="7" count="2" type="stmt"/>
+        <line num="13" count="2" type="stmt"/>
+        <line num="19" count="2" type="stmt"/>
+        <line num="26" count="2" type="stmt"/>
+        <line num="32" count="2" type="stmt"/>
+        <line num="38" count="2" type="stmt"/>
+        <line num="44" count="2" type="stmt"/>
+        <line num="55" count="2" type="stmt"/>
+        <line num="61" count="2" type="stmt"/>
       </file>
     </package>
     <package name="components">
-      <metrics statements="194" coveredstatements="194" conditionals="77" coveredconditionals="77" methods="61" coveredmethods="58"/>
-      <file name="Button.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\Button.tsx">
-        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="11" count="8" type="stmt"/>
-        <line num="12" count="166" type="stmt"/>
-        <line num="19" count="8" type="stmt"/>
-      </file>
-      <file name="CommentInput.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\CommentInput.tsx">
-        <metrics statements="25" coveredstatements="25" conditionals="13" coveredconditionals="13" methods="4" coveredmethods="4"/>
-        <line num="18" count="1" type="cond" truecount="1" falsecount="0"/>
-        <line num="19" count="21" type="stmt"/>
-        <line num="20" count="21" type="stmt"/>
-        <line num="21" count="21" type="stmt"/>
-        <line num="23" count="21" type="stmt"/>
-        <line num="24" count="21" type="stmt"/>
-        <line num="26" count="21" type="stmt"/>
-        <line num="27" count="4" type="cond" truecount="2" falsecount="0"/>
-        <line num="28" count="1" type="stmt"/>
-        <line num="29" count="1" type="stmt"/>
-        <line num="32" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="33" count="2" type="stmt"/>
-        <line num="34" count="2" type="stmt"/>
-        <line num="37" count="1" type="stmt"/>
-        <line num="38" count="1" type="stmt"/>
-        <line num="39" count="1" type="stmt"/>
-        <line num="40" count="1" type="stmt"/>
-        <line num="43" count="21" type="stmt"/>
-        <line num="44" count="7" type="stmt"/>
-        <line num="45" count="7" type="cond" truecount="2" falsecount="0"/>
-        <line num="47" count="7" type="cond" truecount="2" falsecount="0"/>
-        <line num="48" count="2" type="stmt"/>
-        <line num="52" count="21" type="stmt"/>
-        <line num="69" count="1" type="stmt"/>
-        <line num="93" count="1" type="stmt"/>
-      </file>
-      <file name="CommentSection.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\CommentSection.tsx">
-        <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="9" coveredmethods="7"/>
-        <line num="17" count="1" type="stmt"/>
-        <line num="27" count="21" type="stmt"/>
-        <line num="28" count="21" type="stmt"/>
-        <line num="30" count="21" type="stmt"/>
-        <line num="31" count="3" type="stmt"/>
-        <line num="32" count="3" type="stmt"/>
-        <line num="33" count="3" type="stmt"/>
-        <line num="36" count="21" type="stmt"/>
-        <line num="62" count="6" type="stmt"/>
-        <line num="69" count="1" type="stmt"/>
-        <line num="71" count="1" type="stmt"/>
-        <line num="78" count="2" type="stmt"/>
-        <line num="86" count="1" type="stmt"/>
-        <line num="96" count="1" type="stmt"/>
-      </file>
-      <file name="ForgotPasswordForm.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\ForgotPasswordForm.tsx">
-        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="12" count="2" type="stmt"/>
-        <line num="13" count="8" type="stmt"/>
-        <line num="36" count="2" type="stmt"/>
-      </file>
-      <file name="InputField.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\InputField.tsx">
-        <metrics statements="3" coveredstatements="3" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
-        <line num="11" count="5" type="cond" truecount="1" falsecount="0"/>
-        <line num="12" count="469" type="stmt"/>
-        <line num="26" count="5" type="stmt"/>
-      </file>
-      <file name="LoginForm.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\LoginForm.tsx">
-        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="18" count="1" type="stmt"/>
-        <line num="28" count="6" type="stmt"/>
-        <line num="73" count="1" type="stmt"/>
-      </file>
-      <file name="MoreOptionsButton.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\MoreOptionsButton.tsx">
-        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="6" count="1" type="stmt"/>
-        <line num="13" count="1" type="stmt"/>
-        <line num="14" count="1" type="stmt"/>
-        <line num="31" count="1" type="stmt"/>
-      </file>
-      <file name="OTPVerification.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\OTPVerification.tsx">
-        <metrics statements="21" coveredstatements="21" conditionals="11" coveredconditionals="11" methods="8" coveredmethods="8"/>
-        <line num="12" count="2" type="stmt"/>
-        <line num="13" count="55" type="stmt"/>
-        <line num="14" count="55" type="stmt"/>
-        <line num="16" count="55" type="stmt"/>
-        <line num="17" count="36" type="cond" truecount="2" falsecount="0"/>
-        <line num="19" count="34" type="stmt"/>
-        <line num="20" count="34" type="stmt"/>
-        <line num="21" count="34" type="stmt"/>
-        <line num="24" count="34" type="cond" truecount="4" falsecount="0"/>
-        <line num="25" count="26" type="stmt"/>
-        <line num="29" count="55" type="stmt"/>
-        <line num="30" count="9" type="cond" truecount="5" falsecount="0"/>
-        <line num="31" count="2" type="stmt"/>
-        <line num="35" count="55" type="stmt"/>
-        <line num="46" count="220" type="stmt"/>
-        <line num="48" count="220" type="stmt"/>
-        <line num="52" count="440" type="stmt"/>
-        <line num="56" count="36" type="stmt"/>
-        <line num="57" count="9" type="stmt"/>
-        <line num="68" count="4" type="stmt"/>
-        <line num="76" count="2" type="stmt"/>
-      </file>
-      <file name="ReportContent.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\ReportContent.tsx">
-        <metrics statements="29" coveredstatements="29" conditionals="10" coveredconditionals="10" methods="10" coveredmethods="10"/>
-        <line num="12" count="1" type="stmt"/>
-        <line num="35" count="1" type="stmt"/>
-        <line num="42" count="13" type="stmt"/>
-        <line num="43" count="13" type="stmt"/>
-        <line num="44" count="13" type="stmt"/>
-        <line num="45" count="13" type="stmt"/>
-        <line num="46" count="13" type="stmt"/>
-        <line num="48" count="13" type="stmt"/>
-        <line num="49" count="2" type="stmt"/>
-        <line num="52" count="13" type="stmt"/>
-        <line num="53" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="54" count="2" type="stmt"/>
-        <line num="55" count="2" type="stmt"/>
-        <line num="57" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="58" count="1" type="stmt"/>
-        <line num="59" count="1" type="stmt"/>
-        <line num="62" count="1" type="stmt"/>
-        <line num="63" count="1" type="stmt"/>
-        <line num="67" count="13" type="stmt"/>
-        <line num="68" count="4" type="cond" truecount="2" falsecount="0"/>
-        <line num="69" count="3" type="stmt"/>
-        <line num="70" count="3" type="stmt"/>
-        <line num="72" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="73" count="1" type="stmt"/>
-        <line num="74" count="1" type="stmt"/>
-        <line num="77" count="1" type="stmt"/>
-        <line num="78" count="1" type="stmt"/>
-        <line num="82" count="13" type="stmt"/>
-        <line num="116" count="1" type="stmt"/>
-      </file>
+      <metrics statements="7" coveredstatements="7" conditionals="1" coveredconditionals="1" methods="2" coveredmethods="2"/>
       <file name="ReportTags.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\ReportTags.tsx">
         <metrics statements="7" coveredstatements="7" conditionals="1" coveredconditionals="1" methods="2" coveredmethods="2"/>
-        <line num="17" count="2" type="stmt"/>
-        <line num="33" count="2" type="stmt"/>
-        <line num="50" count="2" type="cond" truecount="1" falsecount="0"/>
-        <line num="51" count="20" type="stmt"/>
-        <line num="54" count="35" type="stmt"/>
-        <line num="55" count="35" type="stmt"/>
-        <line num="66" count="2" type="stmt"/>
-      </file>
-      <file name="SignUpForm.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\SignUpForm.tsx">
-        <metrics statements="59" coveredstatements="59" conditionals="37" coveredconditionals="37" methods="12" coveredmethods="12"/>
-        <line num="28" count="1" type="stmt"/>
-        <line num="29" count="87" type="stmt"/>
-        <line num="30" count="87" type="stmt"/>
-        <line num="31" count="87" type="stmt"/>
-        <line num="32" count="87" type="stmt"/>
-        <line num="33" count="87" type="stmt"/>
-        <line num="34" count="87" type="stmt"/>
-        <line num="36" count="87" type="stmt"/>
-        <line num="37" count="24" type="stmt"/>
-        <line num="38" count="24" type="cond" truecount="2" falsecount="0"/>
-        <line num="40" count="6" type="stmt"/>
-        <line num="47" count="18" type="stmt"/>
-        <line num="51" count="87" type="stmt"/>
-        <line num="52" count="24" type="stmt"/>
-        <line num="54" count="24" type="cond" truecount="2" falsecount="0"/>
-        <line num="55" count="12" type="stmt"/>
-        <line num="58" count="24" type="cond" truecount="2" falsecount="0"/>
-        <line num="59" count="12" type="stmt"/>
-        <line num="60" count="12" type="cond" truecount="2" falsecount="0"/>
-        <line num="61" count="1" type="stmt"/>
-        <line num="64" count="24" type="cond" truecount="2" falsecount="0"/>
-        <line num="65" count="8" type="stmt"/>
-        <line num="66" count="16" type="cond" truecount="2" falsecount="0"/>
-        <line num="67" count="4" type="stmt"/>
-        <line num="71" count="24" type="cond" truecount="2" falsecount="0"/>
-        <line num="72" count="12" type="stmt"/>
-        <line num="73" count="12" type="cond" truecount="2" falsecount="0"/>
-        <line num="74" count="1" type="stmt"/>
-        <line num="77" count="24" type="cond" truecount="2" falsecount="0"/>
-        <line num="78" count="9" type="stmt"/>
-        <line num="79" count="15" type="cond" truecount="2" falsecount="0"/>
-        <line num="80" count="5" type="stmt"/>
-        <line num="81" count="10" type="cond" truecount="2" falsecount="0"/>
-        <line num="82" count="4" type="stmt"/>
-        <line num="85" count="24" type="stmt"/>
-        <line num="88" count="87" type="stmt"/>
-        <line num="89" count="12" type="stmt"/>
-        <line num="92" count="87" type="stmt"/>
-        <line num="93" count="16" type="stmt"/>
-        <line num="94" count="16" type="stmt"/>
-        <line num="97" count="87" type="stmt"/>
-        <line num="98" count="10" type="stmt"/>
-        <line num="101" count="10" type="stmt"/>
-        <line num="103" count="10" type="stmt"/>
-        <line num="104" count="10" type="stmt"/>
-        <line num="105" count="10" type="stmt"/>
-        <line num="107" count="10" type="cond" truecount="5" falsecount="0"/>
-        <line num="108" count="4" type="stmt"/>
-        <line num="110" count="6" type="stmt"/>
-        <line num="113" count="87" type="stmt"/>
-        <line num="114" count="15" type="stmt"/>
-        <line num="115" count="15" type="stmt"/>
-        <line num="118" count="87" type="stmt"/>
-        <line num="129" count="8" type="stmt"/>
-        <line num="138" count="8" type="stmt"/>
-        <line num="147" count="15" type="stmt"/>
-        <line num="157" count="12" type="stmt"/>
-        <line num="167" count="8" type="stmt"/>
-        <line num="191" count="1" type="stmt"/>
-      </file>
-      <file name="SocialButton.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\SocialButton.tsx">
-        <metrics statements="5" coveredstatements="5" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
-        <line num="11" count="3" type="stmt"/>
-        <line num="20" count="3" type="stmt"/>
-        <line num="26" count="3" type="stmt"/>
-        <line num="27" count="190" type="stmt"/>
-        <line num="34" count="3" type="stmt"/>
-      </file>
-      <file name="Toast.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\Toast.tsx">
-        <metrics statements="4" coveredstatements="4" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
-        <line num="10" count="1" type="stmt"/>
-        <line num="12" count="1" type="stmt"/>
-        <line num="16" count="2" type="stmt"/>
-        <line num="28" count="1" type="stmt"/>
-      </file>
-      <file name="UserInfo.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\UserInfo.tsx">
-        <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="9" coveredmethods="8"/>
-        <line num="16" count="1" type="stmt"/>
-        <line num="27" count="19" type="stmt"/>
-        <line num="28" count="19" type="stmt"/>
-        <line num="30" count="19" type="stmt"/>
-        <line num="31" count="1" type="stmt"/>
-        <line num="32" count="1" type="stmt"/>
+        <line num="17" count="1" type="stmt"/>
         <line num="33" count="1" type="stmt"/>
-        <line num="36" count="19" type="stmt"/>
-        <line num="46" count="5" type="stmt"/>
-        <line num="56" count="1" type="stmt"/>
-        <line num="57" count="1" type="stmt"/>
-        <line num="61" count="1" type="stmt"/>
-        <line num="69" count="1" type="stmt"/>
-        <line num="79" count="1" type="stmt"/>
+        <line num="50" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="51" count="5" type="stmt"/>
+        <line num="54" count="22" type="stmt"/>
+        <line num="55" count="22" type="stmt"/>
+        <line num="66" count="1" type="stmt"/>
       </file>
     </package>
     <package name="components.displays">
-      <metrics statements="10" coveredstatements="10" conditionals="10" coveredconditionals="10" methods="2" coveredmethods="2"/>
+      <metrics statements="24" coveredstatements="24" conditionals="12" coveredconditionals="12" methods="1" coveredmethods="1"/>
       <file name="Tags.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\displays\Tags.tsx">
-        <metrics statements="5" coveredstatements="5" conditionals="5" coveredconditionals="5" methods="1" coveredmethods="1"/>
-        <line num="22" count="1" type="stmt"/>
-        <line num="35" count="1" type="cond" truecount="1" falsecount="0"/>
-        <line num="36" count="13" type="cond" truecount="2" falsecount="0"/>
-        <line num="37" count="13" type="cond" truecount="2" falsecount="0"/>
-        <line num="39" count="13" type="stmt"/>
-      </file>
-      <file name="UserInteraction.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\displays\UserInteraction.tsx">
-        <metrics statements="5" coveredstatements="5" conditionals="5" coveredconditionals="5" methods="1" coveredmethods="1"/>
-        <line num="11" count="1" type="stmt"/>
-        <line num="16" count="1" type="cond" truecount="1" falsecount="0"/>
-        <line num="17" count="5" type="cond" truecount="2" falsecount="0"/>
-        <line num="18" count="5" type="cond" truecount="2" falsecount="0"/>
-        <line num="20" count="5" type="stmt"/>
+        <metrics statements="24" coveredstatements="24" conditionals="12" coveredconditionals="12" methods="1" coveredmethods="1"/>
+        <line num="22" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="25" count="13" type="cond" truecount="11" falsecount="0"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="30" count="1" type="stmt"/>
+        <line num="31" count="1" type="stmt"/>
+        <line num="33" count="1" type="stmt"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="36" count="1" type="stmt"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="39" count="1" type="stmt"/>
+        <line num="40" count="1" type="stmt"/>
+        <line num="42" count="1" type="stmt"/>
+        <line num="43" count="1" type="stmt"/>
+        <line num="45" count="2" type="stmt"/>
+        <line num="46" count="2" type="stmt"/>
+        <line num="48" count="1" type="stmt"/>
+        <line num="49" count="1" type="stmt"/>
+        <line num="51" count="1" type="stmt"/>
+        <line num="52" count="1" type="stmt"/>
+        <line num="54" count="2" type="stmt"/>
+        <line num="55" count="2" type="stmt"/>
+        <line num="57" count="1" type="stmt"/>
+        <line num="60" count="13" type="stmt"/>
       </file>
     </package>
   </project>
