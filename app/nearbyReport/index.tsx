@@ -1,12 +1,12 @@
 import React from "react";
 import { View, Text } from "react-native";
 
-const NearbyReport: React.FC = () => {
+const NearbyReportScreen = () => {
   return (
     <View>
-    <Text>Comment Section</Text>
-  </View>
+      <Text>Nearby Report</Text>
+    </View>
   );
 };
 
-export default NearbyReport
+export default NearbyReportScreen;
