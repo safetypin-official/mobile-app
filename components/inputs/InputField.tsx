@@ -8,6 +8,7 @@ interface InputFieldProps {
   onChangeText?: (text: string) => void;
   testID?: string;
   labelColor?: string;
+  multiline?: boolean;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -16,7 +17,8 @@ const InputField: React.FC<InputFieldProps> = ({
   secureTextEntry = false,
   onChangeText,
   testID = "input-field",
-  labelColor = "#FFFFFF", // Default to white
+  labelColor = "#FFFFFF",
+  multiline = false,
 }) => {
   return (
     <View style={styles.container} testID={testID}>
@@ -27,6 +29,8 @@ const InputField: React.FC<InputFieldProps> = ({
         placeholderTextColor="#904a47"
         secureTextEntry={secureTextEntry}
         onChangeText={onChangeText}
+        multiline={multiline}
+        numberOfLines={multiline ? 5 : 1}
       />
     </View>
   );
