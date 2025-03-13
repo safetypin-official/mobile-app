@@ -50,11 +50,11 @@ export interface ReportTagsProps {
 const ReportTags: React.FC<ReportTagsProps> = ({ selectedTags = [] }) => {
   return (
     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tags} testID="tags-container">
-      {selectedTags.map((tag, index) => {
+      {selectedTags.map((tag) => {
         const tagData = TAGS[tag];
         return (
-          <View key={index} style={[styles.tagButton, { backgroundColor: tagData.color }]}>
-            <SvgXml xml={tagData.icon} style={styles.tagIcon} testID={`icon-${tag}`}/>
+          <View key={tag} style={[styles.tagButton, { backgroundColor: tagData.color }]}>
+            <SvgXml xml={tagData.icon} style={styles.tagIcon} testID={`icon-${tag}`} />
             <Text style={styles.tagText}>{tag}</Text>
           </View>
         );

@@ -19,8 +19,6 @@ const mockReport: ReportContentProps = {
   content: "This is a test report",
   likeCount: 10,
   dislikeCount: 2,
-  likeIconUrl: "https://example.com/like.png",
-  dislikeIconUrl: "https://example.com/dislike.png",
   selectedTags: ["Lost Item"] as TagKey[],
 };
 

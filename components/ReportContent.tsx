@@ -1,5 +1,5 @@
-import React, { ReactElement, useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import ReportTags from "./ReportTags";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -92,11 +92,11 @@ const ReportContent: React.FC<ReportContentProps> = ({
       <View style={styles.interactions}>
         <View style={styles.interactionButtons}>
         <TouchableOpacity style={styles.actionButton} onPress={handleLikeClick} testID="like-button">
-            <SvgXml xml={likeIcon} width={24} height={24} fill={likeColor} />
+            <SvgXml xml={likeIcon} width={14} height={14} fill={likeColor} />
             <Text style={[styles.countText, { color: likeColor }]}>{likes}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton} onPress={handleDislikeClick} testID="dislike-button">
-            <SvgXml xml={dislikeIcon} width={24} height={24} fill={dislikeColor} />
+            <SvgXml xml={dislikeIcon} width={14} height={14} fill={dislikeColor} />
             <Text style={[styles.countText, { color: dislikeColor }]}>{dislikes}</Text>
           </TouchableOpacity>
         </View>
