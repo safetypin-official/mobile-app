@@ -58,8 +58,12 @@ const PostFormScreen = () => {
             <ScrollView style={styles.scroll} contentContainerStyle={{ flexGrow: 1 }}>
                 <View style={styles.inputSection}>
                     <Text style={styles.label}>Location</Text>
-                    <Text style={styles.paragraph}>Latitude: {location?.latitude ?? 'Fetching...'}</Text>
-                    <Text style={styles.paragraph}>Longitude: {location?.longitude ?? 'Fetching...'}</Text>
+                    <Text style={styles.paragraph}>
+                        Latitude: {location?.latitude ?? 'Fetching...'}
+                    </Text>
+                    <Text style={styles.paragraph}>
+                        Longitude: {location?.longitude ?? 'Fetching...'}
+                    </Text>
                 </View>
 
                 <View style={styles.inputSection}>
