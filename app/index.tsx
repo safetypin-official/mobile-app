@@ -38,7 +38,6 @@ const LoginScreen = () => {
       const result = await onGoogleAuth();
       console.log("Google auth successful:", result);
 
-      // router.replace('/map');
       router.push('/map');
     } catch (error) {
       // The alerts are already handled in the onGoogleAuth function
