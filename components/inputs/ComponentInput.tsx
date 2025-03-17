@@ -7,8 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
-  Dimensions,
+  Platform
 } from "react-native";
 
 interface CommentInputProps {
