@@ -36,13 +36,6 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTag, onTagChange }) =
     }
   };
 
-  // Find the selected tag object to get its name
-  const getSelectedTagName = (): string | null => {
-    if (!selectedTag) return null;
-    const tag = TAGS.find(t => t.id === selectedTag);
-    return tag ? tag.label : null;
-  };
-
   return (
     <View style={styles.container}>
       {TAGS.map((tag) => (
