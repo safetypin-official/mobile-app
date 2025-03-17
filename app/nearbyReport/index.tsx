@@ -1,10 +1,8 @@
 import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import UserInfo from "@/components/post/UserInfo";
-import ReportContent from "@/components/post/ReportContent";
-import CommentSection from "@/components/post/CommentSection";
+import ReportContent, { TagKey } from "@/components/post/ReportContent";
 import CommentInput from "@/components/inputs/ComponentInput";
-import { TagKey } from "@/components/post/ReportContent";
 
 // Add type definition for the post prop
 type Category = {
@@ -92,14 +90,14 @@ const NearbyReport: React.FC<NearbyReportProps> = ({ post, onClose }) => {
               date={post ? formatDate(post.createdAt) : ""}
               location="Location"
               moreOptionsIconUrl="https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/43f6a47c22e1c702925915e6626ae6f483d1e56e047a9647d4ff9e5de9751425?placeholderIfAbsent=true"
-              longitude={post?.longitude || 0}
-              latitude={post?.latitude || 0}
+              longitude={post?.longitude ?? 0}
+              latitude={post?.latitude ?? 0}
               categoryType={getPinType()} // Pass the pin type based on category
             />
 
             <ReportContent
-              title={post?.title || "Title"}
-              content={post?.caption || "Content"}
+              title={post?.title ?? "Title"}
+              content={post?.caption ?? "Content"}
               likeCount={0}
               dislikeCount={0}
               selectedTags={getCategoryTags()}
