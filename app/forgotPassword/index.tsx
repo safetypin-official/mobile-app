@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { View, Alert } from "react-native";
 import ForgotPasswordForm from "@/components/forms/ForgotPasswordForm";
 import { router } from 'expo-router';
+import validator from "validator";
 
 const ForgotPasswordScreen = () => {
   const [email, setEmail] = useState("");
 
   const isValidEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return !!validator.isEmail(email);
   };
 
   const sendEmail = () => {
