@@ -1,9 +1,9 @@
 import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
-import UserInfo from "../../components/UserInfo";
-import ReportContent from "../../components/ReportContent";
-import CommentSection from "../../components/CommentSection";
-import CommentInput from "../../components/CommentInput";
+import UserInfo from "../../components/displays/UserInfo";
+import ReportContent from "../../components/displays/ReportContent";
+import CommentSection from "../../components/displays/CommentSection";
+import CommentInput from "../../components/inputs/CommentInput";
 
 const NearbyReport: React.FC = () => {
   return (
