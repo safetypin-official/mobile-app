@@ -1,11 +1,42 @@
 import { View, StyleSheet, Alert } from 'react-native';
 import OTPVerification from '@/components/forms/OTPVerificationForm';
 import { router } from 'expo-router';
+import { verifyOTP } from "@/utils/auth";
+import { useSearchParams } from 'expo-router/build/hooks';
 
 const SignUpOTPScreen = () => {
-  const handleVerify = (otp: string) => {
+  const searchParams = useSearchParams();
+  const email = searchParams.get('email');
+
+  const handleVerify = async (otp: string) => {
     Alert.alert("Entered OTP", `Your OTP is: ${otp}`);
-    router.push('/')
+    
+    try {
+      if (!email) {
+        throw new Error("Email is missing");
+      }
+
+      const result = await verifyOTP(
+        email,
+        otp
+      );
+
+      if (result.success === false)
+        throw new Error(result.message);
+      else
+        Alert.alert("Verification Successful", result.message);
+      console.log(result.message)
+      
+      router.push('/map');
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert("OTP Verification Failed", error.message);
+        console.error("Sign up failed:", error);
+      } else {
+        Alert.alert("OTP Verification Failed", "An unknown error occurred");
+        console.error("Sign up failed:", error);
+      }
+    }
   };
 
   return (

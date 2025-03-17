@@ -26,7 +26,7 @@ const LoginScreen = () => {
       const result = await loginWithEmail(email, password);
       console.log("Email login successful:", result);
       // Navigate to map screen after successful login
-      router.push('/map');
+      router.replace('/map');
     } catch (error: any) {
       // Errors are handled in the loginWithEmail function
       console.error("Email login failed:", error);
@@ -38,6 +38,7 @@ const LoginScreen = () => {
       const result = await onGoogleAuth();
       console.log("Google auth successful:", result);
 
+      // router.replace('/map');
       router.push('/map');
     } catch (error) {
       // The alerts are already handled in the onGoogleAuth function

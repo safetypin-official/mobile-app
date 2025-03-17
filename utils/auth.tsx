@@ -171,7 +171,7 @@ const parseAndSaveAuthResponse = async (response: Response, authType: string) =>
       console.warn('Token or userId missing in response');
     }
     
-    Alert.alert(data.message || `${authType} authentication successful`);
+    console.log(data.message || `${authType} authentication successful`);
     return data;
   } catch (error: any) {
     throw new NetworkError(`Failed to parse server response: ${error.message}`);
@@ -211,7 +211,7 @@ export const onGoogleAuth = async () => {
     console.log('Google authentication successful');
     
     const response = await sendApiRequest(
-      "http://34.87.94.247/api/auth/google", 
+      "http://10.0.2.2/api/auth/google", 
       { idToken, serverAuthCode, email, name }
     );
     
@@ -232,7 +232,7 @@ export const onAppleIDAuth = async () => {
     console.log('Apple authentication successful');
     
     const response = await sendApiRequest(
-      "http://34.87.94.247/api/auth/apple",
+      "http://10.0.2.2/api/auth/apple",
       {
         identityToken: credential.identityToken,
         authorizationCode: credential.authorizationCode,
@@ -256,7 +256,7 @@ export const isValidEmail = (email: string): boolean => {
 export const loginWithEmail = async (email: string, password: string) => {
   try {
     const response = await sendApiRequest(
-      "http://34.87.94.247/api/auth/login-email",
+      "http://10.0.2.2/api/auth/login-email",
       {
         email,
         password,
@@ -278,7 +278,7 @@ export const loginWithEmail = async (email: string, password: string) => {
 export const registerEmailPassword = async (email: string, password: string, name: string, birthdate: string) => {
   try {
     const response = await sendApiRequest(
-      "http://34.87.94.247/api/auth/register-email",
+      "http://10.0.2.2/api/auth/register-email",
       {
         email,
         password,
@@ -298,5 +298,29 @@ export const registerEmailPassword = async (email: string, password: string, nam
       console.error('Registration error:', error);
     }
     throw error;
+  }
+};
+
+export const verifyOTP = async (email: string, otp: string) => {
+  try {
+    const response = await sendApiRequest(
+      "http://10.0.2.2/api/auth/verify-otp",
+      {
+        email,
+        otp,
+      }
+        );
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      throw new NetworkError(
+        responseData.message || `Server responded with status: ${response.status}`,
+        response.status
+      );
+    }
+    return responseData;
+  } catch (error: any) {
+    handleAuthError(error);
   }
 };
