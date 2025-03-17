@@ -17,7 +17,6 @@ const PostPage = () => {
     const [selectedTag, setSelectedTag] = useState<string | null>(null);
     const [imageUri, setImageUri] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState<boolean>(false);
-    const [s3ImageUrl, setS3ImageUrl] = useState<string | null>(null);
 
     useEffect(() => {
         (async () => {
@@ -57,8 +56,8 @@ const PostPage = () => {
 
     // Function to get file extension from URI
     const getFileExtension = (uri: string): string => {
-        const fileName = uri.split('/').pop() || '';
-        return fileName.split('.').pop()?.toLowerCase() || 'jpeg';
+        const fileName = uri.split('/').pop() ?? '';
+        return fileName.split('.').pop()?.toLowerCase() ?? 'jpeg';
     };
 
     // Function to get presigned URL from backend
@@ -164,13 +163,13 @@ const PostPage = () => {
     };
     
     const submitPost = (imageUrl: string | null) => {
-        const tagName = TAGS.find(tag => tag.id === selectedTag)?.label || "Unknown";
+        const tagName = TAGS.find(tag => tag.id === selectedTag)?.label ?? "Unknown";
         
         const postData = {
             title: title,
             caption: description,
-            latitude: location?.latitude || 0,
-            longitude: location?.longitude || 0,
+            latitude: location?.latitude ?? 0,
+            longitude: location?.longitude ?? 0,
             category: {
                 id: selectedTag,
                 name: tagName
@@ -217,10 +216,9 @@ const PostPage = () => {
                     <Text style={styles.header}>New Report</Text>
                 </View>
                 <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 8, maxWidth: 80 }}>
-                    <Button 
-                        children={isUploading ? "Uploading..." : "Post"} 
-                        onPress={handleSubmit}
-                    />
+                    <Button onPress={handleSubmit}>
+                        {isUploading ? "Uploading..." : "Post"}
+                    </Button>
                 </View>
             </View>
 
