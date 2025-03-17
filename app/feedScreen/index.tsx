@@ -8,17 +8,14 @@ import {
   ActivityIndicator,
   RefreshControl,
   Dimensions,
-  TextInput,
-  Platform,
-  ScrollView
+  TextInput
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Import components from NearbyReport
 import UserInfo from "@/components/post/UserInfo";
-import ReportContent from "@/components/post/ReportContent";
-import { TagKey } from "@/components/post/ReportContent";
+import ReportContent, { TagKey } from "@/components/post/ReportContent";
 
 // Reusing types from your existing code
 type Category = {
@@ -229,45 +226,53 @@ const FeedScreen: React.FC = () => {
       </View>
       
       {/* Posts List */}
-      {loading && posts.length === 0 ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#9F3F3D" />
-          <Text style={styles.loadingText}>Loading posts...</Text>
-        </View>
-      ) : error && posts.length === 0 ? (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
-          <TouchableOpacity 
-            style={styles.retryButton}
-            onPress={fetchPosts}
-          >
-            <Text style={styles.retryButtonText}>Retry</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <FlatList
-          data={posts}
-          keyExtractor={(item) => item.id}
-          renderItem={renderPostItem}
-          contentContainerStyle={[
-            styles.feedContainer,
-            { paddingBottom: NAVBAR_HEIGHT + insets.bottom }
-          ]}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl 
-              refreshing={refreshing} 
-              onRefresh={onRefresh} 
-              colors={['#9F3F3D']} 
-            />
-          }
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>No posts available</Text>
+      {(() => {
+        if (loading && posts.length === 0) {
+          return (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#9F3F3D" />
+              <Text style={styles.loadingText}>Loading posts...</Text>
             </View>
-          }
-        />
-      )}
+          );
+        } else if (error && posts.length === 0) {
+          return (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{error}</Text>
+              <TouchableOpacity 
+                style={styles.retryButton}
+                onPress={fetchPosts}
+              >
+                <Text style={styles.retryButtonText}>Retry</Text>
+              </TouchableOpacity>
+            </View>
+          );
+        } else {
+          return (
+            <FlatList
+              data={posts}
+              keyExtractor={(item) => item.id}
+              renderItem={renderPostItem}
+              contentContainerStyle={[
+                styles.feedContainer,
+                { paddingBottom: NAVBAR_HEIGHT + insets.bottom }
+              ]}
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl 
+                  refreshing={refreshing} 
+                  onRefresh={onRefresh} 
+                  colors={['#9F3F3D']} 
+                />
+              }
+              ListEmptyComponent={
+                <View style={styles.emptyContainer}>
+                  <Text style={styles.emptyText}>No posts available</Text>
+                </View>
+              }
+            />
+          );
+        }
+      })()}
     </View>
   );
 };
