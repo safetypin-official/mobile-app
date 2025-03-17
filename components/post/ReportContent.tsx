@@ -7,7 +7,6 @@ import {
   StyleSheet,
   Modal,
   SafeAreaView,
-  StatusBar,
   Dimensions,
   Pressable,
   Share
