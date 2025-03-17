@@ -6,7 +6,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 const screenWidth = Dimensions.get("window").width;
 
 interface MoreOptionsButtonProps {
-  closeModal: () => void;
   onSendMessage: () => void;
   onReport: () => void;
 }
