@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1741884022710" clover="3.2.0">
-  <project timestamp="1741884022710" name="All files">
-    <metrics statements="283" coveredstatements="281" conditionals="116" coveredconditionals="115" methods="76" coveredmethods="76" elements="475" coveredelements="472" complexity="0" loc="283" ncloc="283" packages="11" files="25" classes="25"/>
+<coverage generated="1742222995909" clover="3.2.0">
+  <project timestamp="1742222995909" name="All files">
+    <metrics statements="317" coveredstatements="315" conditionals="128" coveredconditionals="127" methods="77" coveredmethods="77" elements="522" coveredelements="519" complexity="0" loc="317" ncloc="317" packages="11" files="27" classes="27"/>
     <package name="app">
       <metrics statements="41" coveredstatements="41" conditionals="8" coveredconditionals="8" methods="12" coveredmethods="12"/>
       <file name="_layout.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\_layout.tsx">
@@ -180,7 +180,7 @@
       </file>
     </package>
     <package name="assets">
-      <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <metrics statements="24" coveredstatements="24" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="icons.ts" path="C:\Users\aanma\sandbox\mobile-app\assets\icons.ts">
         <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="4" type="stmt"/>
@@ -197,6 +197,19 @@
         <line num="75" count="4" type="stmt"/>
         <line num="81" count="4" type="stmt"/>
         <line num="87" count="4" type="stmt"/>
+      </file>
+      <file name="pins.ts" path="C:\Users\aanma\sandbox\mobile-app\assets\pins.ts">
+        <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+        <line num="17" count="1" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="31" count="1" type="stmt"/>
+        <line num="38" count="1" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+        <line num="52" count="1" type="stmt"/>
+        <line num="59" count="1" type="stmt"/>
+        <line num="66" count="1" type="stmt"/>
       </file>
     </package>
     <package name="components.buttons">
@@ -229,7 +242,7 @@
       </file>
     </package>
     <package name="components.displays">
-      <metrics statements="8" coveredstatements="8" conditionals="5" coveredconditionals="5" methods="2" coveredmethods="2"/>
+      <metrics statements="32" coveredstatements="32" conditionals="17" coveredconditionals="17" methods="3" coveredmethods="3"/>
       <file name="NavContainer.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\displays\NavContainer.tsx">
         <metrics statements="5" coveredstatements="5" conditionals="4" coveredconditionals="4" methods="1" coveredmethods="1"/>
         <line num="16" count="1" type="stmt"/>
@@ -237,6 +250,33 @@
         <line num="28" count="10" type="cond" truecount="2" falsecount="0"/>
         <line num="30" count="10" type="stmt"/>
         <line num="49" count="1" type="stmt"/>
+      </file>
+      <file name="Pin.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\displays\Pin.tsx">
+        <metrics statements="24" coveredstatements="24" conditionals="12" coveredconditionals="12" methods="1" coveredmethods="1"/>
+        <line num="22" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="25" count="13" type="cond" truecount="11" falsecount="0"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="30" count="1" type="stmt"/>
+        <line num="31" count="1" type="stmt"/>
+        <line num="33" count="1" type="stmt"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="36" count="1" type="stmt"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="39" count="1" type="stmt"/>
+        <line num="40" count="1" type="stmt"/>
+        <line num="42" count="1" type="stmt"/>
+        <line num="43" count="1" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+        <line num="46" count="1" type="stmt"/>
+        <line num="48" count="1" type="stmt"/>
+        <line num="49" count="1" type="stmt"/>
+        <line num="51" count="1" type="stmt"/>
+        <line num="52" count="1" type="stmt"/>
+        <line num="54" count="3" type="stmt"/>
+        <line num="55" count="3" type="stmt"/>
+        <line num="57" count="1" type="stmt"/>
+        <line num="60" count="13" type="stmt"/>
       </file>
       <file name="UserLocationMarker.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\displays\UserLocationMarker.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
