@@ -177,11 +177,6 @@ export default function ExploreScreen() {
     }
   };
 
-  // Convert tags for NearbyReport component
-  const getCategoryTags = (category: Category): string[] => {
-    return [category.name];
-  };
-
   return (
     <View style={styles.container}>
       <MapView
