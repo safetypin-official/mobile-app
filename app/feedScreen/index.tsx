@@ -24,6 +24,7 @@ type Category = {
 };
 
 type Post = {
+  imageUrl: string | undefined;
   id: string;
   caption: string;
   createdAt: string;
@@ -167,7 +168,7 @@ const FeedScreen: React.FC = () => {
           likeCount={0}
           dislikeCount={0}
           selectedTags={getCategoryTags(item.category)}
-          imageUrl={"https://safetypin.s3.ap-southeast-2.amazonaws.com/694f2299-fb1d-47ae-b9d5-9df7dce1fd23.jpeg"}
+          imageUrl={item.imageUrl}
         />
         
         <View style={styles.divider} />

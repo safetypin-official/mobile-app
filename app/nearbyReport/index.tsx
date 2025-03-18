@@ -19,6 +19,7 @@ type Post = {
   category: Category;
   latitude: number;
   longitude: number;
+  imageUrl?: string | null;
 };
 
 // Define the component props
@@ -101,7 +102,7 @@ const NearbyReport: React.FC<NearbyReportProps> = ({ post, onClose }) => {
               likeCount={0}
               dislikeCount={0}
               selectedTags={getCategoryTags()}
-              imageUrl={`https://safetypin.s3.ap-southeast-2.amazonaws.com/694f2299-fb1d-47ae-b9d5-9df7dce1fd23.jpeg`}
+              imageUrl={post?.imageUrl ?? "https://i.imgur.com/Ha3UkA3.jpg"}
             />
 
             <View style={styles.divider} />

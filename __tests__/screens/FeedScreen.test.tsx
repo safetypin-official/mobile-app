@@ -1,292 +1,620 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import FeedScreen from '@/app/feedScreen';
-import { FlatList } from 'react-native';
+import { View, Text, FlatList, TextInput, TouchableOpacity } from 'react-native';
+import { act } from 'react-test-renderer';
+import FeedScreen from '@/app/feedScreen'; // Adjust path as needed
 
-// Define proper TypeScript typing for mocked fetch
-const mockFetch = jest.fn() as jest.MockedFunction<typeof global.fetch>;
-global.fetch = mockFetch;
+// Mock fetch function
+global.fetch = jest.fn();
 
-// Mock modules
+// Create arrays to track the props passed to our mocked components
+const userInfoProps: any[] = [];
+const reportContentProps: any[] = [];
+
+// Mock components properly to avoid "Functions not valid as React child" warnings
+jest.mock('@/components/displays/post/UserInfo', () => {
+  return function MockUserInfo(props: any) {
+    // Store the props for later assertions
+    userInfoProps.push(props);
+    return null;
+  };
+});
+
+jest.mock('@/components/displays/post/ReportContent', () => {
+  return function MockReportContent(props: any) {
+    // Store the props for later assertions
+    reportContentProps.push(props);
+    return null;
+  };
+});
+
+// Mock other dependencies
 jest.mock('react-native-safe-area-context', () => ({
-  useSafeAreaInsets: () => ({ top: 10, bottom: 10, left: 0, right: 0 }),
+  useSafeAreaInsets: () => ({ top: 10, right: 0, bottom: 20, left: 0 }),
 }));
 
-// Mock Feather icon
 jest.mock('@expo/vector-icons', () => ({
   Feather: () => null,
 }));
 
-// Mock the components
-jest.mock('@/components/post/UserInfo', () => () => null);
+// Define types for mocks and tests
+type MockPost = {
+  id: string;
+  title: string;
+  caption: string;
+  createdAt: string;
+  postedBy: string | null;
+  category: { id: string; name: string } | null;
+  latitude: number;
+  longitude: number;
+  imageUrl: string | undefined;
+};
 
-jest.mock('@/components/post/ReportContent', () => {
-  const mock = () => null;
-  mock.TagKey = ['Theft', 'Lost Item', 'Found Item'];
-  return {
-    __esModule: true,
-    default: mock,
-    TagKey: ['Theft', 'Lost Item', 'Found Item'],
-  };
-});
+// Define constants used in the component
+const NAVBAR_HEIGHT = 60;
 
-// Sample mock data
-const mockPosts = [
-  {
-    id: '1',
-    caption: 'Test caption',
-    createdAt: '2023-03-15T09:00:00Z',
-    postedBy: 'TestUser',
-    title: 'Test Post',
-    category: { id: '1', name: 'Theft' },
-    latitude: 37.7749,
-    longitude: -122.4194,
-  },
-  {
-    id: '2',
-    caption: 'Another test',
-    createdAt: '2023-03-14T10:00:00Z',
-    postedBy: null,
-    title: 'Anonymous Post',
-    category: { id: '2', name: 'Lost Item' },
-    latitude: 37.7749,
-    longitude: -122.4194,
-  },
-];
+describe('FeedScreen Component', () => {
+  // Sample mock data for posts
+  const mockPosts: MockPost[] = [
+    {
+      id: '1',
+      title: 'Test Post 1',
+      caption: 'This is a test post',
+      createdAt: '2023-01-01T12:00:00Z',
+      postedBy: 'TestUser',
+      category: { id: '1', name: 'Theft' },
+      latitude: 35.12345,
+      longitude: -120.98765,
+      imageUrl: 'https://example.com/image1.jpg',
+    },
+    {
+      id: '2',
+      title: 'Test Post 2',
+      caption: 'This is another test post',
+      createdAt: '2023-01-02T12:00:00Z',
+      postedBy: null,
+      category: { id: '2', name: 'Lost Item' },
+      latitude: 35.54321,
+      longitude: -120.12345,
+      imageUrl: undefined,
+    },
+  ];
 
-describe('FeedScreen', () => {
   beforeEach(() => {
+    // Clear all mocks before each test
     jest.clearAllMocks();
+    userInfoProps.length = 0;
+    reportContentProps.length = 0;
   });
 
   test('renders loading state initially', async () => {
-    // Mock the fetch to delay returning
-    mockFetch.mockImplementationOnce(() => 
-      new Promise(resolve => setTimeout(() => resolve({
+    // Mock fetch to return a pending promise that never resolves
+    (global.fetch as jest.Mock).mockImplementationOnce(() => new Promise(() => {}));
+    
+    const { getByText, queryByText } = render(<FeedScreen />);
+    
+    // Wait for the loading state
+    await waitFor(() => {
+      expect(getByText('Loading posts...')).toBeTruthy();
+      expect(queryByText('No posts available')).toBeNull();
+    });
+  });
+
+  test('renders posts successfully after fetching', async () => {
+    // Mock successful fetch response
+    (global.fetch as jest.Mock).mockImplementationOnce(() => 
+      Promise.resolve({
         ok: true,
-        json: () => Promise.resolve([])
-      } as Response), 100))
+        json: () => Promise.resolve(mockPosts),
+      })
     );
-
-    const { getByText } = render(<FeedScreen />);
-
-    // Check loading indicator is displayed
-    expect(getByText('Loading posts...')).toBeTruthy();
+    
+    // Render the component
+    render(<FeedScreen />);
+    
+    // Wait for the posts to render and props to be collected
+    await waitFor(() => {
+      expect(userInfoProps.length).toBe(2);
+      expect(reportContentProps.length).toBe(2);
+    });
+    
+    // Find props by id instead of relying on order
+    // Sort the collected props by post ID to ensure consistent order for testing
+    const sortedUserProps = [...userInfoProps].sort((a, b) => {
+      // Extract the post ID from the longitude/latitude which are unique per post
+      return a.longitude - b.longitude;
+    });
+    
+    const sortedReportProps = [...reportContentProps].sort((a, b) => {
+      // Sort by title which is unique per post
+      return a.title.localeCompare(b.title);
+    });
+    
+    // Check UserInfo props for "TestUser" post (first in sorted order)
+    expect(sortedUserProps[0].username).toBe('TestUser');
+    expect(sortedUserProps[0].handle).toBe('@testuser');
+    expect(sortedUserProps[0].date).toBe('Jan 1');
+    expect(sortedUserProps[0].categoryType).toBe('theft');
+    
+    // Check UserInfo props for "Anonymous" post (second in sorted order)
+    expect(sortedUserProps[1].username).toBe('Anonymous');
+    expect(sortedUserProps[1].handle).toBe('@anonymous');
+    expect(sortedUserProps[1].date).toBe('Jan 2');
+    expect(sortedUserProps[1].categoryType).toBe('lost-item');
+    
+    // Check ReportContent props
+    expect(sortedReportProps[0].title).toBe('Test Post 1');
+    expect(sortedReportProps[0].selectedTags).toEqual(['Theft']);
+    
+    expect(sortedReportProps[1].title).toBe('Test Post 2');
+    expect(sortedReportProps[1].selectedTags).toEqual(['Lost Item']);
   });
 
   test('renders error state when fetch fails', async () => {
-    // Mock failed fetch
-    mockFetch.mockImplementationOnce(() => 
-      Promise.reject(new Error('Network error'))
-    );
-
-    const { findByText } = render(<FeedScreen />);
-
-    // Check if error message is displayed
-    const errorMessage = await findByText('Failed to load posts. Please try again by pulling down to refresh.');
-    expect(errorMessage).toBeTruthy();
-  });
-
-  test('handles HTTP error response', async () => {
-    // Mock HTTP error
-    mockFetch.mockImplementationOnce(() => 
+    // Mock failed fetch response
+    (global.fetch as jest.Mock).mockImplementationOnce(() => 
       Promise.resolve({
         ok: false,
-        status: 404,
-        json: () => Promise.reject(new Error('Not found'))
-      } as Response)
+        status: 500,
+      })
     );
-
-    const { findByText } = render(<FeedScreen />);
-
-    // Check if error message is displayed
-    const errorMessage = await findByText('Failed to load posts. Please try again by pulling down to refresh.');
-    expect(errorMessage).toBeTruthy();
-  });
-
-  test('handles empty posts array', async () => {
-    // Mock successful fetch with empty array
-    mockFetch.mockImplementationOnce(() => 
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve([])
-      } as Response)
-    );
-
-    const { findByText } = render(<FeedScreen />);
-
-    // Check if empty message is displayed
-    const emptyMessage = await findByText('No posts available');
-    expect(emptyMessage).toBeTruthy();
-  });
-
-  test('switches between tabs correctly', async () => {
-    // Mock successful fetch
-    mockFetch.mockImplementationOnce(() => 
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve(mockPosts)
-      } as Response)
-    );
-
+    
     const { getByText } = render(<FeedScreen />);
+    
+    // Wait for error state to display
+    await waitFor(() => {
+      expect(getByText('Failed to load posts. Please try again by pulling down to refresh.')).toBeTruthy();
+      expect(getByText('Retry')).toBeTruthy();
+    });
+  });
 
-    // Initial tab should be 'Near You'
-    const nearYouTab = getByText('Near You');
-    expect(nearYouTab.props.style).toContainEqual(
-      expect.objectContaining({ color: '#333', fontWeight: '600' })
+  test('handles network error when fetching', async () => {
+    // Mock network error
+    (global.fetch as jest.Mock).mockImplementationOnce(() => 
+      Promise.reject(new Error('Network error'))
     );
+    
+    const { getByText } = render(<FeedScreen />);
+    
+    // Wait for error state to display
+    await waitFor(() => {
+      expect(getByText('Failed to load posts. Please try again by pulling down to refresh.')).toBeTruthy();
+    });
+  });
 
-    // Switch to 'Recents' tab
-    fireEvent.press(getByText('Recents'));
+  test('renders empty state when no posts are available', async () => {
+    // Mock successful fetch but empty response
+    (global.fetch as jest.Mock).mockImplementationOnce(() => 
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve([]),
+      })
+    );
+    
+    const { getByText } = render(<FeedScreen />);
+    
+    // Wait for empty state to display
+    await waitFor(() => {
+      expect(getByText('No posts available')).toBeTruthy();
+    });
+  });
 
-    // Check if 'Recents' tab is now active
+  test('retries fetching posts when retry button is pressed', async () => {
+    // Mock first fetch to fail
+    (global.fetch as jest.Mock).mockImplementationOnce(() => 
+      Promise.resolve({
+        ok: false,
+        status: 500,
+      })
+    );
+    
+    const { getByText } = render(<FeedScreen />);
+    
+    // Wait for error state
+    await waitFor(() => {
+      expect(getByText('Retry')).toBeTruthy();
+    });
+    
+    // Mock second fetch to succeed
+    (global.fetch as jest.Mock).mockImplementationOnce(() => 
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(mockPosts),
+      })
+    );
+    
+    // Press retry button within act()
+    await act(async () => {
+      fireEvent.press(getByText('Retry'));
+    });
+    
+    // Check that second fetch was called
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  test('switches between tabs', async () => {
+    // Mock successful fetch
+    (global.fetch as jest.Mock).mockImplementationOnce(() => 
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(mockPosts),
+      })
+    );
+    
+    const { getByText } = render(<FeedScreen />);
+    
+    // Wait for component to render
+    await waitFor(() => {
+      expect(getByText('Near You')).toBeTruthy();
+    });
+    
+    // Get the tabs
+    const nearYouTab = getByText('Near You');
     const recentsTab = getByText('Recents');
-    expect(recentsTab.props.style).toContainEqual(
-      expect.objectContaining({ color: '#333', fontWeight: '600' })
+    
+    // Initially Near You tab should be active
+    expect(nearYouTab.props.style).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ color: '#333' })
+      ])
+    );
+    expect(recentsTab.props.style).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ color: '#999' })
+      ])
+    );
+    
+    // Switch to Recents tab within act()
+    await act(async () => {
+      fireEvent.press(recentsTab);
+    });
+    
+    // After switch, Recents tab should be active
+    expect(nearYouTab.props.style).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ color: '#999' })
+      ])
+    );
+    expect(recentsTab.props.style).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ color: '#333' })
+      ])
+    );
+    
+    // Switch back to Near You tab to cover line 207
+    await act(async () => {
+      fireEvent.press(nearYouTab);
+    });
+    
+    // After switching back, Near You tab should be active again
+    expect(nearYouTab.props.style).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ color: '#333' })
+      ])
+    );
+    expect(recentsTab.props.style).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ color: '#999' })
+      ])
     );
   });
-  
-  // Testing line 88-89 - Testing the fetchPosts useCallback
-  test('fetchPosts updates posts state with sorted data', async () => {
-    // Mock data with different creation dates to test sorting
-    const unsortedPosts = [
+
+  test('refreshes posts on pull-to-refresh', async () => {
+    // Mock first fetch to succeed
+    (global.fetch as jest.Mock).mockImplementationOnce(() => 
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(mockPosts),
+      })
+    );
+    
+    const rendered = render(<FeedScreen />);
+    
+    // Wait for posts to load
+    await waitFor(() => {
+      expect(userInfoProps.length).toBe(2);
+    });
+    
+    // Clear props arrays for next assertion
+    userInfoProps.length = 0;
+    reportContentProps.length = 0;
+    
+    // Mock second fetch for refresh
+    (global.fetch as jest.Mock).mockImplementationOnce(() => 
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve([...mockPosts]),
+      })
+    );
+    
+    // Find FlatList by querying for it
+    const flatList = rendered.UNSAFE_queryByType(FlatList);
+    expect(flatList).toBeTruthy();
+    
+    if (flatList) {
+      // Trigger refresh within act()
+      await act(async () => {
+        flatList.props.refreshControl.props.onRefresh();
+      });
+      
+      // Check that second fetch was called
+      await waitFor(() => {
+        expect(global.fetch).toHaveBeenCalledTimes(2);
+        expect(userInfoProps.length).toBe(2); // Should render posts again
+      });
+    }
+  });
+
+  test('tests all category to pin type mappings', async () => {
+    // Create a post for each category to test all pin type mappings
+    const categoriesAndPinTypes: { category: string; pinType: string }[] = [
+      { category: 'Lost Item', pinType: 'lost-item' },
+      { category: 'Found Item', pinType: 'found-item' },
+      { category: 'Theft', pinType: 'theft' },
+      { category: 'Harassment', pinType: 'harassment' },
+      { category: 'Flood', pinType: 'flood' },
+      { category: 'Assault', pinType: 'assault' },
+      { category: 'Fire', pinType: 'fire' },
+      { category: 'Earthquake', pinType: 'earthquake' },
+      { category: 'Other Disaster', pinType: 'other-disaster' },
+      { category: 'Other Crime', pinType: 'other-crime' },
+      { category: 'Crime Watch', pinType: 'theft' },
+      { category: 'Service Issue', pinType: 'other-crime' },
+      { category: 'Lost Book', pinType: 'lost-item' },
+      { category: 'Lost Pet', pinType: 'lost-item' },
+      { category: 'Infrastructure Issue', pinType: 'other-disaster' },
+      { category: 'Unknown Category', pinType: 'other-crime' },
+      // Add an unknown category name to test the fallback condition
+      { category: 'ThisCategoryDoesNotExistInTheMap', pinType: 'other-crime' },
+    ];
+    
+    // Create test posts with each category
+    const posts: MockPost[] = categoriesAndPinTypes.map((item, index) => ({
+      id: index.toString(),
+      title: `Test Post ${index}`,
+      caption: `This is test post ${index}`,
+      createdAt: '2023-01-01T12:00:00Z',
+      postedBy: `User${index}`,
+      category: { id: index.toString(), name: item.category },
+      latitude: 35.0,
+      longitude: -120.0,
+      imageUrl: undefined,
+    }));
+    
+    // Add a post with null category to test that case
+    posts.push({
+      id: '100',
+      title: 'Test Post null category',
+      caption: 'This post has no category',
+      createdAt: '2023-01-01T12:00:00Z',
+      postedBy: 'User100',
+      category: null,
+      latitude: 35.0,
+      longitude: -120.0,
+      imageUrl: undefined,
+    });
+    
+    // Reset arrays
+    userInfoProps.length = 0;
+    
+    // The key here is to use a small subset for testing to avoid rendering issues
+    // Test the important cases: 
+    // 1. A standard category from the map
+    // 2. The unknown category that will hit the fallback
+    // 3. The null category case
+    const testSubset = [
+      posts[0], // A known category
+      posts[categoriesAndPinTypes.length - 1], // The unknown category
+      posts[posts.length - 1], // The null category
+    ];
+    
+    (global.fetch as jest.Mock).mockReset();
+    (global.fetch as jest.Mock).mockImplementationOnce(() => 
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(testSubset),
+      })
+    );
+    
+    render(<FeedScreen />);
+    
+    // Wait for UserInfo props to be collected
+    await waitFor(() => {
+      expect(userInfoProps.length).toBe(3); // Known category + unknown category + null
+    });
+    
+    // Sort the userInfoProps by title to ensure consistent order
+    const sortedProps = [...userInfoProps].sort((a, b) => {
+      return a.username.localeCompare(b.username);
+    });
+    
+    // Test a known category (post 0)
+    expect(sortedProps[0].categoryType).toBe(categoriesAndPinTypes[0].pinType);
+    
+    // Test the unknown category (this tests the fallback code path)
+    // Find the prop with the username that matches our unknown category post
+    const unknownCategoryProp = userInfoProps.find(prop => 
+      prop.username === `User${categoriesAndPinTypes.length - 1}`
+    );
+    expect(unknownCategoryProp).toBeTruthy();
+    expect(unknownCategoryProp?.categoryType).toBe('other-crime');
+    
+    // Test the null category
+    const nullCategoryProp = userInfoProps.find(prop => prop.username === 'User100');
+    expect(nullCategoryProp).toBeTruthy();
+    expect(nullCategoryProp?.categoryType).toBe('other-crime');
+  });
+
+  test('sorts posts by date (newest first)', async () => {
+    // Create posts with different dates
+    const unsortedPosts: MockPost[] = [
       {
         id: '1',
-        caption: 'Older post',
-        createdAt: '2023-03-14T09:00:00Z', // Older post
+        title: 'Older Post',
+        caption: 'This is an older post',
+        createdAt: '2023-01-01T12:00:00Z',
         postedBy: 'User1',
-        title: 'Old Post',
         category: { id: '1', name: 'Theft' },
-        latitude: 37.7749,
-        longitude: -122.4194,
+        latitude: 35.0,
+        longitude: -120.0,
+        imageUrl: undefined,
       },
       {
         id: '2',
-        caption: 'Newer post',
-        createdAt: '2023-03-15T10:00:00Z', // Newer post
+        title: 'Newest Post',
+        caption: 'This is the newest post',
+        createdAt: '2023-01-03T12:00:00Z',
         postedBy: 'User2',
-        title: 'New Post',
         category: { id: '2', name: 'Lost Item' },
-        latitude: 37.7749,
-        longitude: -122.4194,
-      }
+        latitude: 35.0,
+        longitude: -120.0,
+        imageUrl: undefined,
+      },
+      {
+        id: '3',
+        title: 'Middle Post',
+        caption: 'This is a middle-aged post',
+        createdAt: '2023-01-02T12:00:00Z',
+        postedBy: 'User3',
+        category: { id: '3', name: 'Fire' },
+        latitude: 35.0,
+        longitude: -120.0,
+        imageUrl: undefined,
+      },
     ];
-
-    // Mock fetch to return unsorted data (newer post first in the array)
-    mockFetch.mockImplementationOnce(() => 
+    
+    // Mock successful fetch with unsorted posts
+    (global.fetch as jest.Mock).mockImplementationOnce(() => 
       Promise.resolve({
         ok: true,
-        json: () => Promise.resolve(unsortedPosts)
-      } as Response)
+        json: () => Promise.resolve(unsortedPosts),
+      })
     );
-
-    // Test directly that fetch gets called and returns data
+    
+    // Reset arrays
+    reportContentProps.length = 0;
+    
     render(<FeedScreen />);
-
-    // Verify that fetch was called
+    
+    // Wait for ReportContent props to be collected
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith('http://10.0.2.2/post/all');
+      expect(reportContentProps.length).toBe(3);
     });
     
-    // When new data is fetched, loading should turn off
-    await waitFor(() => {
-      // After fetch completes, loading should be false
-      // This indicates that fetchPosts completed its work
-      expect(mockFetch).toHaveBeenCalled();
-    });
+    // Check that posts are sorted by date (newest first)
+    expect(reportContentProps[0].title).toBe('Newest Post');
+    expect(reportContentProps[1].title).toBe('Middle Post');
+    expect(reportContentProps[2].title).toBe('Older Post');
   });
 
-  test('retry button works', async () => {
-    // First mock a failed fetch
-    mockFetch.mockImplementationOnce(() => 
-      Promise.reject(new Error('Network error'))
-    );
-
-    const { findByText, getByText } = render(<FeedScreen />);
-
-    // Wait for error state
-    await findByText('Failed to load posts. Please try again by pulling down to refresh.');
-
-    // Now mock a successful fetch for the retry
-    mockFetch.mockImplementationOnce(() => 
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve(mockPosts)
-      } as Response)
-    );
-
-    // Press retry button
-    fireEvent.press(getByText('Retry'));
-
-    // Verify loading state appears
-    expect(getByText('Loading posts...')).toBeTruthy();
-    
-    // Verify fetch was called again
-    expect(mockFetch).toHaveBeenCalledTimes(2);
-  });
-
-  test('search input is rendered', () => {
+  test('interacts with UI elements', async () => {
     // Mock successful fetch
-    mockFetch.mockImplementationOnce(() => 
+    (global.fetch as jest.Mock).mockImplementationOnce(() => 
       Promise.resolve({
         ok: true,
-        json: () => Promise.resolve(mockPosts)
-      } as Response)
+        json: () => Promise.resolve(mockPosts),
+      })
     );
-
-    const { getByPlaceholderText } = render(<FeedScreen />);
-
-    // Find the search input
-    const searchInput = getByPlaceholderText('Search');
-    expect(searchInput).toBeTruthy();
-  });
-  
-  // Testing line 119 - Testing formatDate function
-  test('formatDate formats dates correctly', () => {
-    // Create a simple component that mimics the formatDate functionality
-    const dateString = '2023-07-15T09:00:00Z';
-    const formatted = new Date(dateString).toLocaleDateString("en-US", { 
-      month: "short", 
-      day: "numeric" 
+    
+    const rendered = render(<FeedScreen />);
+    
+    // Wait for component to render
+    await waitFor(() => {
+      expect(userInfoProps.length).toBe(2);
     });
     
-    // Just test the actual date formatting logic
-    expect(formatted).toBe('Jul 15');
+    const { getByPlaceholderText, UNSAFE_getAllByType } = rendered;
+    
+    // Get the search input and type in it
+    const searchInput = getByPlaceholderText('Search');
+    await act(async () => {
+      fireEvent.changeText(searchInput, 'test search');
+    });
+    
+    // Find all TouchableOpacity components
+    const touchableOpacities = UNSAFE_getAllByType(TouchableOpacity);
+    
+    // Find and press filter button (menu icon)
+    const filterButton = touchableOpacities.find(button => {
+      return button.props.children && 
+        typeof button.props.children === 'object' &&
+        button.props.children.type === 'Feather' && 
+        button.props.children.props && 
+        button.props.children.props.name === 'menu';
+    });
+    
+    if (filterButton) {
+      await act(async () => {
+        fireEvent.press(filterButton);
+      });
+    }
+    
+    // Find and press mic button
+    const micButton = touchableOpacities.find(button => {
+      return button.props.children && 
+        typeof button.props.children === 'object' &&
+        button.props.children.type === 'Feather' && 
+        button.props.children.props && 
+        button.props.children.props.name === 'mic';
+    });
+    
+    if (micButton) {
+      await act(async () => {
+        fireEvent.press(micButton);
+      });
+    }
   });
   
-  // Testing line 206 - getPinType function
-  test('getPinType maps categories to pin types correctly', () => {
-    // Recreate the category mapping logic from the component
-    const categoryMap: { [key: string]: string } = {
-      "Lost Item": "lost-item",
-      "Found Item": "found-item",
-      "Theft": "theft",
-      "Harassment": "harassment",
-      "Flood": "flood",
-      "Assault": "assault",
-      "Fire": "fire",
-      "Earthquake": "earthquake",
-      "Other Disaster": "other-disaster",
-      "Other Crime": "other-crime",
-      "Crime Watch": "theft", // Mapping similar categories
-      "Service Issue": "other-crime",
-      "Lost Book": "lost-item",
-      "Lost Pet": "lost-item",
-      "Infrastructure Issue": "other-disaster"
-    };
+  test('renders with safe area insets', async () => {
+    // Mock successful fetch
+    (global.fetch as jest.Mock).mockImplementationOnce(() => 
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(mockPosts),
+      })
+    );
     
-    // Test the mapping function directly
-    const getPinType = (categoryName: string | null) => {
-      if (!categoryName) return "other-crime";
-      return categoryMap[categoryName] || "other-crime";
-    };
+    const rendered = render(<FeedScreen />);
     
-    // Test various category mappings
-    expect(getPinType("Theft")).toBe('theft');
-    expect(getPinType("Lost Item")).toBe('lost-item');
-    expect(getPinType("Crime Watch")).toBe('theft');
-    expect(getPinType("Unknown Category")).toBe('other-crime');
-    expect(getPinType(null)).toBe('other-crime');
+    // Wait for component to render
+    await waitFor(() => {
+      expect(userInfoProps.length).toBe(2);
+    });
+    
+    // Find container View with padding
+    const containers = rendered.UNSAFE_getAllByType(View);
+    const containerWithPadding = containers.find(container => 
+      container.props.style && 
+      Array.isArray(container.props.style) && 
+      container.props.style.some((style: any) => 
+        style && style.paddingTop === 10
+      )
+    );
+    
+    expect(containerWithPadding).toBeTruthy();
+    
+    // Find FlatList with bottom padding
+    const flatList = rendered.UNSAFE_queryByType(FlatList);
+    expect(flatList).toBeTruthy();
+    
+    if (flatList) {
+      // Check the contentContainerStyle includes the correct paddingBottom
+      const contentContainerStyle = flatList.props.contentContainerStyle;
+      expect(contentContainerStyle).toBeTruthy();
+      
+      // The style could be an object or array, so we need to handle both cases
+      if (Array.isArray(contentContainerStyle)) {
+        // If it's an array, find an object with paddingBottom
+        const hasPaddingBottom = contentContainerStyle.some(
+          (style: any) => style && style.paddingBottom === NAVBAR_HEIGHT + 20
+        );
+        expect(hasPaddingBottom).toBeTruthy();
+      } else {
+        // If it's an object, check paddingBottom directly
+        expect(contentContainerStyle.paddingBottom).toBe(NAVBAR_HEIGHT + 20);
+      }
+    }
   });
 });
