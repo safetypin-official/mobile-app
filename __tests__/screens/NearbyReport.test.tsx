@@ -3,6 +3,13 @@ import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import NearbyReport from '@/app/nearbyReport';
 import { Alert } from 'react-native';
 
+// Mock expo-font to avoid the error
+jest.mock('expo-font', () => ({
+  loadAsync: jest.fn(),
+  isLoaded: jest.fn().mockReturnValue(true),
+  isLoading: jest.fn().mockReturnValue(false),
+}));
+
 jest.spyOn(Alert, 'alert');
 
 describe('NearbyReport', () => {

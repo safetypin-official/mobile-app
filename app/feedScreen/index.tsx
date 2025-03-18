@@ -14,8 +14,8 @@ import { Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Import components from NearbyReport
-import UserInfo from "@/components/post/UserInfo";
-import ReportContent, { TagKey } from "@/components/post/ReportContent";
+import UserInfo from "@/components/displays/post/UserInfo";
+import ReportContent, { TagKey } from "@/components/displays/post/ReportContent";
 
 // Reusing types from your existing code
 type Category = {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, TouchableWithoutFeedback } from "react-native";
 import MoreOptionsButton from "@/components/post/MoreOptionsButton";
-import Toast from "./Toast";
+import Toast from "../../post/Toast";
 import Pin from "@/assets/Pin";
 
 // Update the props interface to include category type
@@ -68,7 +68,7 @@ const UserInfo: React.FC<{
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback>
               <View style={styles.modalContent}>
-                <MoreOptionsButton closeModal={() => setModalVisible(false)} onSendMessage={() => console.log("Send Message")} onReport={handleReport} />
+                <MoreOptionsButton onSendMessage={() => console.log("Send Message")} onReport={handleReport} />
               </View>
             </TouchableWithoutFeedback>
           </View>
