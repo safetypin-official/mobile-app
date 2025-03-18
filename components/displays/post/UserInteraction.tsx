@@ -5,7 +5,7 @@ import { SvgXml } from 'react-native-svg';
 import {
     likeIcon,
     dislikeIcon
-} from './userInteractions';
+} from '../../../assets/userInteractions';
 
 interface UserInteractionProps {
     type?: string;

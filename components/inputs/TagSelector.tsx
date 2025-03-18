@@ -8,7 +8,7 @@ interface Tag {
 }
 
 export const TAGS: Tag[] = [
-  { id: '1b779770-6f91-426b-b3dc-463d7f323289', label: 'Lost Item', color: '#9b2c2c' },
+  { id: 'ba85f370-0642-48c9-b0de-f175b5555ecb', label: 'Lost Item', color: '#9b2c2c' },
   { id: '25514861-2c66-4f3a-8d93-8725a2b881b8', label: 'Found Item', color: '#38a169' },
   { id: '1899e1c1-587b-408f-a19d-19e20141901e', label: 'Theft', color: '#4a4a4a' },
   { id: 'b0112f3c-592d-4e9b-b6a6-95ca6c8a2162', label: 'Harassment', color: '#9b2c2c' },

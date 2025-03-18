@@ -12,7 +12,7 @@ import {
     otherDisasterTag,
     earthquakeTag,
     otherCrimeTag
-} from './tags';
+} from '../../../assets/tags';
 
 interface TagProps {
     type?: string;

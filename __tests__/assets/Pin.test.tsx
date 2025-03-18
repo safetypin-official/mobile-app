@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import Pin from '@/assets/Pin';
+import Pin from '@/components/displays/Pin';
 import {
     lostItemPin,
     foundItemPin,

@@ -14,7 +14,7 @@ import {
 import ReportTags, { TAG_KEYS } from "./ReportTags";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import UserInteraction from '@/assets/UserInteractionExport';
+import UserInteraction from '@/components/displays/post/UserInteraction';
 
 type TagKey = (typeof TAG_KEYS)[number];
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Image, Modal, TouchableOpacity, StyleSheet, TouchableWithoutFeedback } from "react-native";
-import MoreOptionsButton from "@/components/post/MoreOptionsButton";
-import Toast from "@/components/post/Toast";
+import MoreOptionsButton from "@/components/buttons/post/MoreOptionsButton";
+import Toast from "@/components/toast/Toast";
 
 interface CommentSectionProps {
     avatarUrl: string;
