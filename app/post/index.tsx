@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import Button from '@/components/buttons/Button';
 import InputField from '@/components/inputs/InputField';
-import TagSelector from '@/components/inputs/TagSelector';
+import TagDropdown from '@/components/inputs/TagDropdown';
 import { router } from 'expo-router';
 import { SvgXml } from 'react-native-svg';
 import { attachments, cross } from '@/assets/icons';
@@ -14,7 +14,8 @@ const PostFormScreen = () => {
     const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
-    const [tags, setTags] = useState<string[]>([]);
+    const [tag, setTag] = useState<string>('');
+
 
     useEffect(() => {
         (async () => {
@@ -34,10 +35,14 @@ const PostFormScreen = () => {
 
     const handleClose = () => {
         router.push('/map');
+        setLocation(null);
+        setTitle('');
+        setDescription('');
+        setTag('');
     };
 
     const handleSubmit = () => {
-        console.log({ title, description, tags, latitude: location?.latitude, longitude: location?.longitude });
+        console.log({ title, description, tag, latitude: location?.latitude, longitude: location?.longitude });
         handleClose();
     };
 
@@ -51,7 +56,7 @@ const PostFormScreen = () => {
                     <Text style={styles.header}>New Report</Text>
                 </View>
                 <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 8 }}>
-                    <Button children="Post" onPress={handleSubmit} />
+                    <Button onPress={handleSubmit}>Post</Button>
                 </View>
             </View>
 
@@ -70,9 +75,9 @@ const PostFormScreen = () => {
                     <InputField label="Title" placeholder="Enter title" labelColor='#904a47' onChangeText={setTitle}/>
                 </View>
 
-                <View style={styles.inputSection}>
-                    <Text style={styles.label}>Tags</Text>
-                    <TagSelector selectedTags={tags} onTagChange={setTags} />
+                <View style={styles.inputSectionTag}>
+                    <Text style={styles.label}>Tag</Text>
+                    <TagDropdown selectedTag={tag} onTagChange={setTag} />
                 </View>
 
                 <View style={styles.inputSection}>
@@ -125,6 +130,11 @@ const styles = StyleSheet.create({
     inputSection: {
         marginBottom: 12,
         width: "100%",
+    },
+    inputSectionTag: {
+        marginBottom: 12,
+        width: "100%",
+        zIndex: 500,
     },
 });
 
