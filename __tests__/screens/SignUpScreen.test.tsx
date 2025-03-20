@@ -20,7 +20,6 @@ jest.mock("@/utils/auth", () => ({
 
 // Mock the SignUpForm component
 jest.mock("@/components/forms/SignUpForm", () => {
-  const React = require("react");
   const { View, TouchableOpacity, Text, TextInput } = require("react-native");
   
   return function MockSignUpForm(props: { onSignUp: (arg0: { username: string; email: string; dateOfBirth: string; password: string; }) => void; testID: any; onLogIn: any; onGoogleAuth: any; onAppleAuth: any; }) {
