@@ -25,11 +25,11 @@ jest.mock("expo-location", () => ({
 
 describe("PostFormScreen", () => {
   it("renders all input fields and labels", async () => {
-    const { getByText, getByPlaceholderText } = render(<PostFormScreen />);
+    const { getByText, getByPlaceholderText, getByTestId } = render(<PostFormScreen />);
 
     expect(getByText("New Report")).toBeTruthy();
     expect(getByText("Location")).toBeTruthy();
-    expect(getByText("Tags")).toBeTruthy();
+    expect(getByTestId("tag-dropdown")).toBeTruthy();
     expect(getByText("Attachments")).toBeTruthy();
     expect(getByPlaceholderText("Enter title")).toBeTruthy();
     expect(getByPlaceholderText("Enter description")).toBeTruthy();
@@ -66,17 +66,6 @@ describe("PostFormScreen", () => {
     expect(getByDisplayValue("Test Description")).toBeTruthy();
   });
 
-  it("handles tag selection correctly", () => {
-    const { getByText } = render(<PostFormScreen />);
-    const tag = getByText("Lost Item");
-
-    fireEvent.press(tag);
-    expect(tag.parent?.parent?.props.style.backgroundColor).toBe("#9b2c2c");
-    
-    fireEvent.press(tag);
-    expect(tag.parent?.parent?.props.style.backgroundColor).toBe("#ddd");
-  });
-
   it("navigates back when close button is pressed", () => {
     const { getByTestId } = render(<PostFormScreen />);
     fireEvent.press(getByTestId("close-button"));
@@ -95,4 +84,22 @@ describe("PostFormScreen", () => {
       expect(router.push).toHaveBeenCalledWith("/map");
     });
   });
+
+  it("handles location permission denial correctly", async () => {
+    // Override the mock to simulate denied permissions
+    jest.spyOn(require("expo-location"), "requestForegroundPermissionsAsync").mockResolvedValueOnce({
+      status: "denied",
+    });
+  
+    const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {}); // Suppress console logs
+  
+    render(<PostFormScreen />);
+  
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith("Permission to access location was denied");
+    });
+  
+    consoleSpy.mockRestore(); // Restore console log behavior
+  });
+  
 });
