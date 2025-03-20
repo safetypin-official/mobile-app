@@ -17,10 +17,6 @@ describe('TagSelectorModal', () => {
   const mockOnClose = jest.fn();
   const mockOnSelectTag = jest.fn();
   
-//   beforeEach(() => {
-//     jest.clearAllMocks(); // Reset mocks before each test
-//   });
-
   it('renders correctly when visible', () => {
     const { getByTestId } = render(
       <TagSelectorModal
