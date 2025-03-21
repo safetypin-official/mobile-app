@@ -30,35 +30,44 @@ const Pin: React.FC<PinProps> = ({
     let pinXml;
 
     switch (type) {
-        case 'lost-item':
+        case 'Lost Item':
             pinXml = lostItemPin;
             break;
-        case 'found-item':
+        case 'Found Item':
             pinXml = foundItemPin;
             break;
-        case 'theft':
+        case 'Theft':
             pinXml = theftPin;
             break;
-        case 'harassment':
+        case 'Harassment':
             pinXml = harassmentPin;
             break;
-        case 'flood':
+        case 'Flood':
             pinXml = floodPin;
             break;
-        case 'assault':
+        case 'Assault':
             pinXml = assaultPin;
             break;
-        case 'fire':
+        case 'Fire':
             pinXml = firePin;
             break;
-        case 'other-disaster':
+        case 'Other Disaster':
             pinXml = otherDisasterPin;
             break;
-        case 'earthquake':
+        case 'Earthquake':
             pinXml = earthquakePin;
             break;
-        case 'other-crime':
+        case 'Other Crime':
             pinXml = otherCrimePin;
+            break;
+        case 'Lost Book':
+            pinXml = lostItemPin;
+            break;
+        case 'Lost Pet':
+            pinXml = lostItemPin;
+            break;
+        case 'Infrastructure Issue':
+            pinXml = otherDisasterPin;
             break;
         default:
             pinXml = otherCrimePin;
