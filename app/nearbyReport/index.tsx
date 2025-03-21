@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import UserInfo from "@/components/displays/post/UserInfo";
 import ReportContent, { TagKey } from "@/components/displays/post/ReportContent";
-import CommentInput from "@/components/inputs/post/ComponentInput";
+import CommentInput from "@/components/inputs/post/CommentInput";
 
 // Add type definition for the post prop
 type Category = {
