@@ -8,9 +8,7 @@ const SignUpOTPScreen = () => {
   const searchParams = useSearchParams();
   const email = searchParams.get('email');
 
-  const handleVerify = async (otp: string) => {
-    Alert.alert("Entered OTP", `Your OTP is: ${otp}`);
-    
+  const handleVerify = async (otp: string) => {    
     try {
       if (!email) {
         throw new Error("Email is missing");
