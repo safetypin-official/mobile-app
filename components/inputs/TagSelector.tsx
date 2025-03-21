@@ -1,31 +1,70 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 
 interface Tag {
   id: string;
-  label: string;
+  name: string;
   color: string;
 }
 
-export const TAGS: Tag[] = [
-  { id: 'ba85f370-0642-48c9-b0de-f175b5555ecb', label: 'Lost Item', color: '#9b2c2c' },
-  { id: '25514861-2c66-4f3a-8d93-8725a2b881b8', label: 'Found Item', color: '#38a169' },
-  { id: '1899e1c1-587b-408f-a19d-19e20141901e', label: 'Theft', color: '#4a4a4a' },
-  { id: 'b0112f3c-592d-4e9b-b6a6-95ca6c8a2162', label: 'Harassment', color: '#9b2c2c' },
-  { id: '02bbc663-8a85-4d5c-a499-3ce42721beb3', label: 'Flood', color: '#3182ce' },
-  { id: '00af1921-4328-4f5c-a6e6-8da62881accc', label: 'Assault', color: '#9b2c2c' },
-  { id: 'f55115e5-d775-40f2-9c80-05168497af69', label: 'Fire', color: '#e53e3e' },
-  { id: '001f9419-afc2-4a9a-93d1-f37df4594934', label: 'Other Natural Disasters', color: '#553c3c' },
-  { id: '85c30371-47f3-4975-9ec6-8ae87444b489', label: 'Earthquake', color: '#b7791f' },
-  { id: '32f21fa7-ca4f-4dbe-9e2c-97d37273dcbb', label: 'Other Crime', color: '#4a4a4a' },
+interface ApiResponse {
+  success: boolean;
+  message: string;
+  data: Array<{
+    id: string;
+    name: string;
+  }>;
+}
+
+const TAG_COLORS = [
+  '#9b2c2c', '#38a169', '#4a4a4a', '#3182ce', 
+  '#e53e3e', '#553c3c', '#b7791f', '#805ad5',
+  '#dd6b20', '#2c7a7b'
 ];
 
 interface TagSelectorProps {
   selectedTag: string | null;
   onTagChange: (tagId: string | null) => void;
+  testID?: string; // Add testID prop
 }
 
-const TagSelector: React.FC<TagSelectorProps> = ({ selectedTag, onTagChange }) => {
+const TagSelector: React.FC<TagSelectorProps> = ({ selectedTag, onTagChange, testID }) => {
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Fetch tags from API when component mounts
+    fetchTags();
+  }, []);
+
+  const fetchTags = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('http://10.0.2.2/post/category');
+      const data: ApiResponse = await response.json();
+      
+      if (data.success) {
+        // Map API data to Tag format, assigning colors based on index
+        const tagsWithColors = data.data.map((item, index) => ({
+          id: item.id,
+          name: item.name,
+          color: TAG_COLORS[index % TAG_COLORS.length]
+        }));
+        
+        setTags(tagsWithColors);
+        setError(null);
+      } else {
+        setError(data.message || 'Failed to fetch tags');
+      }
+    } catch (err) {
+      setError('Error connecting to the server');
+      console.error('Error fetching tags:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const selectTag = (tagId: string) => {
     // If the tag is already selected, deselect it
     if (selectedTag === tagId) {
@@ -36,9 +75,33 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTag, onTagChange }) =
     }
   };
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer} testID={testID ? `${testID}-loading` : "tag-selector-loading"}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Loading tags...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer} testID={testID ? `${testID}-error` : "tag-selector-error"}>
+        <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity 
+          style={styles.retryButton} 
+          onPress={fetchTags}
+          testID={testID ? `${testID}-retry` : "tag-selector-retry"}
+        >
+          <Text style={styles.retryButtonText}>Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      {TAGS.map((tag) => (
+    <View style={styles.container} testID={testID || "tag-selector"}>
+      {tags.map((tag) => (
         <TouchableOpacity
           key={tag.id}
           style={[
@@ -46,8 +109,9 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTag, onTagChange }) =
             { backgroundColor: selectedTag === tag.id ? tag.color : '#ddd' },
           ]}
           onPress={() => selectTag(tag.id)}
+          testID={`${testID ? testID : "tag-selector"}-tag-${tag.id}`}
         >
-          <Text style={styles.tagText}>{tag.label}</Text>
+          <Text style={styles.tagText}>{tag.name}</Text>
         </TouchableOpacity>
       ))}
     </View>
@@ -66,6 +130,27 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   tagText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  loadingContainer: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  errorContainer: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  errorText: {
+    color: '#e53e3e',
+    marginBottom: 10,
+  },
+  retryButton: {
+    backgroundColor: '#3182ce',
+    padding: 10,
+    borderRadius: 5,
+  },
+  retryButtonText: {
     color: 'white',
     fontWeight: 'bold',
   },
