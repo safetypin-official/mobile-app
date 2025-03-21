@@ -83,25 +83,26 @@ describe("Layout", () => {
   it("updates activeTab when Map button is pressed", () => {
     (usePathname as jest.Mock).mockReturnValue("/home");
     const { getByTestId } = render(<Layout />);
+    
+    // Clear previous calls
+    (router.replace as jest.Mock).mockClear();
+    
     fireEvent.press(getByTestId("map-button"));
     expect(NavContainer).toHaveBeenCalledWith(expect.objectContaining({ activeTab: "map" }), {});
-    expect(router.replace).toHaveBeenCalledWith("/map");
   });
 
   it("navigates to post screen when Map button is pressed while already on map tab", () => {
     (usePathname as jest.Mock).mockReturnValue("/map");
     const { getByTestId } = render(<Layout />);
     
-    // Reset the mock to clear previous calls
-    (NavContainer as jest.Mock).mockClear();
-    
-    // Force re-render with map as active tab
-    fireEvent.press(getByTestId("map-button"));
+    // NavContainer will already be rendered with map as the active tab
     expect(NavContainer).toHaveBeenCalledWith(expect.objectContaining({ activeTab: "map" }), {});
     
-    // Press map button again while already on map tab
+    // Clear previous calls to NavContainer and router methods
     (NavContainer as jest.Mock).mockClear();
     (router.push as jest.Mock).mockClear();
+    
+    // Press map button while already on map tab
     fireEvent.press(getByTestId("map-button"));
     
     // Verify router.push was called with "/post"
@@ -154,5 +155,29 @@ describe("Layout", () => {
       const { queryByTestId } = render(<Layout />);
       expect(queryByTestId("nav-container")).toBeNull();
     });
+  });
+
+  it("navigates to map screen and sets activeTab to map when Map button is pressed while not on map tab", () => {
+    // Mock the pathname to be something other than /map
+    (usePathname as jest.Mock).mockReturnValue("/feedScreen");
+    
+    // Render the component
+    const { getByTestId } = render(<Layout />);
+    
+    // Clear previous calls to NavContainer and router methods
+    (NavContainer as jest.Mock).mockClear();
+    (router.replace as jest.Mock).mockClear();
+    
+    // Press the map button
+    fireEvent.press(getByTestId("map-button"));
+    
+    // Verify NavContainer was called with the correct activeTab
+    expect(NavContainer).toHaveBeenCalledWith(
+      expect.objectContaining({ activeTab: "map" }), 
+      {}
+    );
+    
+    // Verify router.replace was called with "/map"
+    expect(router.replace).toHaveBeenCalledWith("/map");
   });
 });
