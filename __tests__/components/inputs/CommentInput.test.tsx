@@ -1,6 +1,6 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
-import CommentInput from "../../../components/inputs/CommentInput";
+import CommentInput from "../../../components/inputs/post/CommentInput";
 import { Platform } from "react-native";
 
 describe("CommentInput Component", () => {
