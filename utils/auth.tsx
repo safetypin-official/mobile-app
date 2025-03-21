@@ -167,8 +167,6 @@ const parseAndSaveAuthResponse = async (response: Response, authType: string) =>
     if (data.data) {
       await saveAuthData(data.data.tokenValue);
       console.log(`${authType} authentication data saved`);
-    } else {
-      console.warn('Token or userId missing in response');
     }
     
     console.log(data.message || `${authType} authentication successful`);
@@ -183,9 +181,6 @@ const handleAuthError = (error: any) => {
   if (error instanceof AuthError || error instanceof NetworkError) {
     console.error(`${error.name}:`, error.message);
     Alert.alert('Authentication Error', error.message);
-  } else {
-    console.error("Unexpected error:", error.message, error.stack);
-    Alert.alert('Authentication Error', 'An unexpected error occurred');
   }
   throw error;
 };
@@ -293,9 +288,6 @@ export const registerEmailPassword = async (email: string, password: string, nam
   } catch (error: any) {
     if (error instanceof NetworkError) {
       Alert.alert('Registration Error', error.message);
-    } else {
-      Alert.alert('Registration Error', 'An unexpected error occurred during registration');
-      console.error('Registration error:', error);
     }
     throw error;
   }
