@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1742541517669" clover="3.2.0">
-  <project timestamp="1742541517669" name="All files">
-    <metrics statements="640" coveredstatements="640" conditionals="284" coveredconditionals="284" methods="143" coveredmethods="142" elements="1067" coveredelements="1066" complexity="0" loc="640" ncloc="640" packages="14" files="38" classes="38"/>
+<coverage generated="1742543281325" clover="3.2.0">
+  <project timestamp="1742543281326" name="All files">
+    <metrics statements="640" coveredstatements="640" conditionals="284" coveredconditionals="284" methods="145" coveredmethods="142" elements="1069" coveredelements="1066" complexity="0" loc="640" ncloc="640" packages="15" files="38" classes="38"/>
     <package name="app">
       <metrics statements="52" coveredstatements="52" conditionals="14" coveredconditionals="14" methods="13" coveredmethods="13"/>
       <file name="_layout.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\app\_layout.tsx">
@@ -369,7 +369,7 @@
       </file>
     </package>
     <package name="components.buttons">
-      <metrics statements="22" coveredstatements="22" conditionals="21" coveredconditionals="21" methods="7" coveredmethods="7"/>
+      <metrics statements="14" coveredstatements="14" conditionals="21" coveredconditionals="21" methods="4" coveredmethods="4"/>
       <file name="Button.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\buttons\Button.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="11" count="9" type="cond" truecount="1" falsecount="0"/>
@@ -381,17 +381,6 @@
         <line num="12" count="1" type="cond" truecount="2" falsecount="0"/>
         <line num="13" count="4" type="stmt"/>
         <line num="20" count="1" type="stmt"/>
-      </file>
-      <file name="MoreOptionsButton.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\buttons\MoreOptionsButton.tsx">
-        <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
-        <line num="6" count="1" type="stmt"/>
-        <line num="14" count="1" type="stmt"/>
-        <line num="15" count="1" type="stmt"/>
-        <line num="20" count="1" type="stmt"/>
-        <line num="21" count="1" type="stmt"/>
-        <line num="34" count="1" type="stmt"/>
-        <line num="35" count="1" type="stmt"/>
-        <line num="46" count="1" type="stmt"/>
       </file>
       <file name="NavButton.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\buttons\NavButton.tsx">
         <metrics statements="5" coveredstatements="5" conditionals="15" coveredconditionals="15" methods="1" coveredmethods="1"/>
@@ -406,6 +395,20 @@
         <line num="11" count="3" type="cond" truecount="1" falsecount="0"/>
         <line num="12" count="193" type="stmt"/>
         <line num="19" count="3" type="stmt"/>
+      </file>
+    </package>
+    <package name="components.buttons.post">
+      <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+      <file name="MoreOptionsButton.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\buttons\post\MoreOptionsButton.tsx">
+        <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="15" count="1" type="stmt"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="35" count="1" type="stmt"/>
+        <line num="46" count="1" type="stmt"/>
       </file>
     </package>
     <package name="components.displays">
@@ -459,9 +462,9 @@
       </file>
     </package>
     <package name="components.displays.post">
-      <metrics statements="108" coveredstatements="108" conditionals="39" coveredconditionals="39" methods="34" coveredmethods="33"/>
+      <metrics statements="108" coveredstatements="108" conditionals="39" coveredconditionals="39" methods="36" coveredmethods="33"/>
       <file name="CommentSection.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\displays\post\CommentSection.tsx">
-        <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="8" coveredmethods="8"/>
+        <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="9" coveredmethods="8"/>
         <line num="17" count="1" type="stmt"/>
         <line num="27" count="24" type="stmt"/>
         <line num="28" count="24" type="stmt"/>
@@ -559,7 +562,7 @@
         <line num="60" count="12" type="stmt"/>
       </file>
       <file name="UserInfo.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\displays\post\UserInfo.tsx">
-        <metrics statements="14" coveredstatements="14" conditionals="1" coveredconditionals="1" methods="9" coveredmethods="8"/>
+        <metrics statements="14" coveredstatements="14" conditionals="1" coveredconditionals="1" methods="10" coveredmethods="8"/>
         <line num="18" count="1" type="stmt"/>
         <line num="29" count="24" type="stmt"/>
         <line num="30" count="24" type="stmt"/>

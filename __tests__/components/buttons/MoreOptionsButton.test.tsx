@@ -1,6 +1,6 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
-import MoreOptionsButton from "../../../components/buttons/MoreOptionsButton";
+import MoreOptionsButton from "@/components/buttons/post/MoreOptionsButton";
 
 jest.mock("@expo/vector-icons/Ionicons", () => ({
   __esModule: true,

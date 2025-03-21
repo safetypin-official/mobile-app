@@ -68,7 +68,7 @@ const UserInfo: React.FC<{
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback>
               <View style={styles.modalContent}>
-                <MoreOptionsButton onSendMessage={() => console.log("Send Message")} onReport={handleReport} />
+              <MoreOptionsButton closeModal={() => setModalVisible(false)} onSendMessage={() => console.log("Send Message")} onReport={handleReport} />
               </View>
             </TouchableWithoutFeedback>
           </View>

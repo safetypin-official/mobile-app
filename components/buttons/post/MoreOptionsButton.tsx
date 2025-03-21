@@ -8,20 +8,35 @@ const screenWidth = Dimensions.get("window").width;
 interface MoreOptionsButtonProps {
   onSendMessage: () => void;
   onReport: () => void;
+  closeModal: () => void;
 }
 
-const MoreOptionsButton: React.FC<MoreOptionsButtonProps> = ({ onSendMessage, onReport }) => {
+const MoreOptionsButton: React.FC<MoreOptionsButtonProps> = ({ onSendMessage, onReport, closeModal }) => {
   return (
     <View style={styles.frameParent}>
-      <TouchableOpacity style={styles.chatDotsParent} onPress={onSendMessage} testID="send-message">
+      <TouchableOpacity
+        style={styles.chatDotsParent}
+        onPress={() => {
+          onSendMessage();
+          closeModal();
+        }}
+        testID="send-message"
+      >
         <Ionicons name="chatbubble-ellipses-outline" size={16} color="black" />
         <Text style={styles.sendMessage}>Send Message</Text>
       </TouchableOpacity>
 
       <View style={styles.instanceChild} />
 
-      <TouchableOpacity style={styles.exclamationCircleParent} onPress={onReport} testID="report-post">
-        <AntDesign name="exclamationcircleo" size={16} color="#904a47" borderRadius = {100}/>
+      <TouchableOpacity
+        style={styles.exclamationCircleParent}
+        onPress={() => {
+          onReport();
+          closeModal();
+        }}
+        testID="report-post"
+      >
+        <AntDesign name="exclamationcircleo" size={16} color="#904a47" borderRadius={100} />
         <Text style={styles.report}>Report</Text>
       </TouchableOpacity>
     </View>
@@ -51,7 +66,7 @@ const styles = StyleSheet.create({
   },
   sendMessage: {
     fontSize: 14,
-    fontWeight: 500,
+    fontWeight: "500",
     color: "#4d4544",
     letterSpacing: 0.1,
     lineHeight: 20,
@@ -72,7 +87,7 @@ const styles = StyleSheet.create({
   report: {
     justifyContent: "center",
     fontSize: 14,
-    fontWeight: 500,
+    fontWeight: "500",
     color: "#904a47",
     letterSpacing: 0.1,
     lineHeight: 20,
