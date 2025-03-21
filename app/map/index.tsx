@@ -2,7 +2,8 @@ import { StyleSheet, View, Dimensions, Text, TouchableOpacity, ActivityIndicator
 import MapView, { PROVIDER_GOOGLE, MapPressEvent, LongPressEvent, Marker, Callout } from 'react-native-maps';
 import { useState, useEffect } from 'react';
 import * as Location from 'expo-location';
-import NearbyReport from '@/app/nearbyReport'; // Import NearbyReport component
+import NearbyReport from '@/app/nearbyReport';
+import Pin from '@/components/displays/Pin';
 
 const { width, height } = Dimensions.get('window');
 
@@ -36,26 +37,6 @@ const DEFAULT_LOCATION = {
   longitude: 106.8456,
   latitudeDelta: 0.0922,
   longitudeDelta: 0.0421,
-};
-
-// Function to get marker color based on category
-const getCategoryColor = (categoryName: string): string => {
-  switch (categoryName) {
-    case 'Lost Item':
-    case 'Lost Book':
-    case 'Lost Pet':
-      return '#FF5252'; // Red for lost items
-    case 'Found Item':
-      return '#4CAF50'; // Green for found items
-    case 'Infrastructure Issue':
-      return '#FFC107'; // Yellow for infrastructure issues
-    case 'Crime Watch':
-      return '#9C27B0'; // Purple for crime alerts
-    case 'Service Issue':
-      return '#2196F3'; // Blue for service issues
-    default:
-      return '#757575'; // Gray for others
-  }
 };
 
 export default function ExploreScreen() {
@@ -143,25 +124,6 @@ export default function ExploreScreen() {
     return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
   };
 
-  // Fetch post detail by ID
-  const fetchPostDetail = async (postId: string) => {
-    try {
-      const response = await fetch(`http://10.0.2.2/post/${postId}`);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      console.log('Fetched post detail:', data);
-      setSelectedPost(data);
-      setShowReport(true);
-    } catch (error) {
-      console.error('Error fetching post detail:', error);
-      alert('Failed to load post details. Please try again later.');
-    }
-  };
-
   // Handle marker press
   const handleMarkerPress = (postId: string) => {
     console.log('Marker pressed, post ID:', postId);
@@ -172,8 +134,7 @@ export default function ExploreScreen() {
       setSelectedPost(post);
       setShowReport(true);
     } else {
-      // If not found locally, fetch from server
-      fetchPostDetail(postId);
+      alert('Post not found');
     }
   };
 
@@ -195,9 +156,14 @@ export default function ExploreScreen() {
               latitude: post.latitude,
               longitude: post.longitude
             }}
-            pinColor={getCategoryColor(post.category.name)}
             onPress={() => handleMarkerPress(post.id)}
           >
+            <Pin 
+              type={post.category.name} 
+              onPress={() => {}} 
+              width={36} 
+              height={36}
+            />
             <Callout tooltip>
               <View style={styles.calloutContainer}>
                 <Text style={styles.calloutTitle}>{post.title}</Text>
