@@ -7,8 +7,29 @@ import * as ImagePicker from 'react-native-image-picker';
 import Entypo from '@expo/vector-icons/Entypo';
 import Button from '@/components/buttons/Button';
 import InputField from '@/components/inputs/InputField';
-import TagSelector, { TAGS } from '@/components/inputs/TagSelector';
+import TagSelector from '@/components/inputs/TagSelector';
 import { router } from 'expo-router';
+
+// Interface for category data from API
+interface Category {
+    id: string;
+    name: string;
+}
+
+export const getFileExtension = (uri: string): string => {
+    const fileName = uri.split('/');
+    const endpoint = fileName.pop();
+    const parts = endpoint.split('.');
+
+    // Ensure there is a valid extension after a dot
+    if (parts.length > 1) {
+        console.log('File extension:', parts[parts.length - 1]);
+        return parts[parts.length - 1];
+    }
+
+
+    return 'jpeg'; // Default to "jpeg" if no valid extension exists
+};
 
 const PostPage = () => {
     const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -54,12 +75,6 @@ const PostPage = () => {
         });
     };
 
-    // Function to get file extension from URI
-    const getFileExtension = (uri: string): string => {
-        const fileName = uri.split('/').pop() ?? '';
-        return fileName.split('.').pop()?.toLowerCase() ?? 'jpeg';
-    };
-
     // Function to get presigned URL from backend
     const getPresignedUrl = async (fileType: string): Promise<string | null> => {
         try {
@@ -88,7 +103,6 @@ const PostPage = () => {
 
     // Function to upload image to S3
     const uploadImageToS3 = async (imageUri: string): Promise<string | null> => {
-        if (!imageUri) return null;
         
         setIsUploading(true);
         
@@ -163,8 +177,7 @@ const PostPage = () => {
     };
     
     const submitPost = (imageUrl: string | null) => {
-        const tagName = TAGS.find(tag => tag.id === selectedTag)?.label ?? "Unknown";
-        
+        // Create the post data with the selected category
         const postData = {
             title: title,
             caption: description,
@@ -172,14 +185,13 @@ const PostPage = () => {
             longitude: location?.longitude ?? 0,
             category: {
                 id: selectedTag,
-                name: tagName
             },
-            imageUrl: imageUrl // Use S3 URL instead of local URI
+            imageUrl: imageUrl
         };
-        console.log(imageUrl);
         
         console.log('Submitting post data:', postData);
         
+        // Submit the post directly
         fetch('http://10.0.2.2/post', {
             method: 'POST',
             headers: {
@@ -187,67 +199,85 @@ const PostPage = () => {
             },
             body: JSON.stringify(postData),
         })
-        .then(response => {
-            console.log('Server response:', response);
-            if (!response.ok) {
-                throw new Error(`Server responded with ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Post created successfully:', data);
-            Alert.alert("Success", "Your report has been posted successfully", [
-                { text: "OK", onPress: handleClose }
-            ]);
-        })
-        .catch((error) => {
-            console.error('Error creating post:', error);
-            Alert.alert("Error", "Failed to create post. Please try again.");
-        });
+            .then(response => {
+                console.log('Server response:', response);
+                if (!response.ok) {
+                    throw new Error(`Server responded with ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Post created successfully:', data);
+                Alert.alert("Success", "Your report has been posted successfully", [
+                    { text: "OK", onPress: handleClose }
+                ]);
+            })
+            .catch((error) => {
+                console.error('Error creating post:', error);
+                Alert.alert("Error", "Failed to create post. Please try again.");
+            });
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.top}>
+        <SafeAreaView style={styles.container} testID="post-page">
+            <View style={styles.top} testID="top-section">
                 <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 8 }}>
-                    <TouchableOpacity onPress={handleClose}>
+                    <TouchableOpacity onPress={handleClose} testID="close-button">
                         <Entypo name="cross" size={24} color="#3b080a" />
                     </TouchableOpacity>
                     <Text style={styles.header}>New Report</Text>
                 </View>
                 <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 8, maxWidth: 80 }}>
-                    <Button onPress={handleSubmit}>
+                    <Button onPress={handleSubmit} testID="submit-button">
                         {isUploading ? "Uploading..." : "Post"}
                     </Button>
                 </View>
             </View>
 
-            <ScrollView style={styles.scroll} contentContainerStyle={{ flexGrow: 1 }}>
-                <View style={styles.inputSection}>
+            <ScrollView style={styles.scroll} contentContainerStyle={{ flexGrow: 1 }} testID="scroll-container">
+                <View style={styles.inputSection} testID="location-section">
                     <Text style={styles.label}>Location</Text>
-                    <Text style={styles.paragraph}>Latitude: {location?.latitude ?? 'Fetching...'}</Text>
-                    <Text style={styles.paragraph}>Longitude: {location?.longitude ?? 'Fetching...'}</Text>
+                    <Text style={styles.paragraph} testID="latitude-text">Latitude: {location?.latitude ?? 'Fetching...'}</Text>
+                    <Text style={styles.paragraph} testID="longitude-text">Longitude: {location?.longitude ?? 'Fetching...'}</Text>
                 </View>
 
                 <View style={styles.inputSection}>
-                    <InputField label="Title" placeholder="Enter title" labelColor='#904a47' onChangeText={setTitle}/>
+                    <InputField 
+                        label="Title" 
+                        placeholder="Enter title" 
+                        labelColor='#904a47' 
+                        onChangeText={setTitle}
+                        testID="input-title"
+                    />
                 </View>
 
                 <View style={styles.inputSection}>
                     <Text style={styles.label}>Tags</Text>
-                    <TagSelector selectedTag={selectedTag} onTagChange={setSelectedTag} />
+                    <TagSelector 
+                        selectedTag={selectedTag} 
+                        onTagChange={setSelectedTag} 
+                        testID="tag-selector"
+                    />
                 </View>
 
                 <View style={styles.inputSection}>
-                    <InputField label="Description" placeholder="Enter description" multiline labelColor='#904a47' onChangeText={setDescription}/>
+                    <InputField 
+                        label="Description" 
+                        placeholder="Enter description" 
+                        multiline 
+                        labelColor='#904a47' 
+                        onChangeText={setDescription}
+                        testID="input-description"
+                    />
                 </View>
 
-                <View style={styles.inputSection}>
+                <View style={styles.inputSection} testID="attachments-section">
                     <Text style={styles.label}>Attachments</Text>
                     <TouchableOpacity 
                         onPress={handleImagePick} 
                         style={styles.attachmentButton}
                         disabled={isUploading}
+                        testID="image-picker-button"
                     >
                         <Entypo name="attachment" size={18} color="#fff" />
                         <Text style={styles.attachmentText}>
@@ -255,12 +285,17 @@ const PostPage = () => {
                         </Text>
                     </TouchableOpacity>
                     {imageUri && (
-                        <View style={styles.imageContainer}>
-                            <Image source={{ uri: imageUri }} style={styles.imagePreview} />
+                        <View style={styles.imageContainer} testID="image-container">
+                            <Image 
+                                source={{ uri: imageUri }} 
+                                style={styles.imagePreview} 
+                                testID="image-preview"
+                            />
                             {!isUploading && (
                                 <TouchableOpacity 
                                     style={styles.removeButton}
                                     onPress={() => setImageUri(null)}
+                                    testID="remove-image-button"
                                 >
                                     <Entypo name="cross" size={18} color="#fff" />
                                 </TouchableOpacity>
