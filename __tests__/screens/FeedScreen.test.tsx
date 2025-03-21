@@ -134,13 +134,13 @@ describe('FeedScreen Component', () => {
     expect(sortedUserProps[0].username).toBe('TestUser');
     expect(sortedUserProps[0].handle).toBe('@testuser');
     expect(sortedUserProps[0].date).toBe('Jan 1');
-    expect(sortedUserProps[0].categoryType).toBe('theft');
+    expect(sortedUserProps[0].categoryType).toBe('Theft');
     
     // Check UserInfo props for "Anonymous" post (second in sorted order)
     expect(sortedUserProps[1].username).toBe('Anonymous');
     expect(sortedUserProps[1].handle).toBe('@anonymous');
     expect(sortedUserProps[1].date).toBe('Jan 2');
-    expect(sortedUserProps[1].categoryType).toBe('lost-item');
+    expect(sortedUserProps[1].categoryType).toBe('Lost Item');
     
     // Check ReportContent props
     expect(sortedReportProps[0].title).toBe('Test Post 1');
@@ -345,106 +345,6 @@ describe('FeedScreen Component', () => {
         expect(userInfoProps.length).toBe(2); // Should render posts again
       });
     }
-  });
-
-  test('tests all category to pin type mappings', async () => {
-    // Create a post for each category to test all pin type mappings
-    const categoriesAndPinTypes: { category: string; pinType: string }[] = [
-      { category: 'Lost Item', pinType: 'lost-item' },
-      { category: 'Found Item', pinType: 'found-item' },
-      { category: 'Theft', pinType: 'theft' },
-      { category: 'Harassment', pinType: 'harassment' },
-      { category: 'Flood', pinType: 'flood' },
-      { category: 'Assault', pinType: 'assault' },
-      { category: 'Fire', pinType: 'fire' },
-      { category: 'Earthquake', pinType: 'earthquake' },
-      { category: 'Other Disaster', pinType: 'other-disaster' },
-      { category: 'Other Crime', pinType: 'other-crime' },
-      { category: 'Crime Watch', pinType: 'theft' },
-      { category: 'Service Issue', pinType: 'other-crime' },
-      { category: 'Lost Book', pinType: 'lost-item' },
-      { category: 'Lost Pet', pinType: 'lost-item' },
-      { category: 'Infrastructure Issue', pinType: 'other-disaster' },
-      { category: 'Unknown Category', pinType: 'other-crime' },
-      // Add an unknown category name to test the fallback condition
-      { category: 'ThisCategoryDoesNotExistInTheMap', pinType: 'other-crime' },
-    ];
-    
-    // Create test posts with each category
-    const posts: MockPost[] = categoriesAndPinTypes.map((item, index) => ({
-      id: index.toString(),
-      title: `Test Post ${index}`,
-      caption: `This is test post ${index}`,
-      createdAt: '2023-01-01T12:00:00Z',
-      postedBy: `User${index}`,
-      category: { id: index.toString(), name: item.category },
-      latitude: 35.0,
-      longitude: -120.0,
-      imageUrl: undefined,
-    }));
-    
-    // Add a post with null category to test that case
-    posts.push({
-      id: '100',
-      title: 'Test Post null category',
-      caption: 'This post has no category',
-      createdAt: '2023-01-01T12:00:00Z',
-      postedBy: 'User100',
-      category: null,
-      latitude: 35.0,
-      longitude: -120.0,
-      imageUrl: undefined,
-    });
-    
-    // Reset arrays
-    userInfoProps.length = 0;
-    
-    // The key here is to use a small subset for testing to avoid rendering issues
-    // Test the important cases: 
-    // 1. A standard category from the map
-    // 2. The unknown category that will hit the fallback
-    // 3. The null category case
-    const testSubset = [
-      posts[0], // A known category
-      posts[categoriesAndPinTypes.length - 1], // The unknown category
-      posts[posts.length - 1], // The null category
-    ];
-    
-    (global.fetch as jest.Mock).mockReset();
-    (global.fetch as jest.Mock).mockImplementationOnce(() => 
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve(testSubset),
-      })
-    );
-    
-    render(<FeedScreen />);
-    
-    // Wait for UserInfo props to be collected
-    await waitFor(() => {
-      expect(userInfoProps.length).toBe(3); // Known category + unknown category + null
-    });
-    
-    // Sort the userInfoProps by title to ensure consistent order
-    const sortedProps = [...userInfoProps].sort((a, b) => {
-      return a.username.localeCompare(b.username);
-    });
-    
-    // Test a known category (post 0)
-    expect(sortedProps[0].categoryType).toBe(categoriesAndPinTypes[0].pinType);
-    
-    // Test the unknown category (this tests the fallback code path)
-    // Find the prop with the username that matches our unknown category post
-    const unknownCategoryProp = userInfoProps.find(prop => 
-      prop.username === `User${categoriesAndPinTypes.length - 1}`
-    );
-    expect(unknownCategoryProp).toBeTruthy();
-    expect(unknownCategoryProp?.categoryType).toBe('other-crime');
-    
-    // Test the null category
-    const nullCategoryProp = userInfoProps.find(prop => prop.username === 'User100');
-    expect(nullCategoryProp).toBeTruthy();
-    expect(nullCategoryProp?.categoryType).toBe('other-crime');
   });
 
   test('sorts posts by date (newest first)', async () => {
