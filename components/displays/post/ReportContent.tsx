@@ -77,9 +77,7 @@ const ReportContent: React.FC<ReportContentProps> = ({
   };
 
   const openImageModal = () => {
-    if (imageUrl) {
-      setImageModalVisible(true);
-    }
+    setImageModalVisible(true);
   };
 
   const closeImageModal = () => {
@@ -96,18 +94,7 @@ const ReportContent: React.FC<ReportContentProps> = ({
       
       const result = await Share.share(shareOptions);
       
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          // shared with activity type of result.activityType
-          console.log('Shared with activity type:', result.activityType);
-        } else {
-          // shared
-          console.log('Shared successfully');
-        }
-      } else if (result.action === Share.dismissedAction) {
-        // dismissed
-        console.log('Share dismissed');
-      }
+      console.log('Shared content:', result);
     } catch (error) {
       console.error('Error sharing content:', error);
     }
@@ -120,14 +107,16 @@ const ReportContent: React.FC<ReportContentProps> = ({
         activeOpacity={imageUrl ? 0.9 : 1}
         onPress={openImageModal}
         disabled={!imageUrl}
+        testID="image-container"
       >
         {imageUrl ? (
           <Image
             source={{ uri: imageUrl }}
             style={styles.image}
+            testID="image"
           />
         ) : (
-          <View style={styles.placeholderImage} />
+          <View style={styles.placeholderImage} testID="placeholder-image" />
         )}
       </TouchableOpacity>
       <View style={styles.tagsContainer}>
@@ -147,7 +136,7 @@ const ReportContent: React.FC<ReportContentProps> = ({
               height={14}
               fill={likeColor}
             />
-            <Text style={[styles.countText, { color: likeColor }]}>{likes}</Text>
+            <Text testID="like-count" style={[styles.countText, { color: likeColor }]}>{likes}</Text>
           </View>
           <View style={styles.actionButton} testID="dislike-button">
             <UserInteraction
@@ -157,7 +146,7 @@ const ReportContent: React.FC<ReportContentProps> = ({
               height={14}
               fill={dislikeColor}
             />
-            <Text style={[styles.countText, { color: dislikeColor }]}>{dislikes}</Text>
+            <Text testID="dislike-count" style={[styles.countText, { color: dislikeColor }]}>{dislikes}</Text>
           </View>
         </View>
         <View style={styles.shareActions}>
@@ -171,29 +160,37 @@ const ReportContent: React.FC<ReportContentProps> = ({
       </View>
 
       {/* Full Screen Image Modal */}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={imageModalVisible}
-        onRequestClose={closeImageModal}
-      >
-        <SafeAreaView style={styles.modalContainer}>
-          <View style={styles.modalHeader}>
-            <TouchableOpacity onPress={closeImageModal} style={styles.closeButton}>
-              <FontAwesome name="times" size={24} color="#FFF" />
-            </TouchableOpacity>
-          </View>
-          <Pressable style={styles.modalImageContainer} onPress={closeImageModal}>
-            {imageUrl && (
-              <Image
-                source={{ uri: imageUrl }}
-                style={styles.modalImage}
-                resizeMode="contain"
-              />
-            )}
-          </Pressable>
-        </SafeAreaView>
-      </Modal>
+      {imageModalVisible && (
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={imageModalVisible}
+          onRequestClose={closeImageModal}
+          testID="modal"
+        >
+          <SafeAreaView style={styles.modalContainer} testID="modal-container">
+            <View style={styles.modalHeader}>
+              <TouchableOpacity onPress={closeImageModal} style={styles.closeButton} testID="close-button">
+                <FontAwesome name="times" size={24} color="#FFF" />
+              </TouchableOpacity>
+            </View>
+            <Pressable 
+              style={styles.modalImageContainer} 
+              onPress={closeImageModal}
+              testID="modal-backdrop"
+            >
+              {imageUrl && (
+                <Image
+                  source={{ uri: imageUrl }}
+                  style={styles.modalImage}
+                  resizeMode="contain"
+                  testID="modal-image"
+                />
+              )}
+            </Pressable>
+          </SafeAreaView>
+        </Modal>
+      )}
     </View>
   );
 };
