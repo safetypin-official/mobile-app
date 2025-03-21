@@ -114,36 +114,7 @@ const FeedScreen: React.FC = () => {
   
   // Get category tags for a post
   const getCategoryTags = (category: Category): TagKey[] => {
-    if (category) {
-      return [category.name as TagKey];
-    }
-    return [];
-  };
-  
-  // Map category name to pin type
-  const getPinType = (category: Category): string => {
-    if (!category) return "other-crime";
-    
-    // Map category name to pin type
-    const categoryMap: Record<string, string> = {
-      "Lost Item": "lost-item",
-      "Found Item": "found-item",
-      "Theft": "theft",
-      "Harassment": "harassment",
-      "Flood": "flood",
-      "Assault": "assault",
-      "Fire": "fire",
-      "Earthquake": "earthquake",
-      "Other Disaster": "other-disaster",
-      "Other Crime": "other-crime",
-      "Crime Watch": "theft", // Mapping similar categories
-      "Service Issue": "other-crime",
-      "Lost Book": "lost-item",
-      "Lost Pet": "lost-item",
-      "Infrastructure Issue": "other-disaster"
-    };
-    
-    return categoryMap[category.name] || "other-crime";
+    return [category.name as TagKey];
   };
 
   // Render each post item
@@ -159,7 +130,7 @@ const FeedScreen: React.FC = () => {
           moreOptionsIconUrl="https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/43f6a47c22e1c702925915e6626ae6f483d1e56e047a9647d4ff9e5de9751425?placeholderIfAbsent=true"
           longitude={item.longitude}
           latitude={item.latitude}
-          categoryType={getPinType(item.category)} // Pass the pin type based on category
+          categoryType={item.category.name}
         />
 
         <ReportContent
@@ -168,7 +139,7 @@ const FeedScreen: React.FC = () => {
           likeCount={0}
           dislikeCount={0}
           selectedTags={getCategoryTags(item.category)}
-          imageUrl={item.imageUrl}
+          imageUrl={item.imageUrl ?? "https://i.imgur.com/Ha3UkA3.jpg"}
         />
         
         <View style={styles.divider} />
