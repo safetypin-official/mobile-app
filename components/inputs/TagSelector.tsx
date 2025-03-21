@@ -100,7 +100,7 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTag, onTagChange, tes
   }
 
   return (
-    <View style={styles.container} testID={testID || "tag-selector"}>
+    <View style={styles.container} testID={testID ?? "tag-selector"}>
       {tags.map((tag) => (
         <TouchableOpacity
           key={tag.id}
@@ -109,7 +109,7 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTag, onTagChange, tes
             { backgroundColor: selectedTag === tag.id ? tag.color : '#ddd' },
           ]}
           onPress={() => selectTag(tag.id)}
-          testID={`${testID ? testID : "tag-selector"}-tag-${tag.id}`}
+          testID={`${testID ?? "tag-selector"}-tag-${tag.id}`}
         >
           <Text style={styles.tagText}>{tag.name}</Text>
         </TouchableOpacity>
