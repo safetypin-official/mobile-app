@@ -1,22 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1741664838389" clover="3.2.0">
-  <project timestamp="1741664838389" name="All files">
-    <metrics statements="251" coveredstatements="251" conditionals="103" coveredconditionals="103" methods="66" coveredmethods="66" elements="420" coveredelements="420" complexity="0" loc="251" ncloc="251" packages="10" files="23" classes="23"/>
+<coverage generated="1742514047225" clover="3.2.0">
+  <project timestamp="1742514047225" name="All files">
+    <metrics statements="451" coveredstatements="451" conditionals="208" coveredconditionals="208" methods="94" coveredmethods="94" elements="753" coveredelements="753" complexity="0" loc="451" ncloc="451" packages="11" files="26" classes="26"/>
     <package name="app">
-      <metrics statements="41" coveredstatements="41" conditionals="8" coveredconditionals="8" methods="12" coveredmethods="12"/>
-      <file name="_layout.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\app\_layout.tsx">
-        <metrics statements="9" coveredstatements="9" conditionals="2" coveredconditionals="2" methods="6" coveredmethods="6"/>
-        <line num="7" count="12" type="stmt"/>
-        <line num="8" count="12" type="stmt"/>
-        <line num="10" count="12" type="stmt"/>
-        <line num="12" count="12" type="stmt"/>
-        <line num="18" count="1" type="stmt"/>
-        <line num="19" count="1" type="stmt"/>
-        <line num="20" count="1" type="stmt"/>
-        <line num="21" count="1" type="stmt"/>
-        <line num="22" count="1" type="stmt"/>
+      <metrics statements="52" coveredstatements="52" conditionals="14" coveredconditionals="14" methods="13" coveredmethods="13"/>
+      <file name="_layout.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\app\_layout.tsx">
+        <metrics statements="20" coveredstatements="20" conditionals="8" coveredconditionals="8" methods="7" coveredmethods="7"/>
+        <line num="7" count="25" type="stmt"/>
+        <line num="8" count="25" type="stmt"/>
+        <line num="10" count="25" type="stmt"/>
+        <line num="13" count="25" type="stmt"/>
+        <line num="14" count="18" type="cond" truecount="2" falsecount="0"/>
+        <line num="15" count="2" type="stmt"/>
+        <line num="16" count="16" type="cond" truecount="2" falsecount="0"/>
+        <line num="17" count="2" type="stmt"/>
+        <line num="21" count="25" type="stmt"/>
+        <line num="22" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="24" count="2" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="32" count="25" type="stmt"/>
+        <line num="33" count="1" type="stmt"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="37" count="25" type="stmt"/>
+        <line num="50" count="1" type="stmt"/>
+        <line num="54" count="1" type="stmt"/>
+        <line num="57" count="1" type="stmt"/>
       </file>
-      <file name="index.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\app\index.tsx">
+      <file name="index.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\app\index.tsx">
         <metrics statements="32" coveredstatements="32" conditionals="6" coveredconditionals="6" methods="6" coveredmethods="6"/>
         <line num="7" count="1" type="stmt"/>
         <line num="8" count="25" type="stmt"/>
@@ -34,7 +45,7 @@
         <line num="26" count="3" type="stmt"/>
         <line num="27" count="2" type="stmt"/>
         <line num="29" count="2" type="stmt"/>
-        <line num="32" count="1" type="stmt"/>
+        <line num="32" count="3" type="stmt"/>
         <line num="36" count="25" type="stmt"/>
         <line num="37" count="2" type="stmt"/>
         <line num="38" count="2" type="stmt"/>
@@ -52,9 +63,68 @@
         <line num="65" count="1" type="stmt"/>
       </file>
     </package>
+    <package name="app.feedScreen">
+      <metrics statements="53" coveredstatements="53" conditionals="26" coveredconditionals="26" methods="14" coveredmethods="14"/>
+      <file name="index.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\app\feedScreen\index.tsx">
+        <metrics statements="53" coveredstatements="53" conditionals="26" coveredconditionals="26" methods="14" coveredmethods="14"/>
+        <line num="39" count="1" type="stmt"/>
+        <line num="41" count="1" type="stmt"/>
+        <line num="43" count="1" type="stmt"/>
+        <line num="44" count="24" type="stmt"/>
+        <line num="45" count="24" type="stmt"/>
+        <line num="46" count="24" type="stmt"/>
+        <line num="47" count="24" type="stmt"/>
+        <line num="48" count="24" type="stmt"/>
+        <line num="50" count="24" type="stmt"/>
+        <line num="53" count="24" type="stmt"/>
+        <line num="54" count="13" type="stmt"/>
+        <line num="55" count="13" type="stmt"/>
+        <line num="56" count="13" type="stmt"/>
+        <line num="58" count="13" type="stmt"/>
+        <line num="60" count="11" type="cond" truecount="2" falsecount="0"/>
+        <line num="61" count="2" type="stmt"/>
+        <line num="64" count="9" type="stmt"/>
+        <line num="65" count="9" type="stmt"/>
+        <line num="68" count="9" type="stmt"/>
+        <line num="69" count="11" type="stmt"/>
+        <line num="72" count="9" type="stmt"/>
+        <line num="74" count="3" type="stmt"/>
+        <line num="75" count="3" type="stmt"/>
+        <line num="77" count="12" type="stmt"/>
+        <line num="78" count="12" type="stmt"/>
+        <line num="83" count="24" type="stmt"/>
+        <line num="84" count="11" type="stmt"/>
+        <line num="88" count="24" type="stmt"/>
+        <line num="89" count="1" type="stmt"/>
+        <line num="90" count="1" type="stmt"/>
+        <line num="94" count="24" type="stmt"/>
+        <line num="95" count="19" type="stmt"/>
+        <line num="96" count="19" type="stmt"/>
+        <line num="103" count="24" type="stmt"/>
+        <line num="104" count="38" type="cond" truecount="2" falsecount="0"/>
+        <line num="105" count="22" type="stmt"/>
+        <line num="107" count="16" type="stmt"/>
+        <line num="111" count="24" type="stmt"/>
+        <line num="112" count="19" type="stmt"/>
+        <line num="116" count="24" type="stmt"/>
+        <line num="117" count="19" type="stmt"/>
+        <line num="121" count="24" type="stmt"/>
+        <line num="122" count="19" type="stmt"/>
+        <line num="150" count="24" type="stmt"/>
+        <line num="178" count="1" type="stmt"/>
+        <line num="188" count="1" type="stmt"/>
+        <line num="202" count="24" type="cond" truecount="4" falsecount="0"/>
+        <line num="203" count="11" type="stmt"/>
+        <line num="209" count="13" type="cond" truecount="4" falsecount="0"/>
+        <line num="210" count="3" type="stmt"/>
+        <line num="222" count="10" type="stmt"/>
+        <line num="225" count="26" type="stmt"/>
+        <line num="252" count="1" type="stmt"/>
+      </file>
+    </package>
     <package name="app.forgotPassword">
       <metrics statements="28" coveredstatements="28" conditionals="4" coveredconditionals="4" methods="8" coveredmethods="8"/>
-      <file name="index.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\app\forgotPassword\index.tsx">
+      <file name="index.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\app\forgotPassword\index.tsx">
         <metrics statements="11" coveredstatements="11" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="3"/>
         <line num="6" count="1" type="stmt"/>
         <line num="7" count="5" type="stmt"/>
@@ -68,7 +138,7 @@
         <line num="19" count="1" type="stmt"/>
         <line num="22" count="5" type="stmt"/>
       </file>
-      <file name="newPasswordScreen.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\app\forgotPassword\newPasswordScreen.tsx">
+      <file name="newPasswordScreen.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\app\forgotPassword\newPasswordScreen.tsx">
         <metrics statements="10" coveredstatements="10" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
         <line num="7" count="1" type="stmt"/>
         <line num="8" count="7" type="stmt"/>
@@ -81,7 +151,7 @@
         <line num="20" count="7" type="stmt"/>
         <line num="50" count="1" type="stmt"/>
       </file>
-      <file name="otpVerificationScreen.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\app\forgotPassword\otpVerificationScreen.tsx">
+      <file name="otpVerificationScreen.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\app\forgotPassword\otpVerificationScreen.tsx">
         <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
         <line num="5" count="1" type="stmt"/>
         <line num="6" count="7" type="stmt"/>
@@ -92,70 +162,166 @@
         <line num="21" count="1" type="stmt"/>
       </file>
     </package>
-    <package name="app.map">
-      <metrics statements="13" coveredstatements="13" conditionals="4" coveredconditionals="4" methods="3" coveredmethods="3"/>
-      <file name="index.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\app\map\index.tsx">
-        <metrics statements="13" coveredstatements="13" conditionals="4" coveredconditionals="4" methods="3" coveredmethods="3"/>
-        <line num="14" count="6" type="stmt"/>
-        <line num="15" count="6" type="stmt"/>
-        <line num="17" count="6" type="stmt"/>
-        <line num="19" count="3" type="stmt"/>
-        <line num="20" count="3" type="stmt"/>
-        <line num="21" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="22" count="1" type="stmt"/>
-        <line num="23" count="1" type="stmt"/>
-        <line num="24" count="1" type="stmt"/>
-        <line num="27" count="2" type="stmt"/>
-        <line num="28" count="2" type="stmt"/>
-        <line num="37" count="6" type="stmt"/>
-        <line num="52" count="1" type="stmt"/>
+    <package name="app.post">
+      <metrics statements="94" coveredstatements="94" conditionals="46" coveredconditionals="46" methods="16" coveredmethods="16"/>
+      <file name="index.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\app\post\index.tsx">
+        <metrics statements="94" coveredstatements="94" conditionals="46" coveredconditionals="46" methods="16" coveredmethods="16"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="20" count="27" type="stmt"/>
+        <line num="21" count="27" type="stmt"/>
+        <line num="22" count="27" type="stmt"/>
+        <line num="25" count="27" type="cond" truecount="2" falsecount="0"/>
+        <line num="26" count="21" type="stmt"/>
+        <line num="29" count="6" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+        <line num="33" count="123" type="stmt"/>
+        <line num="34" count="122" type="stmt"/>
+        <line num="35" count="122" type="stmt"/>
+        <line num="36" count="122" type="stmt"/>
+        <line num="37" count="122" type="stmt"/>
+        <line num="38" count="122" type="stmt"/>
+        <line num="40" count="122" type="stmt"/>
+        <line num="41" count="27" type="stmt"/>
+        <line num="42" count="27" type="stmt"/>
+        <line num="43" count="27" type="cond" truecount="2" falsecount="0"/>
+        <line num="44" count="1" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+        <line num="48" count="26" type="stmt"/>
+        <line num="49" count="26" type="stmt"/>
+        <line num="56" count="122" type="stmt"/>
+        <line num="57" count="6" type="stmt"/>
+        <line num="60" count="122" type="stmt"/>
+        <line num="61" count="20" type="stmt"/>
+        <line num="62" count="20" type="cond" truecount="2" falsecount="0"/>
+        <line num="63" count="2" type="stmt"/>
+        <line num="64" count="18" type="cond" truecount="2" falsecount="0"/>
+        <line num="65" count="1" type="stmt"/>
+        <line num="67" count="17" type="stmt"/>
+        <line num="68" count="17" type="cond" truecount="2" falsecount="0"/>
+        <line num="69" count="16" type="stmt"/>
+        <line num="70" count="16" type="stmt"/>
+        <line num="77" count="122" type="stmt"/>
+        <line num="78" count="14" type="stmt"/>
+        <line num="79" count="14" type="stmt"/>
+        <line num="89" count="13" type="cond" truecount="2" falsecount="0"/>
+        <line num="90" count="2" type="stmt"/>
+        <line num="93" count="11" type="stmt"/>
+        <line num="94" count="10" type="stmt"/>
+        <line num="95" count="10" type="stmt"/>
+        <line num="97" count="4" type="stmt"/>
+        <line num="98" count="4" type="stmt"/>
+        <line num="103" count="122" type="stmt"/>
+        <line num="105" count="14" type="stmt"/>
+        <line num="107" count="14" type="stmt"/>
+        <line num="109" count="14" type="stmt"/>
+        <line num="110" count="14" type="cond" truecount="2" falsecount="0"/>
+        <line num="113" count="14" type="stmt"/>
+        <line num="114" count="14" type="cond" truecount="2" falsecount="0"/>
+        <line num="115" count="5" type="stmt"/>
+        <line num="119" count="9" type="stmt"/>
+        <line num="120" count="8" type="stmt"/>
+        <line num="122" count="2" type="stmt"/>
+        <line num="130" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="131" count="1" type="stmt"/>
+        <line num="135" count="1" type="stmt"/>
+        <line num="136" count="1" type="stmt"/>
+        <line num="138" count="1" type="stmt"/>
+        <line num="140" count="13" type="stmt"/>
+        <line num="141" count="13" type="stmt"/>
+        <line num="142" count="13" type="stmt"/>
+        <line num="144" count="14" type="stmt"/>
+        <line num="148" count="122" type="stmt"/>
+        <line num="149" count="20" type="cond" truecount="2" falsecount="0"/>
+        <line num="150" count="1" type="stmt"/>
+        <line num="151" count="1" type="stmt"/>
+        <line num="154" count="19" type="cond" truecount="2" falsecount="0"/>
+        <line num="155" count="1" type="stmt"/>
+        <line num="156" count="1" type="stmt"/>
+        <line num="160" count="18" type="stmt"/>
+        <line num="161" count="18" type="cond" truecount="2" falsecount="0"/>
+        <line num="162" count="14" type="stmt"/>
+        <line num="163" count="14" type="cond" truecount="4" falsecount="0"/>
+        <line num="165" count="13" type="stmt"/>
+        <line num="167" count="13" type="stmt"/>
+        <line num="169" count="13" type="stmt"/>
+        <line num="174" count="5" type="stmt"/>
+        <line num="177" count="122" type="stmt"/>
+        <line num="179" count="18" type="stmt"/>
+        <line num="190" count="18" type="stmt"/>
+        <line num="193" count="18" type="stmt"/>
+        <line num="201" count="17" type="stmt"/>
+        <line num="202" count="17" type="cond" truecount="2" falsecount="0"/>
+        <line num="203" count="1" type="stmt"/>
+        <line num="205" count="16" type="stmt"/>
+        <line num="208" count="16" type="stmt"/>
+        <line num="209" count="16" type="stmt"/>
+        <line num="214" count="2" type="stmt"/>
+        <line num="215" count="2" type="stmt"/>
+        <line num="219" count="122" type="stmt"/>
+        <line num="295" count="1" type="stmt"/>
+        <line num="309" count="1" type="stmt"/>
       </file>
     </package>
     <package name="app.signUp">
-      <metrics statements="33" coveredstatements="33" conditionals="0" coveredconditionals="0" methods="9" coveredmethods="9"/>
-      <file name="index.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\app\signUp\index.tsx">
-        <metrics statements="26" coveredstatements="26" conditionals="0" coveredconditionals="0" methods="6" coveredmethods="6"/>
-        <line num="7" count="8" type="stmt"/>
-        <line num="8" count="1" type="stmt"/>
-        <line num="11" count="8" type="stmt"/>
-        <line num="17" count="2" type="stmt"/>
-        <line num="19" count="2" type="stmt"/>
-        <line num="20" count="2" type="stmt"/>
+      <metrics statements="48" coveredstatements="48" conditionals="11" coveredconditionals="11" methods="8" coveredmethods="8"/>
+      <file name="index.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\app\signUp\index.tsx">
+        <metrics statements="27" coveredstatements="27" conditionals="5" coveredconditionals="5" methods="5" coveredmethods="5"/>
+        <line num="6" count="9" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="10" count="9" type="stmt"/>
+        <line num="16" count="3" type="stmt"/>
+        <line num="18" count="3" type="stmt"/>
+        <line num="19" count="3" type="cond" truecount="5" falsecount="0"/>
+        <line num="20" count="1" type="stmt"/>
         <line num="22" count="2" type="stmt"/>
-        <line num="29" count="1" type="stmt"/>
+        <line num="24" count="2" type="stmt"/>
         <line num="31" count="1" type="stmt"/>
-        <line num="34" count="1" type="stmt"/>
-        <line num="38" count="1" type="stmt"/>
-        <line num="42" count="8" type="stmt"/>
-        <line num="43" count="2" type="stmt"/>
-        <line num="44" count="2" type="stmt"/>
-        <line num="45" count="1" type="stmt"/>
+        <line num="33" count="1" type="stmt"/>
+        <line num="36" count="2" type="stmt"/>
+        <line num="40" count="9" type="stmt"/>
+        <line num="41" count="2" type="stmt"/>
+        <line num="42" count="2" type="stmt"/>
+        <line num="43" count="1" type="stmt"/>
+        <line num="44" count="1" type="stmt"/>
         <line num="46" count="1" type="stmt"/>
         <line num="48" count="1" type="stmt"/>
-        <line num="50" count="1" type="stmt"/>
-        <line num="55" count="8" type="stmt"/>
-        <line num="56" count="2" type="stmt"/>
-        <line num="57" count="2" type="stmt"/>
-        <line num="58" count="1" type="stmt"/>
+        <line num="53" count="9" type="stmt"/>
+        <line num="54" count="2" type="stmt"/>
+        <line num="55" count="2" type="stmt"/>
+        <line num="56" count="1" type="stmt"/>
+        <line num="57" count="1" type="stmt"/>
         <line num="59" count="1" type="stmt"/>
         <line num="61" count="1" type="stmt"/>
-        <line num="63" count="1" type="stmt"/>
-        <line num="68" count="8" type="stmt"/>
+        <line num="66" count="9" type="stmt"/>
       </file>
-      <file name="otp.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\app\signUp\otp.tsx">
-        <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
-        <line num="5" count="1" type="stmt"/>
-        <line num="6" count="7" type="stmt"/>
-        <line num="7" count="3" type="stmt"/>
-        <line num="8" count="3" type="stmt"/>
-        <line num="11" count="7" type="stmt"/>
-        <line num="16" count="1" type="stmt"/>
-        <line num="22" count="1" type="stmt"/>
+      <file name="otp.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\app\signUp\otp.tsx">
+        <metrics statements="21" coveredstatements="21" conditionals="6" coveredconditionals="6" methods="3" coveredmethods="3"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="10" type="stmt"/>
+        <line num="9" count="10" type="stmt"/>
+        <line num="11" count="10" type="stmt"/>
+        <line num="12" count="6" type="stmt"/>
+        <line num="13" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="17" count="5" type="stmt"/>
+        <line num="22" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="23" count="1" type="stmt"/>
+        <line num="25" count="2" type="stmt"/>
+        <line num="26" count="2" type="stmt"/>
+        <line num="28" count="2" type="stmt"/>
+        <line num="30" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="31" count="3" type="stmt"/>
+        <line num="32" count="3" type="stmt"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="35" count="1" type="stmt"/>
+        <line num="40" count="10" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+        <line num="51" count="1" type="stmt"/>
       </file>
     </package>
     <package name="assets">
-      <metrics statements="12" coveredstatements="12" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="icons.ts" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\assets\icons.ts">
+      <metrics statements="22" coveredstatements="22" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="icons.ts" path="C:\Kuliah\Term_6\PPL\mobile-app\assets\icons.ts">
         <metrics statements="12" coveredstatements="12" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="3" type="stmt"/>
         <line num="10" count="3" type="stmt"/>
@@ -170,22 +336,35 @@
         <line num="69" count="3" type="stmt"/>
         <line num="75" count="3" type="stmt"/>
       </file>
+      <file name="pins.ts" path="C:\Kuliah\Term_6\PPL\mobile-app\assets\pins.ts">
+        <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+        <line num="17" count="1" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="31" count="1" type="stmt"/>
+        <line num="38" count="1" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+        <line num="52" count="1" type="stmt"/>
+        <line num="59" count="1" type="stmt"/>
+        <line num="66" count="1" type="stmt"/>
+      </file>
     </package>
     <package name="components.buttons">
       <metrics statements="14" coveredstatements="14" conditionals="21" coveredconditionals="21" methods="4" coveredmethods="4"/>
-      <file name="Button.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\buttons\Button.tsx">
+      <file name="Button.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\buttons\Button.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="11" count="9" type="cond" truecount="1" falsecount="0"/>
-        <line num="12" count="203" type="stmt"/>
+        <line num="12" count="228" type="stmt"/>
         <line num="19" count="9" type="stmt"/>
       </file>
-      <file name="MapButton.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\buttons\MapButton.tsx">
+      <file name="MapButton.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\buttons\MapButton.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="4" coveredconditionals="4" methods="1" coveredmethods="1"/>
         <line num="12" count="1" type="cond" truecount="2" falsecount="0"/>
         <line num="13" count="4" type="stmt"/>
         <line num="20" count="1" type="stmt"/>
       </file>
-      <file name="NavButton.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\buttons\NavButton.tsx">
+      <file name="NavButton.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\buttons\NavButton.tsx">
         <metrics statements="5" coveredstatements="5" conditionals="15" coveredconditionals="15" methods="1" coveredmethods="1"/>
         <line num="13" count="1" type="stmt"/>
         <line num="20" count="1" type="cond" truecount="3" falsecount="0"/>
@@ -193,7 +372,7 @@
         <line num="23" count="9" type="stmt"/>
         <line num="41" count="1" type="stmt"/>
       </file>
-      <file name="SocialButton.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\buttons\SocialButton.tsx">
+      <file name="SocialButton.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\buttons\SocialButton.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="11" count="3" type="cond" truecount="1" falsecount="0"/>
         <line num="12" count="193" type="stmt"/>
@@ -201,8 +380,8 @@
       </file>
     </package>
     <package name="components.displays">
-      <metrics statements="8" coveredstatements="8" conditionals="5" coveredconditionals="5" methods="2" coveredmethods="2"/>
-      <file name="NavContainer.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\displays\NavContainer.tsx">
+      <metrics statements="38" coveredstatements="38" conditionals="22" coveredconditionals="22" methods="3" coveredmethods="3"/>
+      <file name="NavContainer.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\displays\NavContainer.tsx">
         <metrics statements="5" coveredstatements="5" conditionals="4" coveredconditionals="4" methods="1" coveredmethods="1"/>
         <line num="16" count="1" type="stmt"/>
         <line num="18" count="1" type="stmt"/>
@@ -210,7 +389,40 @@
         <line num="30" count="10" type="stmt"/>
         <line num="49" count="1" type="stmt"/>
       </file>
-      <file name="UserLocationMarker.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\displays\UserLocationMarker.tsx">
+      <file name="Pin.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\displays\Pin.tsx">
+        <metrics statements="30" coveredstatements="30" conditionals="17" coveredconditionals="17" methods="1" coveredmethods="1"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="32" count="17" type="cond" truecount="14" falsecount="0"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="35" count="1" type="stmt"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="38" count="1" type="stmt"/>
+        <line num="40" count="1" type="stmt"/>
+        <line num="41" count="1" type="stmt"/>
+        <line num="43" count="1" type="stmt"/>
+        <line num="44" count="1" type="stmt"/>
+        <line num="46" count="1" type="stmt"/>
+        <line num="47" count="1" type="stmt"/>
+        <line num="49" count="1" type="stmt"/>
+        <line num="50" count="1" type="stmt"/>
+        <line num="52" count="1" type="stmt"/>
+        <line num="53" count="1" type="stmt"/>
+        <line num="55" count="1" type="stmt"/>
+        <line num="56" count="1" type="stmt"/>
+        <line num="58" count="1" type="stmt"/>
+        <line num="59" count="1" type="stmt"/>
+        <line num="61" count="1" type="stmt"/>
+        <line num="62" count="1" type="stmt"/>
+        <line num="64" count="1" type="stmt"/>
+        <line num="65" count="1" type="stmt"/>
+        <line num="67" count="1" type="stmt"/>
+        <line num="68" count="1" type="stmt"/>
+        <line num="70" count="1" type="stmt"/>
+        <line num="71" count="1" type="stmt"/>
+        <line num="73" count="4" type="stmt"/>
+        <line num="76" count="17" type="stmt"/>
+      </file>
+      <file name="UserLocationMarker.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\displays\UserLocationMarker.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="11" count="1" type="cond" truecount="1" falsecount="0"/>
         <line num="12" count="2" type="stmt"/>
@@ -219,28 +431,28 @@
     </package>
     <package name="components.forms">
       <metrics statements="71" coveredstatements="71" conditionals="41" coveredconditionals="41" methods="16" coveredmethods="16"/>
-      <file name="ForgotPasswordForm.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\forms\ForgotPasswordForm.tsx">
+      <file name="ForgotPasswordForm.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\forms\ForgotPasswordForm.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="12" count="2" type="cond" truecount="1" falsecount="0"/>
         <line num="13" count="8" type="stmt"/>
         <line num="35" count="2" type="stmt"/>
       </file>
-      <file name="LoginForm.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\forms\LoginForm.tsx">
+      <file name="LoginForm.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\forms\LoginForm.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="19" count="1" type="stmt"/>
         <line num="29" count="7" type="stmt"/>
         <line num="74" count="1" type="stmt"/>
       </file>
-      <file name="OTPVerificationForm.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\forms\OTPVerificationForm.tsx">
+      <file name="OTPVerificationForm.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\forms\OTPVerificationForm.tsx">
         <metrics statements="6" coveredstatements="6" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
         <line num="15" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="16" count="90" type="stmt"/>
-        <line num="18" count="90" type="stmt"/>
-        <line num="33" count="8" type="stmt"/>
-        <line num="34" count="8" type="stmt"/>
+        <line num="16" count="115" type="stmt"/>
+        <line num="18" count="115" type="stmt"/>
+        <line num="33" count="11" type="stmt"/>
+        <line num="34" count="11" type="stmt"/>
         <line num="42" count="3" type="stmt"/>
       </file>
-      <file name="SignUpForm.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\forms\SignUpForm.tsx">
+      <file name="SignUpForm.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\forms\SignUpForm.tsx">
         <metrics statements="59" coveredstatements="59" conditionals="37" coveredconditionals="37" methods="12" coveredmethods="12"/>
         <line num="29" count="1" type="stmt"/>
         <line num="30" count="87" type="stmt"/>
@@ -305,43 +517,43 @@
     </package>
     <package name="components.hooks">
       <metrics statements="14" coveredstatements="14" conditionals="11" coveredconditionals="11" methods="3" coveredmethods="3"/>
-      <file name="useOTP.ts" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\hooks\useOTP.ts">
+      <file name="useOTP.ts" path="C:\Kuliah\Term_6\PPL\mobile-app\components\hooks\useOTP.ts">
         <metrics statements="14" coveredstatements="14" conditionals="11" coveredconditionals="11" methods="3" coveredmethods="3"/>
         <line num="4" count="3" type="stmt"/>
-        <line num="5" count="90" type="stmt"/>
-        <line num="6" count="90" type="stmt"/>
-        <line num="8" count="90" type="stmt"/>
-        <line num="9" count="60" type="cond" truecount="2" falsecount="0"/>
-        <line num="11" count="57" type="stmt"/>
-        <line num="12" count="57" type="stmt"/>
-        <line num="13" count="57" type="stmt"/>
-        <line num="16" count="57" type="cond" truecount="4" falsecount="0"/>
-        <line num="17" count="45" type="stmt"/>
-        <line num="21" count="90" type="stmt"/>
+        <line num="5" count="115" type="stmt"/>
+        <line num="6" count="115" type="stmt"/>
+        <line num="8" count="115" type="stmt"/>
+        <line num="9" count="82" type="cond" truecount="2" falsecount="0"/>
+        <line num="11" count="79" type="stmt"/>
+        <line num="12" count="79" type="stmt"/>
+        <line num="13" count="79" type="stmt"/>
+        <line num="16" count="79" type="cond" truecount="4" falsecount="0"/>
+        <line num="17" count="63" type="stmt"/>
+        <line num="21" count="115" type="stmt"/>
         <line num="22" count="10" type="cond" truecount="5" falsecount="0"/>
         <line num="23" count="3" type="stmt"/>
-        <line num="27" count="90" type="stmt"/>
+        <line num="27" count="115" type="stmt"/>
       </file>
     </package>
     <package name="components.inputs">
-      <metrics statements="17" coveredstatements="17" conditionals="9" coveredconditionals="9" methods="9" coveredmethods="9"/>
-      <file name="InputField.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\inputs\InputField.tsx">
-        <metrics statements="3" coveredstatements="3" conditionals="5" coveredconditionals="5" methods="1" coveredmethods="1"/>
-        <line num="13" count="6" type="stmt"/>
-        <line num="21" count="473" type="stmt"/>
-        <line num="35" count="6" type="stmt"/>
+      <metrics statements="17" coveredstatements="17" conditionals="12" coveredconditionals="12" methods="9" coveredmethods="9"/>
+      <file name="InputField.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\inputs\InputField.tsx">
+        <metrics statements="3" coveredstatements="3" conditionals="8" coveredconditionals="8" methods="1" coveredmethods="1"/>
+        <line num="14" count="6" type="stmt"/>
+        <line num="23" count="475" type="stmt"/>
+        <line num="39" count="6" type="stmt"/>
       </file>
-      <file name="OTPInput.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\inputs\OTPInput.tsx">
+      <file name="OTPInput.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\inputs\OTPInput.tsx">
         <metrics statements="7" coveredstatements="7" conditionals="1" coveredconditionals="1" methods="5" coveredmethods="5"/>
         <line num="12" count="4" type="cond" truecount="1" falsecount="0"/>
-        <line num="13" count="93" type="stmt"/>
-        <line num="17" count="422" type="stmt"/>
-        <line num="20" count="844" type="stmt"/>
-        <line num="24" count="61" type="stmt"/>
+        <line num="13" count="118" type="stmt"/>
+        <line num="17" count="572" type="stmt"/>
+        <line num="20" count="1144" type="stmt"/>
+        <line num="24" count="83" type="stmt"/>
         <line num="25" count="11" type="stmt"/>
         <line num="33" count="4" type="stmt"/>
       </file>
-      <file name="SearchBar.tsx" path="C:\Users\aanma\Documents\TUGAS_DAN_KERJAAN\FASILKOM_UI\sem6\PPL\dev\mobile-app\components\inputs\SearchBar.tsx">
+      <file name="SearchBar.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\components\inputs\SearchBar.tsx">
         <metrics statements="7" coveredstatements="7" conditionals="3" coveredconditionals="3" methods="3" coveredmethods="3"/>
         <line num="11" count="1" type="stmt"/>
         <line num="12" count="1" type="cond" truecount="1" falsecount="0"/>
