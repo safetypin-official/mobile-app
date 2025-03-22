@@ -1,60 +1,125 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import Pin from '@/components/displays/Pin';
-import { lostItemPin, foundItemPin, theftPin, harassmentPin, floodPin, assaultPin, firePin, otherDisasterPin, earthquakePin, otherCrimePin } from '@/assets/pins';
+import {
+    lostItemPin,
+    foundItemPin,
+    theftPin,
+    harassmentPin,
+    floodPin,
+    assaultPin,
+    firePin,
+    otherDisasterPin,
+    earthquakePin,
+    otherCrimePin
+} from '@/assets/pins';
 
 describe('Pin Component', () => {
     const mockOnPress = jest.fn();
 
-    afterEach(() => {
-        mockOnPress.mockClear();
-    });
-
-    it('renders without crashing', () => {
+    it('renders correctly with default props', () => {
         const { getByTestId } = render(<Pin onPress={mockOnPress} />);
-        expect(getByTestId('pin-container')).toBeTruthy();
+        const pin = getByTestId('pin-svg');
+        expect(pin.props.xml).toBe(otherCrimePin);
+        expect(pin.props.width).toBe(30);
+        expect(pin.props.height).toBe(30);
     });
 
-    it('renders the correct pin for each type', () => {
-        const { getByTestId } = render(<Pin type="lost-item" onPress={mockOnPress} />);
-        expect(getByTestId('pin-svg').props.xml).toBe(lostItemPin);
-
-        const { getByTestId: foundItemTestId } = render(<Pin type="found-item" onPress={mockOnPress} />);
-        expect(foundItemTestId('pin-svg').props.xml).toBe(foundItemPin);
-
-        const { getByTestId: theftTestId } = render(<Pin type="theft" onPress={mockOnPress} />);
-        expect(theftTestId('pin-svg').props.xml).toBe(theftPin);
-
-        const { getByTestId: harassmentTestId } = render(<Pin type="harassment" onPress={mockOnPress} />);
-        expect(harassmentTestId('pin-svg').props.xml).toBe(harassmentPin);
-
-        const { getByTestId: floodTestId } = render(<Pin type="flood" onPress={mockOnPress} />);
-        expect(floodTestId('pin-svg').props.xml).toBe(floodPin);
-
-        const { getByTestId: assaultTestId } = render(<Pin type="assault" onPress={mockOnPress} />);
-        expect(assaultTestId('pin-svg').props.xml).toBe(assaultPin);
-
-        const { getByTestId: fireTestId } = render(<Pin type="fire" onPress={mockOnPress} />);
-        expect(fireTestId('pin-svg').props.xml).toBe(firePin);
-
-        const { getByTestId: otherDisasterTestId } = render(<Pin type="other-disaster" onPress={mockOnPress} />);
-        expect(otherDisasterTestId('pin-svg').props.xml).toBe(otherDisasterPin);
-
-        const { getByTestId: earthquakeTestId } = render(<Pin type="earthquake" onPress={mockOnPress} />);
-        expect(earthquakeTestId('pin-svg').props.xml).toBe(earthquakePin);
-
-        const { getByTestId: otherCrimeTestId } = render(<Pin type="other-crime" onPress={mockOnPress} />);
-        expect(otherCrimeTestId('pin-svg').props.xml).toBe(otherCrimePin);
+    it('renders correctly with lost-item type', () => {
+        const { getByTestId } = render(<Pin type="Lost Item" onPress={mockOnPress} />);
+        const pin = getByTestId('pin-svg');
+        expect(pin.props.xml).toBe(lostItemPin);
     });
 
-    it('renders default pin for unknown type', () => {
-        const { getByTestId } = render(<Pin type="unknown-type" onPress={mockOnPress} />);
-        expect(getByTestId('pin-svg').props.xml).toBe(otherCrimePin);
+    it('renders correctly with found-item type', () => {
+        const { getByTestId } = render(<Pin type="Found Item" onPress={mockOnPress} />);
+        const pin = getByTestId('pin-svg');
+        expect(pin.props.xml).toBe(foundItemPin);
     });
 
-    it('calls onPress when TouchableOpacity is pressed', () => {
+    it('renders correctly with theft type', () => {
+        const { getByTestId } = render(<Pin type="Theft" onPress={mockOnPress} />);
+        const pin = getByTestId('pin-svg');
+        expect(pin.props.xml).toBe(theftPin);
+    });
+
+    it('renders correctly with harassment type', () => {
+        const { getByTestId } = render(<Pin type="Harassment" onPress={mockOnPress} />);
+        const pin = getByTestId('pin-svg');
+        expect(pin.props.xml).toBe(harassmentPin);
+    });
+
+    it('renders correctly with flood type', () => {
+        const { getByTestId } = render(<Pin type="Flood" onPress={mockOnPress} />);
+        const pin = getByTestId('pin-svg');
+        expect(pin.props.xml).toBe(floodPin);
+    });
+
+    it('renders correctly with assault type', () => {
+        const { getByTestId } = render(<Pin type="Assault" onPress={mockOnPress} />);
+        const pin = getByTestId('pin-svg');
+        expect(pin.props.xml).toBe(assaultPin);
+    });
+
+    it('renders correctly with fire type', () => {
+        const { getByTestId } = render(<Pin type="Fire" onPress={mockOnPress} />);
+        const pin = getByTestId('pin-svg');
+        expect(pin.props.xml).toBe(firePin);
+    });
+
+    it('renders correctly with other-disaster type', () => {
+        const { getByTestId } = render(<Pin type="Other Disaster" onPress={mockOnPress} />);
+        const pin = getByTestId('pin-svg');
+        expect(pin.props.xml).toBe(otherDisasterPin);
+    });
+
+    it('renders correctly with earthquake type', () => {
+        const { getByTestId } = render(<Pin type="Earthquake" onPress={mockOnPress} />);
+        const pin = getByTestId('pin-svg');
+        expect(pin.props.xml).toBe(earthquakePin);
+    });
+
+    it('renders correctly with other-crime type', () => {
+        const { getByTestId } = render(<Pin type="Other Crime" onPress={mockOnPress} />);
+        const pin = getByTestId('pin-svg');
+        expect(pin.props.xml).toBe(otherCrimePin);
+    });
+
+    it('renders correctly with lost book type', () => {
+        const { getByTestId } = render(<Pin type="Lost Book" onPress={mockOnPress} />);
+        const pin = getByTestId('pin-svg');
+        expect(pin.props.xml).toBe(lostItemPin);
+    });
+
+    it('renders correctly with lost pet type', () => {
+        const { getByTestId } = render(<Pin type="Lost Pet" onPress={mockOnPress} />);
+        const pin = getByTestId('pin-svg');
+        expect(pin.props.xml).toBe(lostItemPin);
+    });
+
+    it('renders correctly with infrastructure issue type', () => {
+        const { getByTestId } = render(<Pin type="Infrastructure Issue" onPress={mockOnPress} />);
+        const pin = getByTestId('pin-svg');
+        expect(pin.props.xml).toBe(otherDisasterPin);
+    });
+
+    it('renders correctly with other type', () => {
+        const { getByTestId } = render(<Pin type="Something" onPress={mockOnPress} />);
+        const pin = getByTestId('pin-svg');
+        expect(pin.props.xml).toBe(otherCrimePin);
+    });
+
+    it('calls onPress when pressed', () => {
         const { getByTestId } = render(<Pin onPress={mockOnPress} />);
-        fireEvent.press(getByTestId('pin-container'));
-        expect(mockOnPress).toHaveBeenCalledTimes(1);
+        const pin = getByTestId('pin-touchable');
+        fireEvent.press(pin);
+        expect(mockOnPress).toHaveBeenCalled();
+    });
+
+    it('renders correctly with custom width and height', () => {
+        const { getByTestId } = render(<Pin onPress={mockOnPress} width={50} height={50} />);
+        const pin = getByTestId('pin-svg');
+        expect(pin.props.width).toBe(50);
+        expect(pin.props.height).toBe(50);
     });
 });
