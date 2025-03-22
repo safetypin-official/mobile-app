@@ -1,4 +1,4 @@
-import { StyleSheet, View, Dimensions, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Dimensions, Text, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, MapPressEvent, LongPressEvent, Marker, Callout } from 'react-native-maps';
 import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
@@ -139,10 +139,8 @@ export default function ExploreScreen() {
     
     // Find post in local data first
     const post = posts.find(p => p.id === postId);
-    if (post) {
-      setSelectedPost(post);
-      setShowReport(true);
-    }
+    setSelectedPost(post);
+    setShowReport(true);
   };
 
   return (
