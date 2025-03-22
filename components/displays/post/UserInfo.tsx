@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, TouchableWithoutFeedback } from "react-native";
 import MoreOptionsButton from "@/components/buttons/post/MoreOptionsButton";
-import Toast from "../../toast/Toast";
+import Toast from "../../toasts/Toast";
 import Pin from "@/components/displays/Pin";
 
 // Update the props interface to include category type

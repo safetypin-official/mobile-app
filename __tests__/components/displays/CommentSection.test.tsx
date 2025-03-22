@@ -1,180 +1,178 @@
-import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react-native";
-import CommentSection from "@/components/displays/post/CommentSection";
+import React from 'react';
+import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import CommentSection from '@/components/displays/post/CommentSection';
 
-// Mock the setTimeout function
+// Mock the Timer functions
 jest.useFakeTimers();
 
 // Mock the MoreOptionsButton component
-jest.mock("@/components/buttons/post/MoreOptionsButton", () => {
-  const { View, Text } = require("react-native");
-  return ({ onReport, onSendMessage }) => (
-    <View testID="mocked-more-options-button">
-      <Text testID="report" onPress={onReport}>Report</Text>
-      <Text testID="send-message" onPress={onSendMessage}>Send Message</Text>
-    </View>
-  );
+jest.mock('@/components/buttons/post/MoreOptionsButton', () => {
+  return jest.fn(({ closeModal, onSendMessage, onReport }) => (
+    <>
+      <button testID="send-message-button" onPress={onSendMessage}>Send Message</button>
+      <button testID="report-button" onPress={onReport}>Report</button>
+      <button testID="close-modal-button" onPress={closeModal}>Close</button>
+    </>
+  ));
 });
 
 // Mock the Toast component
-jest.mock("@/components/toast/Toast", () => {
-  const { View, Text } = require("react-native");
-  return ({ text }) => (
-    <View testID="mocked-toast">
-      <Text>{text}</Text>
-    </View>
-  );
+jest.mock('@/components/toasts/Toast', () => {
+  return jest.fn(({ text }) => <div testID="toast">{text}</div>);
 });
 
-// Spy on console.log
-jest.spyOn(console, "log").mockImplementation(() => {});
+describe('CommentSection Component', () => {
+  const defaultProps = {
+    avatarUrl: 'https://example.com/avatar.jpg',
+    username: 'John Doe',
+    handle: '@johndoe',
+    date: '2h',
+    content: 'This is a test comment',
+    likeCount: 42,
+    likeIconUrl: 'https://example.com/like.png',
+    moreOptionsIconUrl: 'https://example.com/more.png',
+  };
 
-const mockComment = {
-  avatarUrl: "https://example.com/avatar.jpg",
-  username: "John Doe",
-  handle: "@johndoe",
-  date: "Feb 20",
-  content: "This is a test comment",
-  likeCount: 5,
-  likeIconUrl: "https://example.com/like-icon.png",
-  moreOptionsIconUrl: "https://example.com/more-options-icon.png",
-};
-
-describe("CommentSection Component", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
+  test('renders correctly with all props', () => {
+    const { getByText, getByTestId } = render(<CommentSection {...defaultProps} />);
+    
+    // Check if all text elements are rendered
+    expect(getByText(defaultProps.username)).toBeTruthy();
+    expect(getByText(`${defaultProps.handle} • ${defaultProps.date}`)).toBeTruthy();
+    expect(getByText(defaultProps.content)).toBeTruthy();
+    expect(getByText(defaultProps.likeCount.toString())).toBeTruthy();
+    
+    // Check if the more options button is present
+    expect(getByTestId('more-options-button')).toBeTruthy();
   });
 
-  it("renders CommentSection correctly", () => {
-    const { getByText } = render(<CommentSection {...mockComment} />);
-    expect(getByText("John Doe")).toBeTruthy();
-    expect(getByText("@johndoe • Feb 20")).toBeTruthy();
-    expect(getByText("This is a test comment")).toBeTruthy();
-    expect(getByText("5")).toBeTruthy();
+  test('opens modal when more options button is pressed', () => {
+    const { getByTestId, queryByTestId } = render(<CommentSection {...defaultProps} />);
+    
+    // Initially modal should not be visible
+    expect(queryByTestId('more-options-modal')).toBeFalsy();
+    
+    // Press more options button
+    fireEvent.press(getByTestId('more-options-button'));
+    
+    // Modal should be visible now
+    expect(getByTestId('more-options-modal')).toBeTruthy();
   });
 
-  it("opens the more options modal when more options button is clicked", () => {
-    const { getByTestId, queryByTestId } = render(<CommentSection {...mockComment} />);
+  test('closes modal when overlay is pressed', () => {
+    const { getByTestId, queryByTestId } = render(<CommentSection {...defaultProps} />);
     
-    // Initially, modal should not be visible
-    expect(queryByTestId("mocked-more-options-button")).toBeNull();
+    // Open modal first
+    fireEvent.press(getByTestId('more-options-button'));
+    expect(getByTestId('more-options-modal')).toBeTruthy();
     
-    // Click the more options button
-    fireEvent.press(getByTestId("more-options-button"));
-    
-    // Modal should be visible
-    expect(queryByTestId("mocked-more-options-button")).toBeTruthy();
-  });
-
-  it("closes the modal when clicking outside", () => {
-    const { getByTestId, queryByTestId } = render(<CommentSection {...mockComment} />);
-    
-    // Open the modal
-    fireEvent.press(getByTestId("more-options-button"));
-    expect(queryByTestId("mocked-more-options-button")).toBeTruthy();
-    
-    // Click outside the modal
-    fireEvent.press(getByTestId("modal-overlay"));
+    // Press overlay to close
+    fireEvent.press(getByTestId('modal-overlay'));
     
     // Modal should be closed
-    expect(queryByTestId("mocked-more-options-button")).toBeNull();
+    expect(queryByTestId('more-options-modal')).toBeFalsy();
   });
 
-  it("handles onRequestClose for the modal", () => {
-    const { getByTestId, queryByTestId } = render(<CommentSection {...mockComment} />);
+  test('closes modal when close button is pressed', () => {
+    const { getByTestId, queryByTestId } = render(<CommentSection {...defaultProps} />);
     
-    // Open the modal
-    fireEvent.press(getByTestId("more-options-button"));
-    expect(queryByTestId("mocked-more-options-button")).toBeTruthy();
+    // Open modal first
+    fireEvent.press(getByTestId('more-options-button'));
     
-    // Trigger onRequestClose
-    fireEvent(getByTestId("more-options-modal"), "requestClose");
+    // Press close button
+    fireEvent.press(getByTestId('close-modal-button'));
     
     // Modal should be closed
-    expect(queryByTestId("mocked-more-options-button")).toBeNull();
+    expect(queryByTestId('more-options-modal')).toBeFalsy();
   });
 
-  it("calls onSendMessage when 'Send Message' is clicked", () => {
-    const { getByTestId } = render(<CommentSection {...mockComment} />);
+  test('shows toast when report is submitted', async () => {
+    const { getByTestId, queryByTestId } = render(<CommentSection {...defaultProps} />);
     
-    // Open the modal
-    fireEvent.press(getByTestId("more-options-button"));
+    // Open modal first
+    fireEvent.press(getByTestId('more-options-button'));
     
-    // Click Send Message
-    fireEvent.press(getByTestId("send-message"));
-    
-    // Check if console.log was called with "Send Message"
-    expect(console.log).toHaveBeenCalledWith("Send Message");
-  });
-
-  it("shows toast and closes modal when 'Report' is clicked", () => {
-    const { getByTestId, queryByTestId } = render(<CommentSection {...mockComment} />);
-    
-    // Open the modal
-    fireEvent.press(getByTestId("more-options-button"));
-    
-    // Click Report
-    fireEvent.press(getByTestId("report"));
-    
-    // Toast should be visible with "Report Submitted"
-    expect(queryByTestId("mocked-toast")).toHaveTextContent("Report Submitted");
-    
-    // Modal should be closed
-    expect(queryByTestId("mocked-more-options-button")).toBeNull();
-  });
-
-  it("closes toast when clicked", () => {
-    const { getByTestId, queryByTestId } = render(<CommentSection {...mockComment} />);
-    
-    // Open the modal and report
-    fireEvent.press(getByTestId("more-options-button"));
-    fireEvent.press(getByTestId("report"));
-    
-    // Click on toast to dismiss
-    fireEvent.press(getByTestId("report-submitted"));
-    
-    // Toast should be closed
-    expect(queryByTestId("mocked-toast")).toBeNull();
-  });
-
-  it("automatically hides toast after 3 seconds", () => {
-    const { getByTestId, queryByTestId } = render(<CommentSection {...mockComment} />);
-    
-    // Open the modal and report
-    fireEvent.press(getByTestId("more-options-button"));
-    fireEvent.press(getByTestId("report"));
+    // Press report button
+    fireEvent.press(getByTestId('report-button'));
     
     // Toast should be visible
-    expect(queryByTestId("mocked-toast")).toBeTruthy();
+    expect(getByTestId('toast')).toBeTruthy();
+    expect(getByTestId('report-submitted')).toBeTruthy();
     
-    // Advance timers by 3 seconds
+    // Modal should be closed
+    expect(queryByTestId('more-options-modal')).toBeFalsy();
+    
+    // Fast-forward timers
     jest.advanceTimersByTime(3000);
     
-    // Toast should be hidden
-    expect(queryByTestId("mocked-toast")).toBeDefined();
+    // Toast should disappear after timeout
+    await waitFor(() => {
+      expect(queryByTestId('report-submitted')).toBeFalsy();
+    });
   });
 
-  it("renders without crashing when required props are missing", () => {
-    const { getByText } = render(
-      <CommentSection
-        avatarUrl=""
-        username="Anonymous"
-        handle=""
-        date=""
-        content=""
-        likeCount={0}
-        likeIconUrl=""
-        moreOptionsIconUrl=""
-      />
-    );
+  test('handles send message action', () => {
+    const consoleSpy = jest.spyOn(console, 'log');
+    const { getByTestId } = render(<CommentSection {...defaultProps} />);
     
-    expect(getByText("Anonymous")).toBeTruthy();
+    // Open modal first
+    fireEvent.press(getByTestId('more-options-button'));
+    
+    // Press send message button
+    fireEvent.press(getByTestId('send-message-button'));
+    
+    // Check if console.log was called
+    expect(consoleSpy).toHaveBeenCalledWith('Send Message');
+    
+    // Clean up
+    consoleSpy.mockRestore();
   });
 
-  it("does not crash when onRequestClose is called on an already closed modal", () => {
-    const { queryByTestId } = render(<CommentSection {...mockComment} />);
+  test('closes toast when clicked', () => {
+    const { getByTestId, queryByTestId } = render(<CommentSection {...defaultProps} />);
     
-    // Modal should not exist initially
-    expect(queryByTestId("more-options-modal")).toBeNull();
+    // Open modal first
+    fireEvent.press(getByTestId('more-options-button'));
+    
+    // Press report button to show toast
+    fireEvent.press(getByTestId('report-button'));
+    
+    // Toast should be visible
+    expect(getByTestId('report-submitted')).toBeTruthy();
+    
+    // Press toast to close it
+    fireEvent.press(getByTestId('report-submitted'));
+    
+    // Toast should be closed
+    expect(queryByTestId('report-submitted')).toBeFalsy();
+  });
+
+  test('closes modal via onRequestClose', () => {
+    const { getByTestId, queryByTestId } = render(<CommentSection {...defaultProps} />);
+    
+    // Open modal first
+    fireEvent.press(getByTestId('more-options-button'));
+    expect(getByTestId('more-options-modal')).toBeTruthy();
+    
+    // Simulate back button press (onRequestClose)
+    const modal = getByTestId('more-options-modal');
+    fireEvent(modal, 'requestClose');
+    
+    // Modal should be closed
+    expect(queryByTestId('more-options-modal')).toBeFalsy();
+  });
+
+  test('likes a comment when like button is pressed', () => {
+    const { getByText } = render(<CommentSection {...defaultProps} />);
+    
+    // Find the like button by its containing text
+    const likeButton = getByText(defaultProps.likeCount.toString()).parent;
+    
+    // Press like button
+    fireEvent.press(likeButton);
+    
+    // In the current implementation, pressing like doesn't change the count
+    // This test is to ensure the button is clickable and doesn't crash
+    expect(getByText(defaultProps.likeCount.toString())).toBeTruthy();
   });
 });

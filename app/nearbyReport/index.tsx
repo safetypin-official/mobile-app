@@ -57,27 +57,6 @@ const NearbyReport: React.FC<NearbyReportProps> = ({ post, onClose }) => {
     }
     return [];
   }
-  
-  // Map category name to pin type
-  const getPinType = (): string => {
-    if (!post?.category) return "other-crime";
-    
-    // Map category name to pin type
-    const categoryMap: Record<string, string> = {
-      "Lost Item": "lost-item",
-      "Found Item": "found-item",
-      "Theft": "theft",
-      "Harassment": "harassment",
-      "Flood": "flood",
-      "Assault": "assault",
-      "Fire": "fire",
-      "Earthquake": "earthquake",
-      "Other Disaster": "other-disaster",
-      "Other Crime": "other-crime"
-    };
-    
-    return categoryMap[post.category.name] || "other-crime";
-  };
 
   return (
     <View style={styles.container}>
@@ -93,7 +72,7 @@ const NearbyReport: React.FC<NearbyReportProps> = ({ post, onClose }) => {
               moreOptionsIconUrl="https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/43f6a47c22e1c702925915e6626ae6f483d1e56e047a9647d4ff9e5de9751425?placeholderIfAbsent=true"
               longitude={post?.longitude ?? 0}
               latitude={post?.latitude ?? 0}
-              categoryType={getPinType()} // Pass the pin type based on category
+              categoryType={post?.category.name} // Pass the pin type based on category
             />
 
             <ReportContent

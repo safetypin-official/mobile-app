@@ -1,6 +1,6 @@
 import { StyleSheet, View, Dimensions, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, MapPressEvent, LongPressEvent, Marker, Callout } from 'react-native-maps';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
 import NearbyReport from '@/app/nearbyReport';
 import Pin from '@/components/displays/Pin';
@@ -46,9 +46,10 @@ export default function ExploreScreen() {
   const [loading, setLoading] = useState<boolean>(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
   
-  // State for selected post and report view
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [showReport, setShowReport] = useState<boolean>(false);
+  
+  const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
 
   // Fetch user location
   useEffect(() => {
@@ -98,6 +99,14 @@ export default function ExploreScreen() {
     };
 
     fetchPosts();
+  }, [refreshTrigger]); // Add refreshTrigger as a dependency
+
+  // Function to refresh posts
+  const refreshPosts = useCallback(() => {
+    setPosts([]);
+    setFetchError(null);
+    // Increment the refreshTrigger to retrigger the useEffect
+    setRefreshTrigger(prev => prev + 1);
   }, []);
 
   const handleMapPress = (event: MapPressEvent) => {
@@ -133,8 +142,6 @@ export default function ExploreScreen() {
     if (post) {
       setSelectedPost(post);
       setShowReport(true);
-    } else {
-      alert('Post not found');
     }
   };
 
@@ -209,23 +216,7 @@ export default function ExploreScreen() {
           <Text style={styles.errorText}>{fetchError}</Text>
           <TouchableOpacity 
             style={styles.retryButton}
-            onPress={() => {
-              setPosts([]);
-              setFetchError(null);
-              setLoading(true);
-              // Re-trigger the useEffect
-              fetch('http://10.0.2.2/post/all')
-                .then(response => response.json())
-                .then(data => {
-                  setPosts(data);
-                  setLoading(false);
-                })
-                .catch(error => {
-                  console.error('Error retrying fetch:', error);
-                  setFetchError('Failed to load posts. Please try again later.');
-                  setLoading(false);
-                });
-            }}
+            onPress={refreshPosts}
           >
             <Text style={styles.retryButtonText}>Retry</Text>
           </TouchableOpacity>

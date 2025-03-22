@@ -16,7 +16,7 @@ jest.mock("@/components/buttons/post/MoreOptionsButton", () => {
 });
 
 // Mock the Toast component
-jest.mock("../../../components/toast/Toast", () => {
+jest.mock("../../../components/toasts/Toast", () => {
   const { Text, View } = require("react-native");
   return ({ text }) => (
     <View testID="toast-overlay">
