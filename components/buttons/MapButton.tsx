@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
   centerButton: {
     position: "absolute",
     left: "50%", // Change right to left
-    transform: [{ translateX: -27.5 }],
     top: -22,
     width: 55,
     height: 55,
