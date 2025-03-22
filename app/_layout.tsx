@@ -11,7 +11,14 @@ export default function Layout() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Stack />
+      <Stack>
+        <Stack.Screen name="index" options={{ title: 'Log In' }} />
+        <Stack.Screen name="forgotPassword/index" options={{ title: 'Forgot Password' }} />
+        <Stack.Screen name="signUp/index" options={{ title: 'Sign Up' }} />
+        <Stack.Screen name="otpVerificationScreen" options={{ title: "OTP Verification" }} />
+        <Stack.Screen name="nearbyReport/index" options={{ title: "Nearby Report" }} />
+      </Stack>
+
       {!hideNavBarRoutes.includes(pathname) && (
         <NavContainer
           activeTab={activeTab}

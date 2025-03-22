@@ -51,7 +51,7 @@ const PostFormScreen = () => {
                     <Text style={styles.header}>New Report</Text>
                 </View>
                 <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 8 }}>
-                    <Button children="Post" onPress={handleSubmit} />
+                    <Button onPress={handleSubmit}>Post</Button>
                 </View>
             </View>
 

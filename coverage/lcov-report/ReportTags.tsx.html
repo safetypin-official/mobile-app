@@ -1,0 +1,319 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for ReportTags.tsx</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="prettify.css" />
+    <link rel="stylesheet" href="base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="index.html">All files</a> ReportTags.tsx</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>7/7</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>1/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>2/2</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>7/7</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line high'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from "react";
+import { View, Text, Image, ScrollView, StyleSheet } from "react-native";
+&nbsp;
+const TAG_KEYS = [
+  "Lost Item",
+  "Found Item",
+  "Theft",
+  "Harassment",
+  "Flood",
+  "Assault",
+  "Fire",
+  "Other Natural Disasters",
+  "Earthquake",
+  "Other Crime",
+] as const;
+&nbsp;
+type TagKey = (typeof TAG_KEYS)[number];
+&nbsp;
+const TAGS: Record&lt;TagKey, { iconUrl: string; color: string }&gt; = {
+  "Lost Item": { iconUrl: "https://media.discordapp.net/attachments/929674811062505492/1349048388422860881/question-mark-2.png?ex=67d1aeb7&amp;is=67d05d37&amp;hm=1e6e34ee7338bddb32cf25759358512eab28d9b32237cde9238fd2c293eba95c&amp;=&amp;format=webp&amp;quality=lossless&amp;width=40&amp;height=40", color: "#9F3F3D" },
+  "Found Item": { iconUrl: "https://media.discordapp.net/attachments/929674811062505492/1349050499038445578/exclamation-mark.png?ex=67d1b0af&amp;is=67d05f2f&amp;hm=227bb51746b44615b4effd92bbebfb038e35645a64ac1ab3cf856d78ef4ac994&amp;=&amp;format=webp&amp;quality=lossless&amp;width=40&amp;height=40", color: "#5E9F3D" },
+  "Theft": { iconUrl: "https://media.discordapp.net/attachments/929674811062505492/1349050266875330560/material-symbols_domino-mask.png?ex=67d1b077&amp;is=67d05ef7&amp;hm=ca22e9373463f9d935aae4c5a0bded8587ed2bb46d96125c6d2574f8b5003726&amp;=&amp;format=webp&amp;quality=lossless&amp;width=40&amp;height=40", color: "#9F3F3D" },
+  "Harassment": { iconUrl: "https://media.discordapp.net/attachments/929674811062505492/1349050267827441664/fa6-solid_person-harassing.png?ex=67d1b077&amp;is=67d05ef7&amp;hm=fed7a38d10285e179c3de28f5cfdbc79b874445300eae45b5692946cb988dda4&amp;=&amp;format=webp&amp;quality=lossless&amp;width=45&amp;height=40", color: "#9F3F3D" },
+  "Flood": { iconUrl: "https://media.discordapp.net/attachments/929674811062505492/1349050267122929756/material-symbols_flood.png?ex=67d1b077&amp;is=67d05ef7&amp;hm=e30f2fd7110112de4e475d3e7629fa7d435e73bdf436bb22a814aa3086fad735&amp;=&amp;format=webp&amp;quality=lossless&amp;width=40&amp;height=40", color: "#3D719F" },
+  "Assault": { iconUrl: "https://media.discordapp.net/attachments/929674811062505492/1349050268326559825/game-icons_punch-blast.png?ex=67d1b078&amp;is=67d05ef8&amp;hm=9096db13d8c332eeba7499b2a98aee0d2ef19ed543689e2ade988c5de704b0a6&amp;=&amp;format=webp&amp;quality=lossless&amp;width=40&amp;height=40", color: "#9F3F3D" },
+  "Fire": { iconUrl: "https://media.discordapp.net/attachments/929674811062505492/1349050267596750908/solar_fire-bold.png?ex=67d1b077&amp;is=67d05ef7&amp;hm=c47dbb618ef69d048c3a86a56f8ba30021aeabcb7cfa5ba1f890b6f886846fdb&amp;=&amp;format=webp&amp;quality=lossless&amp;width=40&amp;height=40", color: "#BA1A1A" },
+  "Other Natural Disasters": { iconUrl: "https://media.discordapp.net/attachments/929674811062505492/1349050267349553182/mingcute_alert-fill.png?ex=67d1b077&amp;is=67d05ef7&amp;hm=c4cfc79b5b4857f808bab157152778e4910917b127629b6816f1bcee9c102c7a&amp;=&amp;format=webp&amp;quality=lossless&amp;width=40&amp;height=40", color: "#391E1D" },
+  "Earthquake": { iconUrl: "https://media.discordapp.net/attachments/929674811062505492/1349050268062584842/game-icons_edge-crack.png?ex=67d1b078&amp;is=67d05ef8&amp;hm=6db7525e34c1d4c55b7bdf42d780ec6f197f594da1f240b12b074d9a9518958c&amp;=&amp;format=webp&amp;quality=lossless&amp;width=40&amp;height=40", color: "#745A2B" },
+  "Other Crime": { iconUrl: "https://media.discordapp.net/attachments/929674811062505492/1349050268763033652/material-symbols_brightness-alert-rounded.png?ex=67d1b078&amp;is=67d05ef8&amp;hm=85e789c21f15e6cb2625b5e6ced8236972a7366f230f2f66302c89a7f72f7093&amp;=&amp;format=webp&amp;quality=lossless&amp;width=40&amp;height=40", color: "#9F3F3D" },
+};
+&nbsp;
+export interface ReportTagsProps {
+  selectedTags?: TagKey[];
+}
+&nbsp;
+const ReportTags: React.FC&lt;ReportTagsProps&gt; = ({ selectedTags = [] }) =&gt; {
+  return (
+    &lt;ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tags} testID="tags-container"&gt;
+      {selectedTags.map((tag, index) =&gt; {
+        const tagData = TAGS[tag];
+        return (
+          &lt;View key={index} style={[styles.tagButton, { backgroundColor: tagData.color }]}&gt;
+            &lt;Image source={{ uri: tagData.iconUrl }} style={styles.tagIcon} testID={`icon-${tag}`}/&gt;
+            &lt;Text style={styles.tagText}&gt;{tag}&lt;/Text&gt;
+          &lt;/View&gt;
+        );
+      })}
+    &lt;/ScrollView&gt;
+  );
+};
+&nbsp;
+const styles = StyleSheet.create({
+  tags: {
+    flexDirection: "row",
+    paddingHorizontal: 0,
+  },
+  tagButton: {
+    borderRadius: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginRight: 8,
+    height: 25,
+  },
+  tagIcon: {
+    width: 16,
+    height: 16,
+  },
+  tagText: {
+    color: "#FFF",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+});
+&nbsp;
+export default ReportTags;
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-03-12T22:05:40.757Z
+            </div>
+        <script src="prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="sorter.js"></script>
+        <script src="block-navigation.js"></script>
+    </body>
+</html>
+    
