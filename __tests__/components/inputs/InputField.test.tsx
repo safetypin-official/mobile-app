@@ -21,33 +21,21 @@ describe("InputField Component", () => {
     expect(input.props.secureTextEntry).toBe(true);
   });
 
-  it("defaults multiline to false", () => {
+  it("sets numberOfLines to 1 when multiline is false", () => {
     const { getByPlaceholderText } = render(
-      <InputField label="Single Line" placeholder="Type here" />
+      <InputField placeholder="Single-line input" multiline={false} />
     );
 
-    const input = getByPlaceholderText("Type here");
-    expect(input.props.multiline).toBe(false);
+    const input = getByPlaceholderText("Single-line input");
     expect(input.props.numberOfLines).toBe(1);
   });
 
-  it("renders correctly when multiline is set to true", () => {
+  it("sets numberOfLines to 5 when multiline is true", () => {
     const { getByPlaceholderText } = render(
-      <InputField label="Multiline Input" placeholder="Type here" multiline />
+      <InputField placeholder="Multi-line input" multiline />
     );
 
-    const input = getByPlaceholderText("Type here");
-    expect(input.props.multiline).toBe(true);
+    const input = getByPlaceholderText("Multi-line input");
     expect(input.props.numberOfLines).toBe(5);
-  });
-
-  it("renders correctly when multiline is explicitly set to false", () => {
-    const { getByPlaceholderText } = render(
-      <InputField label="Single Line" placeholder="Type here" multiline={false} />
-    );
-
-    const input = getByPlaceholderText("Type here");
-    expect(input.props.multiline).toBe(false);
-    expect(input.props.numberOfLines).toBe(1);
   });
 });

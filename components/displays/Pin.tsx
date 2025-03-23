@@ -17,49 +17,65 @@ import {
 interface PinProps {
     type?: string;
     onPress: () => void;
+    width?: number;   // New prop for width
+    height?: number;  // New prop for height
 }
 
-const Pin: React.FC<PinProps> = ({ type = "other-crime", onPress }) => {
+const Pin: React.FC<PinProps> = ({ 
+    type = "other-crime", 
+    onPress, 
+    width = 30,    // Default width
+    height = 30    // Default height
+}) => {
     let pinXml;
 
     switch (type) {
-        case 'lost-item':
+        case 'Lost Item':
             pinXml = lostItemPin;
             break;
-        case 'found-item':
+        case 'Found Item':
             pinXml = foundItemPin;
             break;
-        case 'theft':
+        case 'Theft':
             pinXml = theftPin;
             break;
-        case 'harassment':
+        case 'Harassment':
             pinXml = harassmentPin;
             break;
-        case 'flood':
+        case 'Flood':
             pinXml = floodPin;
             break;
-        case 'assault':
+        case 'Assault':
             pinXml = assaultPin;
             break;
-        case 'fire':
+        case 'Fire':
             pinXml = firePin;
             break;
-        case 'other-disaster':
+        case 'Other Disaster':
             pinXml = otherDisasterPin;
             break;
-        case 'earthquake':
+        case 'Earthquake':
             pinXml = earthquakePin;
             break;
-        case 'other-crime':
+        case 'Other Crime':
             pinXml = otherCrimePin;
+            break;
+        case 'Lost Book':
+            pinXml = lostItemPin;
+            break;
+        case 'Lost Pet':
+            pinXml = lostItemPin;
+            break;
+        case 'Infrastructure Issue':
+            pinXml = otherDisasterPin;
             break;
         default:
             pinXml = otherCrimePin;
     }
 
     return (
-        <TouchableOpacity onPress={onPress} testID='pin-container'>
-            <SvgXml xml={pinXml} testID='pin-svg' />
+        <TouchableOpacity onPress={onPress} testID="pin-touchable">
+            <SvgXml xml={pinXml} width={width} height={height} testID="pin-svg" />
         </TouchableOpacity>
     );
 };

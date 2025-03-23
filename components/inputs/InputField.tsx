@@ -17,8 +17,8 @@ const InputField: React.FC<InputFieldProps> = ({
   secureTextEntry = false,
   onChangeText,
   testID = "input-field",
-  labelColor = "#FFFFFF",
-  multiline = false,
+  labelColor = "#FFFFFF", // Default to white
+  multiline = false, // Default to false
 }) => {
   return (
     <View style={styles.container} testID={testID}>

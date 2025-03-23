@@ -85,6 +85,7 @@ describe("SignUpScreen", () => {
   
     fireEvent.press(screen.getByTestId("signup-button"));
   
+    // Ensure the register function is called
     await waitFor(() => {
       expect(registerEmailPassword).toHaveBeenCalledWith(
         "test@example.com",
@@ -92,18 +93,12 @@ describe("SignUpScreen", () => {
         "testuser",
         "1990-01-01"
       );
-      expect(Alert.alert).toHaveBeenCalledWith(
-        "Registration Successful",
-        "Your account has been created successfully!",
-        [{ text: "OK", onPress: expect.any(Function) }]
-      );
     });
-  
-    const alertArgs = (Alert.alert as jest.Mock).mock.calls[0]; 
-    const onPressOK = alertArgs[2][0].onPress; 
-    onPressOK(); // Simulate user clicking "OK"
-  
-    expect(router.push).toHaveBeenCalledWith("/signUp/otp");
+    
+    // Force the promise to resolve
+    await Promise.resolve();
+    
+    expect(router.push).toHaveBeenCalledWith("/signUp/otp?email=test%40example.com");
   });
 
   it("handles registerEmailPassword errors", async () => {
@@ -177,4 +172,30 @@ describe("SignUpScreen", () => {
       expect(console.error).toHaveBeenCalledWith("Apple auth failed:", mockError);
     });
   });
+
+  it("throws an error when date of birth is incorrectly formatted", async () => {
+    render(<SignUpScreen />);
+  
+    // Manually call handleSignUp with an invalid date format
+    const invalidUserData = {
+      username: "testuser",
+      email: "test@example.com",
+      dateOfBirth: "01-1990", // Invalid format (missing day)
+      password: "StrongPassword1!"
+    };
+  
+    const signUpForm = screen.getByTestId("signup-form");
+    
+    // Trigger the sign-up function with invalid data
+    fireEvent(signUpForm, "onSignUp", invalidUserData);
+  
+    await waitFor(() => {
+      expect(registerEmailPassword).not.toHaveBeenCalled(); // Ensure registerEmailPassword is NOT called
+      expect(console.error).toHaveBeenCalledWith(
+        "Sign up failed:",
+        new Error("Invalid date of birth format")
+      );
+    });
+  });
+  
 });

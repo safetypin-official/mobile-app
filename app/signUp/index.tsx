@@ -1,6 +1,5 @@
 import SignUpForm from "@/components/forms/SignUpForm";
 import { router } from "expo-router";
-import { Alert } from "react-native";
 import { onGoogleAuth, onAppleIDAuth, registerEmailPassword } from "@/utils/auth"; // Import auth functions
 
 export default function SignUpScreen() {
@@ -17,6 +16,9 @@ export default function SignUpScreen() {
     try {
       // Format the date of birth if needed (assuming it's in DD/MM/YYYY format in the form)
       const [day, month, year] = userData.dateOfBirth.split('/');
+      if (!day || !month || !year) {
+        throw new Error("Invalid date of birth format");
+      }
       const formattedBirthdate = `${year}-${month}-${day}`; // Convert to YYYY-MM-DD format
       
       const result = await registerEmailPassword(
@@ -28,11 +30,7 @@ export default function SignUpScreen() {
 
       console.log(result);
       
-      Alert.alert(
-        "Registration Successful", 
-        "Your account has been created successfully!",
-        [{ text: "OK", onPress: () => router.push("/signUp/otp") }]
-      );
+      router.push(`/signUp/otp?email=${encodeURIComponent(userData.email)}`);
     } catch (error) {
       // Error handling is already done in registerEmailPassword
       console.error("Sign up failed:", error);
