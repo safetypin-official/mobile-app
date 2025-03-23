@@ -26,7 +26,7 @@ const LoginScreen = () => {
       const result = await loginWithEmail(email, password);
       console.log("Email login successful:", result);
       // Navigate to map screen after successful login
-      router.push('/map');
+      router.replace('/map');
     } catch (error: any) {
       // Errors are handled in the loginWithEmail function
       console.error("Email login failed:", error);

@@ -14,7 +14,7 @@ const ForgotPasswordScreen = () => {
   const sendEmail = () => {
     if (!isValidEmail(email)) {
       Alert.alert("Invalid email format!");
-      return;
+      return; 
     }
     router.push('/forgotPassword/otpVerificationScreen')
   };

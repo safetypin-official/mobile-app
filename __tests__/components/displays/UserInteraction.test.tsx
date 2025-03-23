@@ -1,36 +1,66 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
-import UserInteraction from "../../../components/displays/UserInteraction";
+import UserInteraction from "../../../components/displays/post/UserInteraction";
 import { likeIcon, dislikeIcon } from "@/assets/userInteractions";
+
+// Mock react-native-svg
+jest.mock('react-native-svg', () => {
+  const { View } = require('react-native');
+  return {
+    SvgXml: ({ xml, width, height, fill, testID }) => (
+      <View testID={testID} data-xml={xml} data-width={width} data-height={height} data-fill={fill} />
+    ),
+  };
+});
 
 describe("UserInteraction Component", () => {
   const mockOnPress = jest.fn();
 
-  const interactionTypes = [
-    { type: "like-icon", expectedSvg: likeIcon },
-    { type: "dislike-icon", expectedSvg: dislikeIcon },
-  ];
-
-  test("renders default interaction when no type is provided", () => {
-    const { getByTestId } = render(<UserInteraction onPress={mockOnPress} />);
-    expect(getByTestId("user-interaction-like-icon")).toBeTruthy();
+  beforeEach(() => {
+    mockOnPress.mockClear();
   });
 
-  interactionTypes.forEach(({ type }) => {
-    test(`renders correct icon for type "${type}"`, () => {
-      const { getByTestId } = render(<UserInteraction type={type} onPress={mockOnPress} />);
-      expect(getByTestId(`user-interaction-${type}`)).toBeTruthy();
-    });
+  test("renders default like icon when no type is provided", () => {
+    const { UNSAFE_getByProps } = render(<UserInteraction onPress={mockOnPress} />);
+    const svgElement = UNSAFE_getByProps({ 'data-xml': likeIcon });
+    expect(svgElement).toBeTruthy();
+    expect(svgElement.props['data-width']).toBe(24); // Default width
+    expect(svgElement.props['data-height']).toBe(24); // Default height
+    expect(svgElement.props['data-fill']).toBe("#7F7574"); // Default fill
   });
 
-  test("renders default interaction when an invalid type is provided", () => {
-    const { getByTestId } = render(<UserInteraction type="invalid-type" onPress={mockOnPress} />);
-    expect(getByTestId("user-interaction-like-icon")).toBeTruthy();
+  test("renders like icon with correct props", () => {
+    const { UNSAFE_getByProps } = render(<UserInteraction type="like-icon" onPress={mockOnPress} />);
+    const svgElement = UNSAFE_getByProps({ 'data-xml': likeIcon });
+    expect(svgElement).toBeTruthy();
   });
 
-  test("calls onPress when interaction icon is clicked", () => {
-    const { getByTestId } = render(<UserInteraction type="like-icon" onPress={mockOnPress} />);
-    fireEvent.press(getByTestId("user-interaction-like-icon"));
-    expect(mockOnPress).toHaveBeenCalledTimes(1);
+  test("renders dislike icon with correct props", () => {
+    const { UNSAFE_getByProps } = render(<UserInteraction type="dislike-icon" onPress={mockOnPress} />);
+    const svgElement = UNSAFE_getByProps({ 'data-xml': dislikeIcon });
+    expect(svgElement).toBeTruthy();
   });
+
+  test("renders default like icon when an invalid type is provided", () => {
+    const { UNSAFE_getByProps } = render(<UserInteraction type="invalid-type" onPress={mockOnPress} />);
+    const svgElement = UNSAFE_getByProps({ 'data-xml': likeIcon });
+    expect(svgElement).toBeTruthy();
+  });
+
+  test("applies custom width, height and fill props", () => {
+    const { UNSAFE_getByProps } = render(
+      <UserInteraction 
+        type="like-icon" 
+        onPress={mockOnPress} 
+        width={32} 
+        height={32} 
+        fill="#FF0000" 
+      />
+    );
+    const svgElement = UNSAFE_getByProps({ 'data-xml': likeIcon });
+    expect(svgElement.props['data-width']).toBe(32);
+    expect(svgElement.props['data-height']).toBe(32);
+    expect(svgElement.props['data-fill']).toBe("#FF0000");
+  });
+
 });

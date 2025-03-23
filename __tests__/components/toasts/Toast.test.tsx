@@ -1,6 +1,6 @@
 import React from "react";
 import { render } from "@testing-library/react-native";
-import Toast from "../../../components/toast/Toast";
+import Toast from "../../../components/toasts/Toast";
 
 jest.mock("@expo/vector-icons", () => ({
     AntDesign: "",
