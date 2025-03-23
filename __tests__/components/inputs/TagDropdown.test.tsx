@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { render, fireEvent, waitFor, cleanup } from '@testing-library/react-native';
 import TagDropdown from '@/components/inputs/TagDropdown';
 import TagSelectorModal from '@/components/inputs/TagSelectorModal';
 
@@ -21,6 +21,8 @@ jest.mock('@/components/inputs/TagSelectorModal', () =>
 );
   
 describe('TagDropdown Component', () => {
+  afterEach(cleanup);
+
   const mockOnTagChange = jest.fn();
 
   beforeEach(() => {
