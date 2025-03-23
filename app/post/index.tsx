@@ -19,14 +19,13 @@ interface Category {
 export const getFileExtension = (uri: string): string => {
     const fileName = uri.split('/');
     const endpoint = fileName.pop();
-    const parts = endpoint.split('.');
+    const parts = endpoint!.split('.');
 
     // Ensure there is a valid extension after a dot
     if (parts.length > 1) {
         console.log('File extension:', parts[parts.length - 1]);
         return parts[parts.length - 1];
     }
-
 
     return 'jpeg'; // Default to "jpeg" if no valid extension exists
 };

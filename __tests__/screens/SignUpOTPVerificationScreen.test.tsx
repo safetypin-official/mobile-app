@@ -262,15 +262,16 @@ describe("SignUpOTPScreen", () => {
     expect(router.push).not.toHaveBeenCalled();
   });
   
+  const simulateDelayedVerification = () => 
+    new Promise(resolve => {
+      setTimeout(() => {
+        resolve({ success: true, message: "Verification successful" });
+      }, 100);
+    });
+
   it("shows loading state during verification process", async () => {
     // Create a delayed API response
-    (verifyOTP as jest.Mock).mockImplementation(() => {
-      return new Promise(resolve => {
-        setTimeout(() => {
-          resolve({ success: true, message: "Verification successful" });
-        }, 100);
-      });
-    });
+    (verifyOTP as jest.Mock).mockImplementation(simulateDelayedVerification);
     
     // Render component
     const { getByTestId, queryByTestId } = render(<SignUpOTPScreen />);

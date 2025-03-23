@@ -6,6 +6,8 @@ import * as ImagePicker from 'react-native-image-picker';
 import { router } from 'expo-router';
 import PostPage, { getFileExtension } from '@/app/post'; // Adjust import path based on your project structure
 
+type FetchURL = string | URL | Request;
+
 // Define fetch response type
 type FetchResponse = {
   ok: boolean;
@@ -79,7 +81,7 @@ jest.mock('@expo/vector-icons/Entypo', () => 'Entypo');
 
 // Mock global fetch
 const mockFetch = jest.fn().mockImplementation(
-  async (url: string | URL | Request, _?: RequestInit): Promise<FetchResponse> => {
+  async (url: FetchURL, _?: RequestInit): Promise<FetchResponse> => {
     if (typeof url === 'string') {
       if (url === 'http://10.0.2.2/post/s3/presigned-url') {
         return {
@@ -166,6 +168,14 @@ jest.spyOn(Alert, 'alert').mockImplementation((title, message, buttons) => {
     }
   }
 });
+
+const handleNotFoundRequest = async () => {
+  return {
+    ok: false,
+    status: 404,
+    json: async () => ({ error: 'Not found' }),
+  };
+};
 
 describe('PostPage Component', () => {
   beforeEach(() => {
@@ -332,44 +342,56 @@ describe('PostPage Component', () => {
     const requestBodyCapture = jest.fn();
     let s3ImageUrl = '';
     
-    mockFetch.mockImplementation(async (url: string | URL | Request, init?: RequestInit) => {
-      if (typeof url === 'string') {
-        if (url === 'http://10.0.2.2/post/s3/presigned-url') {
-          s3ImageUrl = 'https://s3.example.com/upload';
-          return {
-            ok: true,
-            json: async () => ({ 
-              url: 'https://s3.example.com/upload?signature=abc',
-              imageUrl: s3ImageUrl 
-            })
-          };
-        } else if (url === 'https://s3.example.com/upload?signature=abc') {
-          return {
-            ok: true,
-            status: 200,
-            json: async () => ({})
-          };
-        } else if (url === 'http://10.0.2.2/post') {
-          if (init && init.body) {
-            const bodyObj = JSON.parse(init.body.toString());
-            // Ensure imageUrl is set in the request
-            if (!bodyObj.imageUrl && s3ImageUrl) {
-              bodyObj.imageUrl = s3ImageUrl;
-            }
-            requestBodyCapture(bodyObj);
-          }
-          return {
-            ok: true,
-            json: async () => ({ id: '123', success: true })
-          };
+    const handlePresignedUrlRequest = async () => {
+      s3ImageUrl = 'https://s3.example.com/upload';
+      return {
+        ok: true,
+        json: async () => ({
+          url: 'https://s3.example.com/upload?signature=abc',
+          imageUrl: s3ImageUrl,
+        }),
+      };
+    };
+    
+    const handleUploadRequest = async () => {
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({}),
+      };
+    };
+    
+    const handlePostRequest = async (init: RequestInit | undefined) => {
+      if (init?.body) {
+        const bodyObj = JSON.parse(typeof init.body === 'string' ? init.body : JSON.stringify(init.body));
+        // Ensure imageUrl is set in the request
+        if (!bodyObj.imageUrl && s3ImageUrl) {
+          bodyObj.imageUrl = s3ImageUrl;
         }
+        requestBodyCapture(bodyObj);
       }
       return {
-        ok: false,
-        status: 404,
-        json: async () => ({ error: 'Not found' })
+        ok: true,
+        json: async () => ({ id: '123', success: true }),
       };
-    });
+    };
+    
+    mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
+      if (typeof url === 'string') {
+        switch (url) {
+          case 'http://10.0.2.2/post/s3/presigned-url':
+            return handlePresignedUrlRequest();
+          case 'https://s3.example.com/upload?signature=abc':
+            return handleUploadRequest();
+          case 'http://10.0.2.2/post':
+            return handlePostRequest(init);
+          default:
+            return handleNotFoundRequest();
+        }
+      }
+    
+      return handleNotFoundRequest();
+    });    
     
     const { getByTestId } = render(<PostPage />);
     
@@ -437,9 +459,14 @@ test('extracts file extension correctly', async () => {
   
   // Capture arguments passed to fetch untuk presigned URL
   let presignedUrlPayload: any = null;
-  mockFetch.mockImplementation(async (url: string | URL | Request, init?: RequestInit) => {
+  mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
     if (typeof url === 'string' && url === 'http://10.0.2.2/post/s3/presigned-url') {
-      presignedUrlPayload = init && init.body ? JSON.parse(init.body.toString()) : null;
+      if (init?.body) {
+        const body = typeof init.body === 'string' ? init.body : JSON.stringify(init.body);
+        presignedUrlPayload = JSON.parse(body);
+      } else {
+        presignedUrlPayload = null;
+      }
       return {
         ok: true,
         json: async () => ({ url: 'https://s3.example.com/upload?signature=abc' })
@@ -485,7 +512,7 @@ test('extracts file extension correctly', async () => {
     );
     
     // Mock non-OK response for presigned URL
-    mockFetch.mockImplementation(async (url: string | URL | Request, init?: RequestInit) => {
+    mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
         if (url === 'http://10.0.2.2/post/s3/presigned-url') {
           return {
@@ -547,7 +574,7 @@ test('extracts file extension correctly', async () => {
     );
     
     // Mock response sequence: presigned URL success, but upload to S3 fails
-    mockFetch.mockImplementation(async (url: string | URL | Request, init?: RequestInit) => {
+    mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
         if (url === 'http://10.0.2.2/post/s3/presigned-url') {
           return {
@@ -604,7 +631,7 @@ test('extracts file extension correctly', async () => {
   // Test untuk error handling pada server response (baris 289)
   test('handles server error response', async () => {
     // Mock fetch to return a server error response
-    mockFetch.mockImplementation(async (url: string | URL | Request, init?: RequestInit) => {
+    mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string' && url === 'http://10.0.2.2/post') {
         return {
           ok: false,
@@ -654,7 +681,7 @@ test('extracts file extension correctly', async () => {
     );
     
     // Mock presigned URL failure
-    mockFetch.mockImplementation(async (url: string | URL | Request, init?: RequestInit) => {
+    mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
         if (url === 'http://10.0.2.2/post/s3/presigned-url') {
           return {
@@ -681,7 +708,7 @@ test('extracts file extension correctly', async () => {
       if (title === "Upload Error" && buttons && buttons.length > 0) {
         // Find the "Continue" button and press it
         const continueButton = buttons.find((button: { text: string; }) => button.text === "Continue");
-        if (continueButton && continueButton.onPress) {
+        if (continueButton?.onPress) {
           continueButton.onPress();
         }
       }
@@ -824,7 +851,7 @@ test('extracts file extension correctly', async () => {
       resolvePresignedUrl = resolve;
     });
     
-    mockFetch.mockImplementation(async (url: string | URL | Request, init?: RequestInit) => {
+    mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
         if (url === 'http://10.0.2.2/post/s3/presigned-url') {
           // Delay response to simulate network lag
@@ -849,7 +876,7 @@ test('extracts file extension correctly', async () => {
       throw new Error('Unhandled request');
     });
     
-    const { getByTestId, queryByTestId } = render(<PostPage />);
+    const { getByTestId } = render(<PostPage />);
     
     // Pilih gambar
     const imageButton = getByTestId('image-picker-button');
@@ -895,7 +922,7 @@ test('extracts file extension correctly', async () => {
     );
     
     // Mock fetch untuk mengembalikan respons yang valid tetapi dengan JSON yang invalid
-    mockFetch.mockImplementation(async (url: string | URL | Request, init?: RequestInit) => {
+    mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
         if (url === 'http://10.0.2.2/post/s3/presigned-url') {
           return {
@@ -955,7 +982,7 @@ test('extracts file extension correctly', async () => {
     );
     
     // Mock fetch untuk throw network error langsung
-    mockFetch.mockImplementation(async (url: string | URL | Request, init?: RequestInit) => {
+    mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
         if (url === 'http://10.0.2.2/post/s3/presigned-url') {
           throw new Error('Network error: Unable to connect to server');
@@ -1012,7 +1039,7 @@ test('extracts file extension correctly', async () => {
     );
     
     // Mock fetch untuk return empty URL object
-    mockFetch.mockImplementation(async (url: string | URL | Request, init?: RequestInit) => {
+    mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
         if (url === 'http://10.0.2.2/post/s3/presigned-url') {
           return {
@@ -1079,46 +1106,57 @@ test('extracts clean S3 URL by removing query parameters', async () => {
   // Capture request body untuk verifikasi
   const requestBodyCapture = jest.fn();
   
-  mockFetch.mockImplementation(async (url: string | URL | Request, init?: RequestInit) => {
-    if (typeof url === 'string') {
-      if (url === 'http://10.0.2.2/post/s3/presigned-url') {
-        // Save the clean image URL for later use in the post request
-        imageUrlForPost = cleanImageUrl;
-        return {
-          ok: true,
-          json: async () => ({ 
-            url: complexPresignedUrl,
-            imageUrl: cleanImageUrl // Provide the clean imageUrl in the response
-          })
-        };
-      } else if (url === complexPresignedUrl) {
-        // S3 upload sukses
-        return {
-          ok: true,
-          status: 200,
-          statusText: 'OK'
-        };
-      } else if (url === 'http://10.0.2.2/post') {
-        if (init && init.body) {
-          const body = JSON.parse(init.body.toString());
-          // Ensure imageUrl is included in the request
-          if (!body.imageUrl && imageUrlForPost) {
-            body.imageUrl = imageUrlForPost;
-          }
-          requestBodyCapture(body);
-        }
-        return {
-          ok: true,
-          json: async () => ({ id: '123', success: true })
-        };
+  const handlePresignedUrlRequest = async () => {
+    // Save the clean image URL for later use in the post request
+    imageUrlForPost = cleanImageUrl;
+    return {
+      ok: true,
+      json: async () => ({
+        url: complexPresignedUrl,
+        imageUrl: cleanImageUrl, // Provide the clean imageUrl in the response
+      }),
+    };
+  };
+  
+  const handleS3UploadRequest = async () => {
+    // S3 upload success
+    return {
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+    };
+  };
+  
+  const handlePostRequest = async (init: RequestInit | undefined) => {
+    if (init?.body) {
+      const body = JSON.parse(typeof init.body === 'string' ? init.body : JSON.stringify(init.body));
+      // Ensure imageUrl is included in the request
+      if (!body.imageUrl && imageUrlForPost) {
+        body.imageUrl = imageUrlForPost;
       }
+      requestBodyCapture(body);
     }
     return {
-      ok: false,
-      status: 404,
-      json: async () => ({ error: 'Not found' })
+      ok: true,
+      json: async () => ({ id: '123', success: true }),
     };
-  });
+  };
+  
+  mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
+    if (typeof url === 'string') {
+      switch (url) {
+        case 'http://10.0.2.2/post/s3/presigned-url':
+          return handlePresignedUrlRequest();
+        case complexPresignedUrl:
+          return handleS3UploadRequest();
+        case 'http://10.0.2.2/post':
+          return handlePostRequest(init);
+        default:
+          return handleNotFoundRequest();
+      }
+    }
+    return handleNotFoundRequest();
+  });  
   
   // Mock response.blob()
   global.Response = class {
@@ -1171,7 +1209,7 @@ test('extracts clean S3 URL by removing query parameters', async () => {
     // Mock presigned URL sukses tapi S3 upload gagal dengan status code spesifik
     const presignedUrl = 'https://s3.example.com/upload?signature=abc';
     
-    mockFetch.mockImplementation(async (url: string | URL | Request, init?: RequestInit) => {
+    mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
         if (url === 'http://10.0.2.2/post/s3/presigned-url') {
           return {
@@ -1249,7 +1287,7 @@ test('extracts clean S3 URL by removing query parameters', async () => {
     // Mock presigned URL sukses tapi S3 upload fail dengan network error
     const presignedUrl = 'https://s3.example.com/upload?signature=abc';
     
-    mockFetch.mockImplementation(async (url: string | URL | Request, init?: RequestInit) => {
+    mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
         if (url === 'http://10.0.2.2/post/s3/presigned-url') {
           return {
@@ -1331,7 +1369,7 @@ describe("PostPage - handleSubmit", () => {
     
     // Mock fetch implementation
     const mockFetch = jest.fn().mockImplementation(
-      async (url: string | URL | Request, options?: RequestInit): Promise<FetchResponse> => {
+      async (url: FetchURL, options?: RequestInit): Promise<FetchResponse> => {
         if (typeof url === 'string') {
           fetchedUrls.push(url);
           
@@ -1347,18 +1385,8 @@ describe("PostPage - handleSubmit", () => {
             };
           } 
           // Second request - S3 upload
-          else if (url === 'https://s3.example.com/upload?signature=abc') {
+          else if (url === 'https://s3.example.com/upload?signature=abc' || url.startsWith('file:///')) {
             // Important: Return a successful response with blob method
-            return {
-              ok: true,
-              status: 200,
-              json: async () => ({}),
-              blob: () => Promise.resolve(new MockBlob(['test']))
-            };
-          } 
-          // Handle local file URL from reactNativeImage
-          else if (url.startsWith('file:///')) {
-            // When the component tries to fetch the local file, return a Blob
             return {
               ok: true,
               status: 200,
@@ -1461,15 +1489,11 @@ describe("PostPage - handleSubmit", () => {
         });
       }
     );
-    
-    // This will track all URLs that fetch was called with
-    const fetchedUrls: string[] = [];
-    
+        
     // Mock fetch implementation
     const mockFetch = jest.fn().mockImplementation(
-      async (url: string | URL | Request, options?: RequestInit): Promise<FetchResponse> => {
+      async (url: FetchURL, options?: RequestInit): Promise<FetchResponse> => {
         if (typeof url === 'string') {
-          fetchedUrls.push(url);
           
           // First request - get presigned URL
           if (url === 'http://10.0.2.2/post/s3/presigned-url') {
@@ -1543,7 +1567,7 @@ describe("PostPage - handleSubmit", () => {
       );
       
       // If we found it, press it automatically
-      if (continueButton && continueButton.onPress) {
+      if (continueButton?.onPress) {
         continueButton.onPress();
       }
     });
@@ -1623,7 +1647,7 @@ describe("PostPage - handleSubmit", () => {
     
     // Mock fetch implementation
     const mockFetch = jest.fn().mockImplementation(
-      async (url: string | URL | Request, options?: RequestInit): Promise<FetchResponse> => {
+      async (url: FetchURL, options?: RequestInit): Promise<FetchResponse> => {
         if (typeof url === 'string') {
           fetchedUrls.push(url);
           
@@ -1729,5 +1753,24 @@ describe('getFileExtension', () => {
     expect(getFileExtension('///')).toBe('jpeg'); // Multiple slashes
     expect(getFileExtension('.')).toBe(''); // Just a dot
     expect(getFileExtension('..')).toBe(''); // Just two dots
+  });
+
+  // Test for undefined `endpoint` case (when `uri` is empty)
+  test('returns "jpeg" when uri is empty', () => {
+    expect(getFileExtension('')).toBe('jpeg');
+  });
+
+  // Test when endpoint is null or undefined after `pop()`
+  test('returns "jpeg" when endpoint is null or undefined', () => {
+    expect(getFileExtension('file:///path/to/')).toBe('jpeg'); // No file name
+  });
+
+  // Test for `endpoint?.split('.') || []` to ensure it correctly falls back
+  test('returns valid extension or fallback when split does not work', () => {
+    expect(getFileExtension('file:///path/to/image.jpg')).toBe('jpg'); // Should split correctly
+    expect(getFileExtension('file:///path/to/noextension')).toBe('jpeg'); // No extension part
+    expect(getFileExtension('file:///path/to/image.')).toBe(''); // Trailing dot
+    expect(getFileExtension('filename.')).toBe(''); // Trailing dot in file name
+    expect(getFileExtension('file.')).toBe(''); // Just a dot
   });
 });
