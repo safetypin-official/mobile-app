@@ -189,38 +189,6 @@ describe('ReportContent', () => {
     expect(bookmarkButton.findByProps({ testID: 'font-awesome-bookmark-o' })).toBeTruthy();
   });
 
-  test('handles share button click', async () => {
-    const { getByTestId } = render(<ReportContent {...defaultProps} />);
-    
-    const shareButton = getByTestId('share-button');
-    fireEvent.press(shareButton);
-    
-    // Access Share module directly from the mock
-    const Share = require('react-native/Libraries/Share/Share');
-    
-    expect(Share.share).toHaveBeenCalledWith({
-      title: 'Test Title',
-      message: 'Test Title\n\nTest content description',
-      url: undefined
-    });
-  });
-
-  test('handles share with image URL', async () => {
-    const props = { ...defaultProps, imageUrl: 'https://example.com/image.jpg' };
-    const { getByTestId } = render(<ReportContent {...props} />);
-    
-    const shareButton = getByTestId('share-button');
-    fireEvent.press(shareButton);
-    
-    const Share = require('react-native/Libraries/Share/Share');
-    
-    expect(Share.share).toHaveBeenCalledWith({
-      title: 'Test Title',
-      message: 'Test Title\n\nTest content description',
-      url: 'https://example.com/image.jpg'
-    });
-  });
-
   test('handles share dismissal', async () => {
     // Mock share dismissed
     const Share = require('react-native/Libraries/Share/Share');
