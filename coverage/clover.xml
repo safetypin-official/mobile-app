@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1742825775858" clover="3.2.0">
-  <project timestamp="1742825775859" name="All files">
-    <metrics statements="750" coveredstatements="750" conditionals="324" coveredconditionals="324" methods="169" coveredmethods="166" elements="1243" coveredelements="1240" complexity="0" loc="750" ncloc="750" packages="16" files="40" classes="40"/>
+<coverage generated="1742826740433" clover="3.2.0">
+  <project timestamp="1742826740433" name="All files">
+    <metrics statements="752" coveredstatements="752" conditionals="323" coveredconditionals="323" methods="170" coveredmethods="167" elements="1245" coveredelements="1242" complexity="0" loc="752" ncloc="752" packages="17" files="41" classes="41"/>
     <package name="app">
       <metrics statements="52" coveredstatements="52" conditionals="14" coveredconditionals="14" methods="13" coveredmethods="13"/>
       <file name="_layout.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\app\_layout.tsx">
@@ -263,9 +263,9 @@
       </file>
     </package>
     <package name="app.map">
-      <metrics statements="65" coveredstatements="65" conditionals="22" coveredconditionals="22" methods="17" coveredmethods="16"/>
+      <metrics statements="65" coveredstatements="65" conditionals="21" coveredconditionals="21" methods="17" coveredmethods="16"/>
       <file name="index.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\app\map\index.tsx">
-        <metrics statements="65" coveredstatements="65" conditionals="22" coveredconditionals="22" methods="17" coveredmethods="16"/>
+        <metrics statements="65" coveredstatements="65" conditionals="21" coveredconditionals="21" methods="17" coveredmethods="16"/>
         <line num="8" count="1" type="stmt"/>
         <line num="31" count="1" type="stmt"/>
         <line num="39" count="52" type="stmt"/>
@@ -296,7 +296,7 @@
         <line num="82" count="1" type="stmt"/>
         <line num="85" count="17" type="stmt"/>
         <line num="86" count="17" type="stmt"/>
-        <line num="88" count="17" type="cond" truecount="5" falsecount="0"/>
+        <line num="88" count="17" type="cond" truecount="4" falsecount="0"/>
         <line num="90" count="16" type="stmt"/>
         <line num="91" count="16" type="stmt"/>
         <line num="94" count="16" type="stmt"/>
@@ -331,6 +331,14 @@
         <line num="198" count="1" type="stmt"/>
         <line num="207" count="1" type="stmt"/>
         <line num="240" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.post.[id]">
+      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="index.tsx" path="C:\Kuliah\Term_6\PPL\mobile-app\app\post\[id]\index.tsx">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="6" count="4" type="stmt"/>
+        <line num="8" count="4" type="stmt"/>
       </file>
     </package>
     <package name="app.signUp">
