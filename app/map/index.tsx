@@ -85,7 +85,7 @@ export default function ExploreScreen() {
         const responseData = await response.json();
         console.log('Fetched posts response:', responseData);
         
-        if (responseData.success && responseData.data && responseData.data.content) {
+        if (responseData.success && responseData.data?.content) {
           // Access the posts array from data.content
           const postsData = responseData.data.content;
           console.log('Posts content:', postsData);
