@@ -2,7 +2,7 @@ import { StyleSheet, View, Dimensions, Text, TouchableOpacity, ActivityIndicator
 import MapView, { PROVIDER_GOOGLE, MapPressEvent, LongPressEvent, Marker, Callout } from 'react-native-maps';
 import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
-import NearbyReport from '@/app/nearbyReport';
+import NearbyReport from '@/components/displays/NearbyReport';
 import Pin from '@/components/displays/Pin';
 
 const { width, height } = Dimensions.get('window');
@@ -14,21 +14,17 @@ type LocationType = {
   longitudeDelta: number;
 };
 
-// Post type definition based on provided data
-type Category = {
-  id: string;
-  name: string;
-};
-
+// Updated Post type definition to match NearbyReport
 type Post = {
   id: string;
   caption: string;
   createdAt: string;
-  postedBy: string | null;
+  postedBy?: string | null;
   title: string;
-  category: Category;
+  category: string; // Changed from Category object to string
   latitude: number;
   longitude: number;
+  imageUrl?: string | null;
 };
 
 // Default location
@@ -86,9 +82,19 @@ export default function ExploreScreen() {
           throw new Error(`HTTP error: ${response.status}`);
         }
         
-        const data = await response.json();
-        console.log('Fetched posts:', data);
-        setPosts(data);
+        const responseData = await response.json();
+        console.log('Fetched posts response:', responseData);
+        
+        if (responseData.success && responseData.data && responseData.data.content) {
+          // Access the posts array from data.content
+          const postsData = responseData.data.content;
+          console.log('Posts content:', postsData);
+          
+          // The posts already have category as a string based on the new format
+          setPosts(postsData);
+        } else {
+          throw new Error('Invalid response format or empty data');
+        }
         setFetchError(null);
       } catch (error) {
         console.error('Error fetching posts:', error);
@@ -139,8 +145,10 @@ export default function ExploreScreen() {
     
     // Find post in local data first
     const post = posts.find(p => p.id === postId);
-    setSelectedPost(post);
-    setShowReport(true);
+    if (post) {
+      setSelectedPost(post);
+      setShowReport(true);
+    }
   };
 
   return (
@@ -164,7 +172,7 @@ export default function ExploreScreen() {
             onPress={() => handleMarkerPress(post.id)}
           >
             <Pin 
-              type={post.category.name} 
+              type={post.category} 
               onPress={() => {}} 
               width={36} 
               height={36}
@@ -172,7 +180,7 @@ export default function ExploreScreen() {
             <Callout tooltip>
               <View style={styles.calloutContainer}>
                 <Text style={styles.calloutTitle}>{post.title}</Text>
-                <Text style={styles.calloutCategory}>{post.category.name}</Text>
+                <Text style={styles.calloutCategory}>{post.category}</Text>
                 <Text style={styles.calloutCaption}>{post.caption}</Text>
                 <Text style={styles.calloutDate}>{formatDate(post.createdAt)}</Text>
               </View>
@@ -181,7 +189,7 @@ export default function ExploreScreen() {
         ))}
       </MapView>
 
-      {/* Using NearbyReport component instead of a Modal */}
+      {/* Using updated NearbyReport component */}
       {showReport && selectedPost && (
         <View style={styles.reportOverlay}>
           <View style={styles.reportHeader}>
@@ -194,9 +202,8 @@ export default function ExploreScreen() {
           </View>
           
           <NearbyReport
-            // Custom props for NearbyReport to handle the selected post
-            key={selectedPost.id}
-            post={selectedPost}
+            // Pass the selected post as initialPost according to new interface
+            initialPost={selectedPost}
             onClose={() => setShowReport(false)}
           />
         </View>
