@@ -140,6 +140,7 @@ const FeedScreen: React.FC = () => {
           dislikeCount={0}
           selectedTags={getCategoryTags(item.category)}
           imageUrl={item.imageUrl ?? "https://i.imgur.com/Ha3UkA3.jpg"}
+          postId={item.id}
         />
         
         <View style={styles.divider} />
