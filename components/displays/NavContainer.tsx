@@ -1,24 +1,24 @@
 import React from "react";
-import { View, StyleSheet, Platform } from "react-native";
+import { View, StyleSheet } from "react-native";
 import NavButton from "@/components/buttons/NavButton";
 import MapButton from "@/components/buttons/MapButton";
 
 interface NavContainerProps {
   activeTab?: string;
   onHomePress?: () => void;
-  onChatPress?: () => void;
+  onSearchPress?: () => void;
   onMapPress?: () => void;
   onNotificationsPress?: () => void;
   onProfilePress?: () => void;
   testID?: string;
 }
 
-const validTabs = ["home", "chat", "map", "notifications", "profile"] as const;
+const validTabs = ["home", "search", "map", "notifications", "profile"] as const;
 
 const NavContainer: React.FC<NavContainerProps> = ({
   activeTab = "home",
   onHomePress,
-  onChatPress,
+  onSearchPress,
   onMapPress,
   onNotificationsPress,
   onProfilePress,
@@ -32,7 +32,7 @@ const NavContainer: React.FC<NavContainerProps> = ({
       <View style={styles.content}>
         <View style={styles.leftSection}>
           <NavButton type="home" active={currentTab === "home"} onPress={onHomePress} />
-          <NavButton type="chat" active={currentTab === "chat"} onPress={onChatPress} />
+          <NavButton type="search" active={currentTab === "search"} onPress={onSearchPress} />
         </View>
 
         <MapButton active={currentTab === "map"} onPress={onMapPress} />
@@ -66,17 +66,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
     backgroundColor: "#FFFFFF",
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: -2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
+    boxShadow: "0 -6px 20px rgba(144, 74, 71, 0.15)",
+    elevation: 4,
   },
   leftSection: {
     flexDirection: "row",

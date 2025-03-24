@@ -15,8 +15,10 @@ export default function Layout() {
       setActiveTab("map");
     } else if (pathname === "/feedScreen") {
       setActiveTab("home");
+    } else if (pathname === "/search") {
+      setActiveTab("search");
     }
-  }, [pathname]);
+    }, [pathname]);
 
   const handleMapPress = () => {
     if (activeTab === "map") {
@@ -34,6 +36,11 @@ export default function Layout() {
     router.replace("/feedScreen");
   };
 
+  const handleSearchPress = () => {
+    setActiveTab("search");
+    router.replace("/search");
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <Stack 
@@ -46,9 +53,7 @@ export default function Layout() {
         <NavContainer
           activeTab={activeTab}
           onHomePress={handleHomePress}
-          onChatPress={() => {
-            setActiveTab("chat");
-          }}
+          onSearchPress={handleSearchPress}
           onMapPress={handleMapPress}
           onNotificationsPress={() => {
             setActiveTab("notifications");

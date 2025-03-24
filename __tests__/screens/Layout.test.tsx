@@ -5,7 +5,7 @@ import NavContainer from "@/components/displays/NavContainer";
 import { usePathname, router } from "expo-router";
 
 jest.mock("@/components/displays/NavContainer", () => {
-  return jest.fn(({ onHomePress, onChatPress, onMapPress, onNotificationsPress, onProfilePress }) => {
+  return jest.fn(({ onHomePress, onSearchPress, onMapPress, onNotificationsPress, onProfilePress }) => {
     const { View, TouchableOpacity, Text } = require("react-native"); // Lazy import inside mock
     return (
       <View>
@@ -13,8 +13,8 @@ jest.mock("@/components/displays/NavContainer", () => {
         <TouchableOpacity onPress={onHomePress} testID="home-button">
           <Text>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={onChatPress} testID="chat-button">
-          <Text>Chat</Text>
+        <TouchableOpacity onPress={onSearchPress} testID="search-button">
+          <Text>Search</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={onMapPress} testID="map-button">
           <Text>Map</Text>
@@ -73,11 +73,11 @@ describe("Layout", () => {
     expect(router.replace).toHaveBeenCalledWith("/feedScreen");
   });
 
-  it("updates activeTab when Chat button is pressed", () => {
+  it("updates activeTab when search button is pressed", () => {
     (usePathname as jest.Mock).mockReturnValue("/home");
     const { getByTestId } = render(<Layout />);
-    fireEvent.press(getByTestId("chat-button"));
-    expect(NavContainer).toHaveBeenCalledWith(expect.objectContaining({ activeTab: "chat" }), {});
+    fireEvent.press(getByTestId("search-button"));
+    expect(NavContainer).toHaveBeenCalledWith(expect.objectContaining({ activeTab: "search" }), {});
   });
 
   it("updates activeTab when Map button is pressed", () => {
@@ -135,6 +135,12 @@ describe("Layout", () => {
     expect(NavContainer).toHaveBeenCalledWith(expect.objectContaining({ activeTab: "map" }), {});
   });
 
+  it("updates activeTab to 'search' when pathname is '/search'", () => {
+    (usePathname as jest.Mock).mockReturnValue("/search");
+    render(<Layout />);
+    expect(NavContainer).toHaveBeenCalledWith(expect.objectContaining({ activeTab: "search" }), {});
+  });
+
   it("updates activeTab to 'home' when pathname is '/feedScreen'", () => {
     (usePathname as jest.Mock).mockReturnValue("/feedScreen");
     render(<Layout />);
@@ -179,5 +185,21 @@ describe("Layout", () => {
     
     // Verify router.replace was called with "/map"
     expect(router.replace).toHaveBeenCalledWith("/map");
+  });
+
+  it("navigates to search screen and sets activeTab to search when Search button is pressed while not on search tab", () => {
+    (usePathname as jest.Mock).mockReturnValue("/feedScreen");
+    const { getByTestId } = render(<Layout />);
+    
+    (NavContainer as jest.Mock).mockClear();
+    (router.replace as jest.Mock).mockClear();
+    
+    fireEvent.press(getByTestId("search-button"));
+    
+    expect(NavContainer).toHaveBeenCalledWith(
+      expect.objectContaining({ activeTab: "search" }), 
+      {}
+    );
+    expect(router.replace).toHaveBeenCalledWith("/search");
   });
 });

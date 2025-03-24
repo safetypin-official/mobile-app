@@ -10,8 +10,8 @@ jest.mock("react-native-svg", () => ({
 jest.mock("@/assets/icons", () => ({
   homeIcon: "<svg>home</svg>",
   homeIconActive: "<svg>home-active</svg>",
-  chatIcon: "<svg>chat</svg>",
-  chatIconActive: "<svg>chat-active</svg>",
+  searchIcon: "<svg>search</svg>",
+  searchIconActive: "<svg>search-active</svg>",
   bellIcon: "<svg>bell</svg>",
   bellIconActive: "<svg>bell-active</svg>",
   userIcon: "<svg>user</svg>",
@@ -19,7 +19,7 @@ jest.mock("@/assets/icons", () => ({
 }));
 
 describe("NavButton", () => {
-  const types = ["home", "chat", "notifications", "profile"];
+  const types = ["home", "search", "notifications", "profile"];
 
   it("renders correctly for each type", () => {
     types.forEach((type) => {
@@ -29,7 +29,7 @@ describe("NavButton", () => {
   });
 
   it("renders active icon and text when active is true", () => {
-    const { getByTestId, getByText } = render(<NavButton type="home" active />);
+    const { getByText } = render(<NavButton type="home" active />);
     
     expect(SvgXml).toHaveBeenCalledWith(
       expect.objectContaining({ xml: "<svg>home-active</svg>" }),
@@ -40,7 +40,7 @@ describe("NavButton", () => {
   });
 
   it("renders home button when type is invalid", () => {
-    const { getByTestId, getByText } = render(<NavButton type="invalid" active />);
+    const { getByText } = render(<NavButton type="invalid" active />);
     
     expect(SvgXml).toHaveBeenCalledWith(
       expect.objectContaining({ xml: "<svg>home-active</svg>" }),
@@ -51,7 +51,7 @@ describe("NavButton", () => {
   });
 
   it("renders home button when type is not provided", () => {
-    const { getByTestId, getByText } = render(<NavButton active />);
+    const { getByText } = render(<NavButton active />);
     
     expect(SvgXml).toHaveBeenCalledWith(
       expect.objectContaining({ xml: "<svg>home-active</svg>" }),
@@ -62,9 +62,9 @@ describe("NavButton", () => {
   });
 
   it("renders inactive icon when active is false", () => {
-    const { getByTestId } = render(<NavButton type="chat" active={false} />);
+    render(<NavButton type="search" active={false} />);
     expect(SvgXml).toHaveBeenCalledWith(
-      expect.objectContaining({ xml: "<svg>chat</svg>" }),
+      expect.objectContaining({ xml: "<svg>search</svg>" }),
       expect.any(Object)
     );
   });
