@@ -4,7 +4,7 @@ import { Alert, View } from 'react-native';
 import * as Location from 'expo-location';
 import * as ImagePicker from 'react-native-image-picker';
 import { router } from 'expo-router';
-import PostPage, { getFileExtension } from '@/app/post'; // Adjust import path based on your project structure
+import PostPage, { getFileExtension } from '@/app/createPost'; // Adjust import path based on your project structure
 
 // Define fetch response type
 type FetchResponse = {
