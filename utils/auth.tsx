@@ -206,7 +206,7 @@ export const onGoogleAuth = async () => {
     console.log('Google authentication successful');
     
     const response = await sendApiRequest(
-      "http://10.0.2.2/api/auth/google", 
+      "https://safetypin.ppl.cs.ui.ac.id/api/auth/google", 
       { idToken, serverAuthCode, email, name }
     );
     
@@ -227,7 +227,7 @@ export const onAppleIDAuth = async () => {
     console.log('Apple authentication successful');
     
     const response = await sendApiRequest(
-      "http://10.0.2.2/api/auth/apple",
+      "https://safetypin.ppl.cs.ui.ac.id/api/auth/apple",
       {
         identityToken: credential.identityToken,
         authorizationCode: credential.authorizationCode,
@@ -251,7 +251,7 @@ export const isValidEmail = (email: string): boolean => {
 export const loginWithEmail = async (email: string, password: string) => {
   try {
     const response = await sendApiRequest(
-      "http://10.0.2.2/api/auth/login-email",
+      "https://safetypin.ppl.cs.ui.ac.id/api/auth/login-email",
       {
         email,
         password,
@@ -273,7 +273,7 @@ export const loginWithEmail = async (email: string, password: string) => {
 export const registerEmailPassword = async (email: string, password: string, name: string, birthdate: string) => {
   try {
     const response = await sendApiRequest(
-      "http://10.0.2.2/api/auth/register-email",
+      "https://safetypin.ppl.cs.ui.ac.id/api/auth/register-email",
       {
         email,
         password,
@@ -296,7 +296,7 @@ export const registerEmailPassword = async (email: string, password: string, nam
 export const verifyOTP = async (email: string, otp: string) => {
   try {
     const response = await sendApiRequest(
-      "http://10.0.2.2/api/auth/verify-otp",
+      "https://safetypin.ppl.cs.ui.ac.id/api/auth/verify-otp",
       {
         email,
         otp,

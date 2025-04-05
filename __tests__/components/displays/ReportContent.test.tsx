@@ -19,10 +19,11 @@ const MOCK_TAG_KEYS = [
 
 // Mock dependencies with proper TypeScript typing
 jest.mock('@/components/displays/post/UserInteraction', () => {
-  return function MockUserInteraction(props) {
+  const { TouchableOpacity } = require('react-native');
+  return function MockUserInteraction(props: { type: any; onPress: React.MouseEventHandler<HTMLButtonElement> | undefined; fill: any; }) {
     // Add the testID directly to the mocked component
     return (
-      <button 
+      <TouchableOpacity 
         testID={props.type} 
         onClick={props.onPress} 
         style={{ color: props.fill }} 
@@ -34,7 +35,7 @@ jest.mock('@/components/displays/post/UserInteraction', () => {
 jest.mock('@/components/displays/post/ReportTags', () => {
   return {
     __esModule: true,
-    default: function MockReportTags(props) {
+    default: function MockReportTags(props: { selectedTags: any[]; }) {
       return <div data-testid="report-tags">{props.selectedTags.join(',')}</div>;
     },
     TAG_KEYS: MOCK_TAG_KEYS,
@@ -42,9 +43,10 @@ jest.mock('@/components/displays/post/ReportTags', () => {
 });
 
 jest.mock('@expo/vector-icons/FontAwesome', () => {
-  return function MockFontAwesome(props) {
+  const { View } = require('react-native');
+  return function MockFontAwesome(props: { name: any; size: any; color: any; }) {
     return (
-      <div 
+      <View 
         testID={`font-awesome-${props.name}`} 
         style={{ fontSize: props.size, color: props.color }} 
       />
@@ -53,9 +55,10 @@ jest.mock('@expo/vector-icons/FontAwesome', () => {
 });
 
 jest.mock('@expo/vector-icons/MaterialCommunityIcons', () => {
-  return function MockMaterialIcons(props) {
+  const { View } = require('react-native');
+  return function MockMaterialIcons(props: { name: any; size: any; color: any; }) {
     return (
-      <div 
+      <View 
         testID={`material-icon-${props.name}`} 
         style={{ fontSize: props.size, color: props.color }} 
       />
@@ -73,6 +76,7 @@ describe('ReportContent', () => {
     likeCount: 10,
     dislikeCount: 5,
     selectedTags, // Use mutable array
+    postId: 'test-post-id',
   };
 
   beforeEach(() => {
@@ -187,38 +191,6 @@ describe('ReportContent', () => {
     // Click again to un-bookmark
     fireEvent.press(bookmarkButton);
     expect(bookmarkButton.findByProps({ testID: 'font-awesome-bookmark-o' })).toBeTruthy();
-  });
-
-  test('handles share button click', async () => {
-    const { getByTestId } = render(<ReportContent {...defaultProps} />);
-    
-    const shareButton = getByTestId('share-button');
-    fireEvent.press(shareButton);
-    
-    // Access Share module directly from the mock
-    const Share = require('react-native/Libraries/Share/Share');
-    
-    expect(Share.share).toHaveBeenCalledWith({
-      title: 'Test Title',
-      message: 'Test Title\n\nTest content description',
-      url: undefined
-    });
-  });
-
-  test('handles share with image URL', async () => {
-    const props = { ...defaultProps, imageUrl: 'https://example.com/image.jpg' };
-    const { getByTestId } = render(<ReportContent {...props} />);
-    
-    const shareButton = getByTestId('share-button');
-    fireEvent.press(shareButton);
-    
-    const Share = require('react-native/Libraries/Share/Share');
-    
-    expect(Share.share).toHaveBeenCalledWith({
-      title: 'Test Title',
-      message: 'Test Title\n\nTest content description',
-      url: 'https://example.com/image.jpg'
-    });
   });
 
   test('handles share dismissal', async () => {

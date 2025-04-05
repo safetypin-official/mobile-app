@@ -25,6 +25,7 @@ interface ReportContentProps {
   dislikeCount: number;
   selectedTags: TagKey[];
   imageUrl?: string;
+  postId: string; // Add postId prop
 }
 
 const ReportContent: React.FC<ReportContentProps> = ({
@@ -34,6 +35,7 @@ const ReportContent: React.FC<ReportContentProps> = ({
   dislikeCount: initialDislikeCount,
   selectedTags,
   imageUrl,
+  postId, // Accept postId in props
 }) => {
   const [likes, setLikes] = useState(initialLikeCount);
   const [dislikes, setDislikes] = useState(initialDislikeCount);
@@ -86,10 +88,17 @@ const ReportContent: React.FC<ReportContentProps> = ({
 
   const handleShareClick = async () => {
     try {
+      // Create the safetypin deep link if postId is provided
+      const deepLink = `safetypin://post/${postId}`;
+      
+      let message = `${title}\n\n${content}`;
+
+      message += `\n\n${deepLink}`;
+      
       const shareOptions = {
         title: title,
-        message: `${title}\n\n${content}`,
-        url: imageUrl
+        message: message,
+        url: deepLink // Prioritize the deep link if available
       };
       
       const result = await Share.share(shareOptions);

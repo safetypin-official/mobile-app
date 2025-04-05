@@ -28,7 +28,7 @@ describe("NavContainer", () => {
   it("renders all navigation buttons", () => {
     render(<NavContainer />);
     
-    const expectedTypes = ["home", "chat", "notifications", "profile"];
+    const expectedTypes = ["home", "search", "notifs", "profile"];
     
     expectedTypes.forEach((type) => {
       expect(NavButton).toHaveBeenCalledWith(
@@ -44,9 +44,9 @@ describe("NavContainer", () => {
   });  
 
   it("sets the correct active tab", () => {
-    render(<NavContainer activeTab="chat" />);
+    render(<NavContainer activeTab="search" />);
     expect(NavButton).toHaveBeenCalledWith(
-      expect.objectContaining({ type: "chat", active: true }),
+      expect.objectContaining({ type: "search", active: true }),
       {}
     );
   });
@@ -69,12 +69,12 @@ describe("NavContainer", () => {
     expect(onHomePress).toHaveBeenCalled();
   });
   
-  it("calls onChatPress when Chat button is pressed", () => {
-    const onChatPress = jest.fn();
-    const { getByTestId } = render(<NavContainer onChatPress={onChatPress} />);
+  it("calls onSearchPress when Search button is pressed", () => {
+    const onSearchPress = jest.fn();
+    const { getByTestId } = render(<NavContainer onSearchPress={onSearchPress} />);
     
-    fireEvent.press(getByTestId("nav-button-chat"));
-    expect(onChatPress).toHaveBeenCalled();
+    fireEvent.press(getByTestId("nav-button-search"));
+    expect(onSearchPress).toHaveBeenCalled();
   });
   
   it("calls onMapPress when Map button is pressed", () => {
@@ -89,7 +89,7 @@ describe("NavContainer", () => {
     const onNotificationsPress = jest.fn();
     const { getByTestId } = render(<NavContainer onNotificationsPress={onNotificationsPress} />);
     
-    fireEvent.press(getByTestId("nav-button-notifications"));
+    fireEvent.press(getByTestId("nav-button-notifs"));
     expect(onNotificationsPress).toHaveBeenCalled();
   });
   

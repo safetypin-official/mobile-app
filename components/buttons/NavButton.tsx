@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import { SvgXml } from "react-native-svg";
-import { homeIconActive, homeIcon, chatIcon, bellIcon, userIcon, chatIconActive, bellIconActive, userIconActive } from "@/assets/icons";
+import { homeIconActive, homeIcon, searchIcon, bellIcon, userIcon, searchIconActive, bellIconActive, userIconActive } from "@/assets/icons";
 
 interface NavButtonProps {
   type?: string;
@@ -12,8 +12,8 @@ interface NavButtonProps {
 
 const icons = {
   home: { active: homeIconActive, inactive: homeIcon },
-  chat: { active: chatIconActive, inactive: chatIcon },
-  notifications: { active: bellIconActive, inactive: bellIcon },
+  search: { active: searchIconActive, inactive: searchIcon },
+  notifs: { active: bellIconActive, inactive: bellIcon },
   profile: { active: userIconActive, inactive: userIcon },
 };
 
@@ -26,7 +26,7 @@ const NavButton: React.FC<NavButtonProps> = ({ type = "home", active = false, on
         xml={active ? icons[validType].active : icons[validType].inactive}
         width={24}
         height={24}
-        stroke={active ? "none" : "#AF8784"}
+        stroke="#904A47"
         fill={active ? "#904A47" : "none"}
       />
       {active &&
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   navText: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: "500",
     lineHeight: 16,
     letterSpacing: 0.5,

@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, StyleSheet, Platform } from "react-native";
+import { TouchableOpacity, StyleSheet } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { locationIcon, locationIconActive } from "@/assets/icons";
 
@@ -20,7 +20,7 @@ const MapButton: React.FC<MapButtonProps> = ({ active = false, onPress, testID =
 const styles = StyleSheet.create({
   centerButton: {
     position: "absolute",
-    left: "50%", // Change right to left
+    left: "50%",
     top: -22,
     width: 55,
     height: 55,
@@ -28,17 +28,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 50,
     backgroundColor: "#904A47",
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 6,
-      },
-    }),
+    elevation: 6, // Android only, safely ignored on web/iOS
   },  
 });
 

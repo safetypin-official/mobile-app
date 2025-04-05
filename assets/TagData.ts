@@ -20,6 +20,6 @@ export const TAGS = [
     { label: 'Assault', value: 'assault', icon: assaultTag },
     { label: 'Fire', value: 'fire', icon: fireTag },
     { label: 'Earthquake', value: 'earthquake', icon: earthquakeTag },
-    { label: 'Other Natural Disasters', value: 'other-disaster', icon: otherDisasterTag },
-    { label: 'Other Crimes', value: 'other-crime', icon: otherCrimeTag },
+    { label: 'Other Disaster', value: 'other-disaster', icon: otherDisasterTag },
+    { label: 'Other Crime', value: 'other-crime', icon: otherCrimeTag },
 ];
