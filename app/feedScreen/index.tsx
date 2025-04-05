@@ -1,124 +1,112 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  Text, 
-  FlatList, 
-  TouchableOpacity, 
-  ActivityIndicator,
-  RefreshControl,
-  Dimensions,
-  TextInput
-} from 'react-native';
-import { Feather } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, StyleSheet, Text } from 'react-native';
+import PostsTabs, { TabConfig, FetchResult, Post } from '@/components/displays/PostsTabs';
+import * as Location from 'expo-location';
 
-// Import components from NearbyReport
-import UserInfo from "@/components/displays/post/UserInfo";
-import ReportContent, { TagKey } from "@/components/displays/post/ReportContent";
+// Components for rendering each post
+import UserInfo from '@/components/displays/post/UserInfo';
+import ReportContent, { TagKey } from '@/components/displays/post/ReportContent';
 
-// Reusing types from your existing code
-type Category = {
-  id: string;
-  name: string;
-};
-
-type Post = {
-  imageUrl: string | undefined;
-  id: string;
-  caption: string;
-  createdAt: string;
-  postedBy: string | null;
-  title: string;
-  category: Category;
-  latitude: number;
-  longitude: number;
-};
-
-// Get screen dimensions
-const { width } = Dimensions.get('window');
-// Navbar height
-const NAVBAR_HEIGHT = 60;
+const PAGE_SIZE = 10;
 
 const FeedScreen: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [refreshing, setRefreshing] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'near_you' | 'recents'>('near_you');
-  
-  const insets = useSafeAreaInsets();
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
 
-  // Function to fetch posts from backend
-  const fetchPosts = useCallback(async () => {
+  const getUserLocation = useCallback(async () => {
     try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch('http://10.0.2.2/post/all');
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`);
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setLocationError('Permission to access location was denied');
+        return;
       }
-      
-      const data = await response.json();
-      console.log('Fetched posts:', data);
-      
-      // Sort posts by createdAt (newest first)
-      const sortedPosts = [...data].sort((a, b) => 
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-      
-      setPosts(sortedPosts);
+      const location = await Location.getCurrentPositionAsync({});
+      setUserLocation({ latitude: location.coords.latitude, longitude: location.coords.longitude });
     } catch (error) {
-      console.error('Error fetching posts:', error);
-      setError('Failed to load posts. Please try again by pulling down to refresh.');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
+      setLocationError('Unable to fetch location. Please enable location services.');
     }
   }, []);
 
-  // Initial fetch
   useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
+    getUserLocation();
+  }, [getUserLocation]);
 
-  // Handle pull-to-refresh
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    fetchPosts();
-  }, [fetchPosts]);
-
-  // Format date to more readable format
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", { 
-      month: "short", 
-      day: "numeric" 
-    });
-  };
-
-  // Get username or default value
-  const getUsername = (postedBy: string | null): string => {
-    if (postedBy) {
-      return postedBy;
+  // Fetch function for "Near You" posts
+  const fetchNearYouPosts = async (page: number, refresh: boolean): Promise<FetchResult> => {
+    if (!userLocation) {
+      throw new Error(locationError ?? 'Location not available');
     }
-    return "Anonymous";
+    const url = `https://safetypin.ppl.cs.ui.ac.id/post/feed/distance?lat=${userLocation.latitude}&lon=${userLocation.longitude}&page=${page}&size=${PAGE_SIZE}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+    const responseData = await response.json();
+    const data = responseData.data?.content || [];
+    const posts: Post[] = data.map((item: any) => {
+      const post = item.post || item;
+      return {
+        id: post.id,
+        title: post.title || 'Untitled',
+        caption: post.caption || '',
+        createdAt: post.createdAt,
+        postedBy: post.postedBy,
+        category: post.category || 'general',
+        imageUrl: post.imageUrl,
+        latitude: post.latitude || 0,
+        longitude: post.longitude || 0,
+      };
+    });
+    const hasMore = responseData.data ? !responseData.data.last : posts.length === PAGE_SIZE;
+    return {
+      posts,
+      currentPage: page,
+      hasMore,
+    };
   };
 
-  // Get handle
-  const getHandle = (postedBy: string | null): string => {
-    return `@${getUsername(postedBy).toLowerCase().replace(/\s/g, "")}`;
-  };
-  
-  // Get category tags for a post
-  const getCategoryTags = (category: Category): TagKey[] => {
-    return [category.name as TagKey];
+  // Fetch function for "Recents" posts
+  const fetchRecentsPosts = async (page: number, refresh: boolean): Promise<FetchResult> => {
+    const url = `https://safetypin.ppl.cs.ui.ac.id/post/feed/timestamp?page=${page}&size=${PAGE_SIZE}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+    const responseData = await response.json();
+    const data = responseData.data?.content || [];
+    const posts: Post[] = data.map((item: any) => {
+      const post = item.post || item;
+      return {
+        id: post.id,
+        title: post.title || 'Untitled',
+        caption: post.caption || '',
+        createdAt: post.createdAt,
+        postedBy: post.postedBy,
+        category: post.category || 'general',
+        imageUrl: post.imageUrl,
+        latitude: post.latitude || 0,
+        longitude: post.longitude || 0,
+      };
+    });
+    const hasMore = responseData.data ? !responseData.data.last : posts.length === PAGE_SIZE;
+    return {
+      posts,
+      currentPage: page,
+      hasMore,
+    };
   };
 
-  // Render each post item
+  // Render function for each post item (keeps presentation logic separate)
   const renderPostItem = ({ item }: { item: Post }) => {
+    const formatDate = (dateString: string) => {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    };
+    const getUsername = (postedBy: string | null) => (postedBy ?? 'Anonymous');
+    const getHandle = (postedBy: string | null) =>
+      `@${getUsername(postedBy).toLowerCase().replace(/\s/g, '')}`;
+    const getCategoryTags = (category: string): TagKey[] => [category as TagKey];
+
     return (
       <View style={styles.postCard}>
         <UserInfo
@@ -126,11 +114,11 @@ const FeedScreen: React.FC = () => {
           username={getUsername(item.postedBy)}
           handle={getHandle(item.postedBy)}
           date={formatDate(item.createdAt)}
-          location="Morioh-Cho"
+          location="Nearby"
           moreOptionsIconUrl="https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/43f6a47c22e1c702925915e6626ae6f483d1e56e047a9647d4ff9e5de9751425?placeholderIfAbsent=true"
           longitude={item.longitude}
           latitude={item.latitude}
-          categoryType={item.category.name}
+          categoryType={item.category}
         />
 
         <ReportContent
@@ -139,111 +127,28 @@ const FeedScreen: React.FC = () => {
           likeCount={0}
           dislikeCount={0}
           selectedTags={getCategoryTags(item.category)}
-          imageUrl={item.imageUrl ?? "https://i.imgur.com/Ha3UkA3.jpg"} postId={''}        />
-        
+          imageUrl={item.imageUrl ?? 'https://i.imgur.com/Ha3UkA3.jpg'}
+          postId={item.id}
+        />
+
         <View style={styles.divider} />
       </View>
     );
   };
 
+  const tabsConfig: TabConfig[] = [
+    { key: 'near_you', label: 'Near You', fetchPosts: fetchNearYouPosts },
+    { key: 'recents', label: 'Recents', fetchPosts: fetchRecentsPosts },
+  ];
+
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Explore</Text>
-        
-        {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <View style={styles.searchBar}>
-            <Feather name="search" size={18} color="#666" style={styles.searchIcon} />
-            <TextInput 
-              style={styles.searchInput} 
-              placeholder="Search" 
-              placeholderTextColor="#999"
-            />
-            <TouchableOpacity>
-              <Feather name="mic" size={18} color="#666" />
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity style={styles.filterButton}>
-            <Feather name="menu" size={22} color="#333" />
-          </TouchableOpacity>
-        </View>
-        
-        {/* Tabs */}
-        <View style={styles.tabsContainer}>
-          <TouchableOpacity 
-            style={[styles.tab, activeTab === 'near_you' && styles.activeTab]} 
-            onPress={() => setActiveTab('near_you')}
-          >
-            <Text style={[styles.tabText, activeTab === 'near_you' && styles.activeTabText]}>
-              Near You
-            </Text>
-            {activeTab === 'near_you' && <View style={styles.activeTabIndicator} />}
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={[styles.tab, activeTab === 'recents' && styles.activeTab]} 
-            onPress={() => setActiveTab('recents')}
-          >
-            <Text style={[styles.tabText, activeTab === 'recents' && styles.activeTabText]}>
-              Recents
-            </Text>
-            {activeTab === 'recents' && <View style={styles.activeTabIndicator} />}
-          </TouchableOpacity>
-        </View>
-        
-        <View style={styles.tabSeparator} />
-      </View>
-      
-      {/* Posts List */}
-      {(() => {
-        if (loading && posts.length === 0) {
-          return (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#9F3F3D" />
-              <Text style={styles.loadingText}>Loading posts...</Text>
-            </View>
-          );
-        } else if (error && posts.length === 0) {
-          return (
-            <View style={styles.errorContainer}>
-              <Text style={styles.errorText}>{error}</Text>
-              <TouchableOpacity 
-                style={styles.retryButton}
-                onPress={fetchPosts}
-              >
-                <Text style={styles.retryButtonText}>Retry</Text>
-              </TouchableOpacity>
-            </View>
-          );
-        } else {
-          return (
-            <FlatList
-              data={posts}
-              keyExtractor={(item) => item.id}
-              renderItem={renderPostItem}
-              contentContainerStyle={[
-                styles.feedContainer,
-                { paddingBottom: NAVBAR_HEIGHT + insets.bottom }
-              ]}
-              showsVerticalScrollIndicator={false}
-              refreshControl={
-                <RefreshControl 
-                  refreshing={refreshing} 
-                  onRefresh={onRefresh} 
-                  colors={['#9F3F3D']} 
-                />
-              }
-              ListEmptyComponent={
-                <View style={styles.emptyContainer}>
-                  <Text style={styles.emptyText}>No posts available</Text>
-                </View>
-              }
-            />
-          );
-        }
-      })()}
+    <View style={styles.container}>
+      <Text style={styles.headerTitle}>Explore</Text>
+      <PostsTabs
+        tabs={tabsConfig}
+        renderItem={renderPostItem}
+        contentContainerStyle={{ ...styles.feedContainer, paddingBottom: 60 }}
+      />
     </View>
   );
 };
@@ -251,11 +156,22 @@ const FeedScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FEFEFE",
-  },
-  header: {
+    backgroundColor: '#FEFEFE',
     paddingHorizontal: 16,
-    backgroundColor: "#FEFEFE",
+  },
+  feedContainer: {
+    padding: 4,
+  },
+  postCard: {
+    backgroundColor: '#FEFEFE',
+    marginBottom: 8,
+    paddingVertical: 12,
+    width: '100%',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#ddd',
+    marginVertical: 10,
   },
   headerTitle: {
     fontSize: 28,
@@ -263,127 +179,6 @@ const styles = StyleSheet.create({
     color: '#551022',
     marginVertical: 8,
     fontFamily: 'Inter',
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  searchBar: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F0EDED',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    marginRight: 8,
-  },
-  searchIcon: {
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-    color: '#333',
-    fontFamily: 'Inter',
-  },
-  filterButton: {
-    padding: 8,
-  },
-  tabsContainer: {
-    flexDirection: 'row',
-    marginBottom: 4,
-  },
-  tab: {
-    marginRight: 24,
-    paddingVertical: 8,
-  },
-  activeTab: {
-    position: 'relative',
-  },
-  tabText: {
-    fontSize: 16,
-    color: '#999',
-    fontWeight: '500',
-    fontFamily: 'Inter',
-  },
-  activeTabText: {
-    color: '#333',
-    fontWeight: '600',
-  },
-  activeTabIndicator: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 2,
-    backgroundColor: '#9F3F3D',
-    borderRadius: 2,
-  },
-  tabSeparator: {
-    height: 1,
-    backgroundColor: '#DDD',
-    marginBottom: 8,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#666',
-    fontFamily: 'Inter',
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#F44336',
-    textAlign: 'center',
-    marginBottom: 16,
-    fontFamily: 'Inter',
-  },
-  retryButton: {
-    backgroundColor: '#9F3F3D',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-  },
-  retryButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontFamily: 'Inter',
-  },
-  emptyContainer: {
-    padding: 32,
-    alignItems: 'center',
-  },
-  emptyText: {
-    fontSize: 16,
-    color: '#999',
-    fontFamily: 'Inter',
-  },
-  feedContainer: {
-    padding: 4,
-  },
-  postCard: {
-    backgroundColor: "#FEFEFE",
-    marginBottom: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    width: "100%",
-  },
-  divider: {
-    height: 1,
-    backgroundColor: "#ddd",
-    marginVertical: 10,
   },
 });
 
