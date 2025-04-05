@@ -13,7 +13,7 @@ import { router } from 'expo-router';
 export const getFileExtension = (uri: string): string => {
     const fileName = uri.split('/');
     const endpoint = fileName.pop();
-    const parts = endpoint.split('.');
+    const parts = endpoint!.split('.');
 
     // Ensure there is a valid extension after a dot
     if (parts.length > 1) {

@@ -20,31 +20,25 @@ const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <View style={styles.container} testID={testID}>
-      <View style={styles.searchField}>
-        <View style={styles.searchBackground} />
-        <View style={styles.searchContent}>
-          <View style={styles.searchIconText}>
+    <View style={styles.searchField} testID={testID}>
+        <View style={styles.searchBackground}>
             <Feather name="search" size={24} color="#785654" />
             <TextInput
-              style={styles.input}
-              placeholder={placeholder}
-              placeholderTextColor="#AF8784"
-              value={searchText}
-              onChangeText={setSearchText}
-              onSubmitEditing={handleSubmit}
-              testID="search-input"
+                style={styles.input}
+                placeholder={placeholder}
+                placeholderTextColor="#AF8784"
+                value={searchText}
+                onChangeText={setSearchText}
+                onSubmitEditing={handleSubmit}
+                testID="search-input"
             />
-          </View>
         </View>
-      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
     top: 20,
     left: "5%",
     right: "5%",
@@ -57,13 +51,15 @@ const styles = StyleSheet.create({
   searchField: {
     width: "92%",
     height: 44,
-    position: "relative",
   },
   searchBackground: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 12,
     width: "100%",
     height: "100%",
     borderRadius: 12,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#f0ecec",
   },
   searchContent: {
     position: "absolute",
