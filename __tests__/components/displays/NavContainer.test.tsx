@@ -28,7 +28,7 @@ describe("NavContainer", () => {
   it("renders all navigation buttons", () => {
     render(<NavContainer />);
     
-    const expectedTypes = ["home", "search", "notifications", "profile"];
+    const expectedTypes = ["home", "search", "notifs", "profile"];
     
     expectedTypes.forEach((type) => {
       expect(NavButton).toHaveBeenCalledWith(
@@ -89,7 +89,7 @@ describe("NavContainer", () => {
     const onNotificationsPress = jest.fn();
     const { getByTestId } = render(<NavContainer onNotificationsPress={onNotificationsPress} />);
     
-    fireEvent.press(getByTestId("nav-button-notifications"));
+    fireEvent.press(getByTestId("nav-button-notifs"));
     expect(onNotificationsPress).toHaveBeenCalled();
   });
   

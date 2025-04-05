@@ -56,7 +56,7 @@ export default function Layout() {
           onSearchPress={handleSearchPress}
           onMapPress={handleMapPress}
           onNotificationsPress={() => {
-            setActiveTab("notifications");
+            setActiveTab("notifs");
           }}
           onProfilePress={() => {
             setActiveTab("profile");

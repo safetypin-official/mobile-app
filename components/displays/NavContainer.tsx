@@ -13,7 +13,7 @@ interface NavContainerProps {
   testID?: string;
 }
 
-const validTabs = ["home", "search", "map", "notifications", "profile"] as const;
+const validTabs = ["home", "search", "map", "notifs", "profile"] as const;
 
 const NavContainer: React.FC<NavContainerProps> = ({
   activeTab = "home",
@@ -38,7 +38,7 @@ const NavContainer: React.FC<NavContainerProps> = ({
         <MapButton active={currentTab === "map"} onPress={onMapPress} />
 
         <View style={styles.rightSection}>
-          <NavButton type="notifications" active={currentTab === "notifications"} onPress={onNotificationsPress} />
+          <NavButton type="notifs" active={currentTab === "notifs"} onPress={onNotificationsPress} />
           <NavButton type="profile" active={currentTab === "profile"} onPress={onProfilePress} />
         </View>
       </View>

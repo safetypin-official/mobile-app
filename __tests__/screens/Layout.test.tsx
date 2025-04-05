@@ -19,8 +19,8 @@ jest.mock("@/components/displays/NavContainer", () => {
         <TouchableOpacity onPress={onMapPress} testID="map-button">
           <Text>Map</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={onNotificationsPress} testID="notifications-button">
-          <Text>Notifications</Text>
+        <TouchableOpacity onPress={onNotificationsPress} testID="notifs-button">
+          <Text>Notifs</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={onProfilePress} testID="profile-button">
           <Text>Profile</Text>
@@ -112,8 +112,8 @@ describe("Layout", () => {
   it("updates activeTab when Notifications button is pressed", () => {
     (usePathname as jest.Mock).mockReturnValue("/home");
     const { getByTestId } = render(<Layout />);
-    fireEvent.press(getByTestId("notifications-button"));
-    expect(NavContainer).toHaveBeenCalledWith(expect.objectContaining({ activeTab: "notifications" }), {});
+    fireEvent.press(getByTestId("notifs-button"));
+    expect(NavContainer).toHaveBeenCalledWith(expect.objectContaining({ activeTab: "notifs" }), {});
   });
 
   it("updates activeTab when Profile button is pressed", () => {

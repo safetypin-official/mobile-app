@@ -55,11 +55,11 @@ describe('TagDropdown Component', () => {
   });
 
   it('closes the modal when onClose is triggered', async () => {
-    const { getByTestId, queryByTestId } = render(
+    const { getByTestId, queryByTestId, rerender } = render(
       <TagDropdown selectedTag="" onTagChange={mockOnTagChange} />
     );
   
-    // Open the modal
+    // Open modal
     fireEvent.press(getByTestId('tag-dropdown-button'));
   
     await waitFor(() => {
@@ -69,9 +69,14 @@ describe('TagDropdown Component', () => {
       );
     });
   
-    capturedOnClose(); // Calls the stored `onClose` function
-      await waitFor(() => {
-      expect(queryByTestId('mock-modal')).toBeNull(); // Modal should not exist anymore
+    // Close modal via captured onClose
+    capturedOnClose();
+  
+    // Re-render to reflect the updated modalVisible state
+    rerender(<TagDropdown selectedTag="" onTagChange={mockOnTagChange} />);
+  
+    await waitFor(() => {
+      expect(queryByTestId('mock-modal')).toBeNull();
     });
   });
   

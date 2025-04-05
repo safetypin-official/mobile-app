@@ -3,15 +3,15 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for components/forms/LoginForm.tsx</title>
+    <title>Code coverage report for components/displays/profile/ProfileCard.tsx</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../../prettify.css" />
-    <link rel="stylesheet" href="../../base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(../../sort-arrow-sprite.png);
+            background-image: url(../../../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -19,7 +19,7 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">components/forms</a> LoginForm.tsx</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">components/displays/profile</a> ProfileCard.tsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
@@ -191,11 +191,10 @@
 <a name='L126'></a><a href='#L126'>126</a>
 <a name='L127'></a><a href='#L127'>127</a>
 <a name='L128'></a><a href='#L128'>128</a>
-<a name='L129'></a><a href='#L129'>129</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -217,19 +216,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -319,135 +306,157 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
-import InputField from "@/components/inputs/InputField";
-import Button from "@/components/buttons/Button";
-import { SocialButton } from "@/components/buttons/SocialButton";
-import { googleIcon, appleIcon } from "@/assets/icons";
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import { SvgXml } from "react-native-svg";
+import { settings, pencil } from '@/assets/icons';
 &nbsp;
-interface LoginFormProps {
-  onForgotPassword: () =&gt; void;
-  onSignUp: () =&gt; void;
-  onLogIn: () =&gt; void;
-  onGoogleAuth: () =&gt; void;
-  onAppleAuth: () =&gt; void;
-  testID?: string;
-  setEmail: (email: string) =&gt; void;
-  setPassword: (password: string) =&gt; void;
+interface ProfileCardProps {
+  name: string;
+  username: string;
+  profileImage: string;
+  profileBanner: string;
+  onEditPress: () =&gt; void;
+  onSettingsPress: () =&gt; void;
 }
 &nbsp;
-const LoginForm: React.FC&lt;LoginFormProps&gt; = ({ 
-  onForgotPassword, 
-  onSignUp, 
-  onLogIn, 
-  onGoogleAuth, 
-  onAppleAuth, 
-  testID = "login-form", 
-  setEmail,
-  setPassword 
+const ProfileCard: React.FC&lt;ProfileCardProps&gt; = ({
+  name,
+  username,
+  profileImage,
+  profileBanner,
+  onEditPress,
+  onSettingsPress,
 }) =&gt; {
   return (
-    &lt;SafeAreaView style={styles.safeContainer} testID={testID}&gt;
-      &lt;View style={styles.container}&gt;
-        &lt;Text style={styles.title}&gt;Log In&lt;/Text&gt;
+    &lt;ImageBackground
+      source={{ uri: profileBanner }}
+      style={styles.container}
+      imageStyle={styles.backgroundImage}
+      testID="backgroundImage"
+    &gt;
+      &lt;View style={styles.overlay} /&gt;
 &nbsp;
-        &lt;View style={styles.form}&gt;
-          &lt;InputField
-            label="E-mail"
-            placeholder="E-mail address"
-            onChangeText={setEmail}
-          /&gt;
-          &lt;InputField 
-            label="Password" 
-            placeholder="Password" 
-            secureTextEntry={true}
-            onChangeText={setPassword}
-          /&gt;
+      &lt;View style={styles.content}&gt;
+        &lt;TouchableOpacity onPress={onSettingsPress} style={styles.settingsIcon} testID='settingsButton'&gt;
+          &lt;SvgXml xml={settings} width={36} height={36} fill='#d0c4c3' /&gt;
+        &lt;/TouchableOpacity&gt;
 &nbsp;
-          &lt;View style={styles.row}&gt;
-            &lt;TouchableOpacity onPress={onForgotPassword}&gt;
-              &lt;Text style={styles.forgotPassword}&gt;Forgot password?&lt;/Text&gt;
-            &lt;/TouchableOpacity&gt;
+        &lt;Image
+          style={styles.profileImage}
+          source={{ uri: profileImage }} 
+          testID="profileImage"
+        /&gt;
+&nbsp;
+        &lt;View style={styles.infoRow}&gt;
+          &lt;View style={styles.infoContainer}&gt;
+            &lt;Text style={styles.name}&gt;{name}&lt;/Text&gt;
+            &lt;Text style={styles.username}&gt;@{username}&lt;/Text&gt;
           &lt;/View&gt;
-&nbsp;
-          &lt;View style={styles.socialButtonsContainer}&gt;
-            &lt;SocialButton iconXml={googleIcon} onPress={onGoogleAuth} testID="google-auth"/&gt;
-            &lt;SocialButton iconXml={appleIcon} onPress={onAppleAuth} testID="apple-auth"/&gt;
-          &lt;/View&gt;
-&nbsp;
-          &lt;Button onPress={onLogIn} testID="login-button"&gt;
-            Log In
-          &lt;/Button&gt;
-        &lt;/View&gt;
-&nbsp;
-        &lt;Text style={styles.signupText}&gt;
-          Don't have an account?{" "}
-          &lt;TouchableOpacity onPress={onSignUp} testID="signup-link"&gt;
-            &lt;Text style={styles.signupLink}&gt;Sign Up.&lt;/Text&gt;
+          &lt;TouchableOpacity style={styles.editButton} onPress={onEditPress}&gt;
+            &lt;SvgXml xml={pencil} width={17} height={17} style={styles.iconGap} /&gt;
+            &lt;Text style={styles.editText}&gt;Edit Profile&lt;/Text&gt;
           &lt;/TouchableOpacity&gt;
-        &lt;/Text&gt;
+        &lt;/View&gt;
       &lt;/View&gt;
-    &lt;/SafeAreaView&gt;
+    &lt;/ImageBackground&gt;
   );
 };
 &nbsp;
 const styles = StyleSheet.create({
-  safeContainer: {
-    flex: 1,
-    backgroundColor: "#7B241C",
-    width: "100%",
-  },
   container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#7B241C",
-    paddingHorizontal: "10%",
-  },
-  title: {
-    fontSize: 40,
-    fontWeight: "bold",
-    color: "white",
-  },
-  form: {
-    width: "100%",
-    marginTop: 20,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  socialButtonsContainer: {
-    flexDirection: 'row',
+    width: '100%',
+    minHeight: 250,
     justifyContent: 'center',
-    marginTop: 20,
-    marginBottom: 24
   },
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+  backgroundImage: {
+    borderRadius: 30,
   },
-  forgotPassword: {
-    color: "white",
-    textDecorationLine: "underline",
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.63)',
+    borderRadius: 30,
   },
-  
-  signupText: {
-    marginTop: 30,
-    color: "white",
-    textAlign: "center",
+  content: {
+    padding: 15,
+    marginBottom: 12
   },
-  signupLink: {
-    color: "#e2c28c",
-    fontWeight: "bold",
+  settingsIcon: {
+    alignSelf: 'flex-end',
+    marginVertical: 12,
+  },
+  profileImage: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    resizeMode: 'cover',
+    alignSelf: 'flex-start',
+    marginVertical: 6,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingHorizontal: 10,
+    marginTop: 10,
+  },
+  infoContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
+  name: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#fff',
+    letterSpacing: 0.5,
+    fontFamily: 'Inter',
+  },
+  username: {
+    fontSize: 16,
+    color: '#D0C4C3',
+    fontFamily: 'Inter',
+    marginTop: 4,
+  },
+  editButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff8f7',
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  editText: {
+    fontSize: 12,
+    color: '#4d4544',
+    fontWeight: '600',
+    fontFamily: 'Inter',
+  },
+  iconGap: {
+    marginRight: 8,
   },
 });
 &nbsp;
-export default LoginForm;
-&nbsp;</pre></td></tr></table></pre>
+export default ProfileCard;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
@@ -456,14 +465,14 @@ export default LoginForm;
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
                 at 2025-04-05T14:21:07.481Z
             </div>
-        <script src="../../prettify.js"></script>
+        <script src="../../../prettify.js"></script>
         <script>
             window.onload = function () {
                 prettyPrint();
             };
         </script>
-        <script src="../../sorter.js"></script>
-        <script src="../../block-navigation.js"></script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
     </body>
 </html>
     

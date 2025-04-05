@@ -13,7 +13,7 @@ interface NavButtonProps {
 const icons = {
   home: { active: homeIconActive, inactive: homeIcon },
   search: { active: searchIconActive, inactive: searchIcon },
-  notifications: { active: bellIconActive, inactive: bellIcon },
+  notifs: { active: bellIconActive, inactive: bellIcon },
   profile: { active: userIconActive, inactive: userIcon },
 };
 
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   navText: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: "500",
     lineHeight: 16,
     letterSpacing: 0.5,

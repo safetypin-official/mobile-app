@@ -19,7 +19,7 @@ jest.mock("@/assets/icons", () => ({
 }));
 
 describe("NavButton", () => {
-  const types = ["home", "search", "notifications", "profile"];
+  const types = ["home", "search", "notifs", "profile"];
 
   it("renders correctly for each type", () => {
     types.forEach((type) => {
