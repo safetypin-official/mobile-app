@@ -38,7 +38,7 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTag, onTagChange, tes
   const fetchTags = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://10.0.2.2/posts/category');
+      const response = await fetch('https://safetypin.ppl.cs.ui.ac.id//posts/category');
       const data: ApiResponse = await response.json();
       
       if (data.success) {

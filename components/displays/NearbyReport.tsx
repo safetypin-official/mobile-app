@@ -46,7 +46,7 @@ const NearbyReport: React.FC<NearbyReportProps> = ({ initialPost, postId, onClos
         setIsLoading(true);
         console.log(`Fetching post with ID: ${postId}`);
         const response = await axios.get<ApiResponse>(
-          `http://10.0.2.2/post/${postId}`
+          `https://safetypin.ppl.cs.ui.ac.id//post/${postId}`
         );
         console.log("API Response:", response.data);
         // Extract the post from the data property

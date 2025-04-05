@@ -71,7 +71,7 @@ const PostPage = () => {
     // Function to get presigned URL from backend
     const getPresignedUrl = async (fileType: string): Promise<string | null> => {
         try {
-            const response = await fetch('http://10.0.2.2/post/s3/presigned-url', {
+            const response = await fetch('https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -183,7 +183,7 @@ const PostPage = () => {
         console.log('Submitting post data:', postData);
         
         // Submit the post directly
-        fetch('http://10.0.2.2/post', {
+        fetch('https://safetypin.ppl.cs.ui.ac.id//post', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

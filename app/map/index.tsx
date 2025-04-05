@@ -76,7 +76,7 @@ export default function ExploreScreen() {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://10.0.2.2/post/all');
+        const response = await fetch('https://safetypin.ppl.cs.ui.ac.id//post/all');
         
         if (!response.ok) {
           throw new Error(`HTTP error: ${response.status}`);

@@ -157,7 +157,7 @@ describe('ExploreScreen', () => {
     
     // Wait for the fetch to complete with updated endpoint
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith('http://10.0.2.2/post/all');
+      expect(global.fetch).toHaveBeenCalledWith('https://safetypin.ppl.cs.ui.ac.id//post/all');
     });
     
     // Check that loading indicator is removed

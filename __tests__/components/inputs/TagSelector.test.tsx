@@ -42,7 +42,7 @@ describe('TagSelector Component', () => {
     
     expect(getAllByText(/React|TypeScript|JavaScript/).length).toBe(3);
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith('http://10.0.2.2/posts/category');
+    expect(fetchMock).toHaveBeenCalledWith('https://safetypin.ppl.cs.ui.ac.id//posts/category');
   });
 
   // Test error handling with API error message
