@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import ProfileCard from '@/components/displays/profile/ProfileCard';
-import { Linking } from 'react-native';
+import { Alert, Linking } from 'react-native';
 
 jest.mock('react-native-vector-icons/AntDesign', () => 'AntDesign');
 jest.mock('react-native-vector-icons/MaterialIcons', () => 'MaterialIcons');
@@ -169,5 +169,178 @@ describe('ProfileCard Component', () => {
     expect(backgroundShape.props.style).toEqual(expect.objectContaining({
       backgroundColor: '#fff',
     }));
+  });
+});
+
+describe('URL Validation in ProfileCard', () => {
+  const mockProps = {
+    id: 'user123',
+    username: '@mimie',
+    role: 'Premium User',
+    verified: true,
+    profileImage: 'https://example.com/profile.jpg',
+    profileBanner: 'https://example.com/banner.jpg',
+    onEditPress: jest.fn(),
+    onSettingsPress: jest.fn(),
+    socialLinks: {
+      tiktok: 'https://tiktok.com/@johndoe',
+      line: 'https://line.me/ti/p/~johndoe',
+      discord: 'https://discord.gg/johndoe',
+      twitter: 'https://twitter.com/johndoe',
+      instagram: 'https://instagram.com/johndoe',
+    },
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.spyOn(Alert, 'alert');
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('shows alert for invalid Instagram URL', () => {
+    const invalidProps = {
+      ...mockProps,
+      socialLinks: {
+        ...mockProps.socialLinks,
+        instagram: 'https://invalid.com/johndoe'
+      }
+    };
+    
+    const { getByTestId } = render(<ProfileCard {...invalidProps} />);
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+    
+    expect(Alert.alert).toHaveBeenCalledWith(
+      'Invalid Link',
+      'Please provide a valid instagram URL starting with instagram.com',
+      [{ text: 'OK' }]
+    );
+    expect(Linking.canOpenURL).not.toHaveBeenCalled();
+  });
+
+  it('shows alert for invalid Twitter URL', () => {
+    const invalidProps = {
+      ...mockProps,
+      socialLinks: {
+        ...mockProps.socialLinks,
+        twitter: 'https://wrong.com/johndoe'
+      }
+    };
+    
+    const { getByTestId } = render(<ProfileCard {...invalidProps} />);
+    fireEvent.press(getByTestId('AntDesign-twitter'));
+    
+    expect(Alert.alert).toHaveBeenCalledWith(
+      'Invalid Link',
+      'Please provide a valid twitter URL starting with twitter.com',
+      [{ text: 'OK' }]
+    );
+  });
+
+  it('shows alert for invalid Discord URL', () => {
+    const invalidProps = {
+      ...mockProps,
+      socialLinks: {
+        ...mockProps.socialLinks,
+        discord: 'https://notdiscord.com/johndoe'
+      }
+    };
+    
+    const { getByTestId } = render(<ProfileCard {...invalidProps} />);
+    fireEvent.press(getByTestId('MaterialIcons-discord'));
+    
+    expect(Alert.alert).toHaveBeenCalledWith(
+      'Invalid Link',
+      'Please provide a valid discord URL starting with discord.com',
+      [{ text: 'OK' }]
+    );
+  });
+
+  it('shows alert for invalid TikTok URL', () => {
+    const invalidProps = {
+      ...mockProps,
+      socialLinks: {
+        ...mockProps.socialLinks,
+        tiktok: 'https://faketiktok.com/@johndoe'
+      }
+    };
+    
+    const { getByTestId } = render(<ProfileCard {...invalidProps} />);
+    fireEvent.press(getByTestId('FontAwesome5-tiktok'));
+    
+    expect(Alert.alert).toHaveBeenCalledWith(
+      'Invalid Link',
+      'Please provide a valid tiktok URL starting with tiktok.com',
+      [{ text: 'OK' }]
+    );
+  });
+
+  it('shows alert for invalid Line URL', () => {
+    const invalidProps = {
+      ...mockProps,
+      socialLinks: {
+        ...mockProps.socialLinks,
+        line: 'https://notline.com/ti/p/~johndoe'
+      }
+    };
+    
+    const { getByTestId } = render(<ProfileCard {...invalidProps} />);
+    fireEvent.press(getByTestId('Fontisto-line'));
+    
+    expect(Alert.alert).toHaveBeenCalledWith(
+      'Invalid Link',
+      'Please provide a valid line URL starting with line.me',
+      [{ text: 'OK' }]
+    );
+  });
+
+  it('accepts valid Instagram URL with www prefix', () => {
+    const validProps = {
+      ...mockProps,
+      socialLinks: {
+        ...mockProps.socialLinks,
+        instagram: 'https://www.instagram.com/johndoe'
+      }
+    };
+    
+    const { getByTestId } = render(<ProfileCard {...validProps} />);
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+    
+    expect(Alert.alert).not.toHaveBeenCalled();
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://www.instagram.com/johndoe');
+  });
+
+  it('accepts valid Twitter URL without https', () => {
+    const validProps = {
+      ...mockProps,
+      socialLinks: {
+        ...mockProps.socialLinks,
+        twitter: 'twitter.com/johndoe'
+      }
+    };
+    
+    const { getByTestId } = render(<ProfileCard {...validProps} />);
+    fireEvent.press(getByTestId('AntDesign-twitter'));
+    
+    expect(Alert.alert).not.toHaveBeenCalled();
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('twitter.com/johndoe');
+  });
+
+  it('accepts valid Discord URL with discord.gg domain', () => {
+    const validProps = {
+      ...mockProps,
+      socialLinks: {
+        ...mockProps.socialLinks,
+        discord: 'https://discord.gg/johndoe'
+      }
+    };
+    
+    const { getByTestId } = render(<ProfileCard {...validProps} />);
+    fireEvent.press(getByTestId('MaterialIcons-discord'));
+    
+    expect(Alert.alert).not.toHaveBeenCalled();
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://discord.gg/johndoe');
   });
 });

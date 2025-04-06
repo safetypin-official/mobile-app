@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, Linking } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, Linking, Alert } from 'react-native';
 import { SvgXml } from "react-native-svg";
 import { settings, pencil } from '@/assets/icons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -25,6 +25,15 @@ interface ProfileCardProps {
   };
 }
 
+// URL validation patterns for each social media
+const SOCIAL_MEDIA_PATTERNS = {
+  instagram: /^(https?:\/\/)?(www\.)?instagram\.com\/.+/i,
+  twitter: /^(https?:\/\/)?(www\.)?twitter\.com\/.+/i,
+  discord: /^(https?:\/\/)?(www\.)?discord\.(gg|com)\/.+/i,
+  tiktok: /^(https?:\/\/)?(www\.)?tiktok\.com\/@.+/i,
+  line: /^(https?:\/\/)?(www\.)?line\.me\/.+/i
+};
+
 const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => void}, ProfileCardProps>(
   (props, ref) => {
     const { 
@@ -39,20 +48,36 @@ const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => v
       socialLinks = {},
     } = props;
 
-    const handleSocialLinkPress = (url?: string) => {
-      if (url) {
-        Linking.canOpenURL(url).then(supported => {
-          if (supported) {
-            Linking.openURL(url);
-          } else {
-            console.log("Don't know how to open URI: " + url);
-          }
-        });
+    const validateSocialLink = (platform: keyof typeof SOCIAL_MEDIA_PATTERNS, url: string): boolean => {
+      const pattern = SOCIAL_MEDIA_PATTERNS[platform];
+      return pattern.test(url);
+    };
+
+    const handleSocialLinkPress = (url?: string, platform?: keyof typeof SOCIAL_MEDIA_PATTERNS) => {
+      if (!url) return;
+      
+      if (platform && !validateSocialLink(platform, url)) {
+        Alert.alert(
+          'Invalid Link',
+          `Please provide a valid ${platform} URL starting with ${
+            platform === 'line' ? 'line.me' : `${platform}.com`
+          }`,
+          [{ text: 'OK' }]
+        );
+        return;
       }
+
+      Linking.canOpenURL(url).then(supported => {
+        if (supported) {
+          Linking.openURL(url);
+        } else {
+          console.log("Don't know how to open URI: " + url);
+        }
+      });
     };
 
     React.useImperativeHandle(ref, () => ({
-      handleSocialLinkPress
+      handleSocialLinkPress: (url?: string) => handleSocialLinkPress(url)
     }));
 
     const hasSocialLinks = Object.values(socialLinks).some(link => link);
@@ -101,7 +126,7 @@ const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => v
             <View style={styles.socialIconsContainer}>
               {socialLinks.instagram && (
                 <TouchableOpacity 
-                  onPress={() => handleSocialLinkPress(socialLinks.instagram)}
+                  onPress={() => handleSocialLinkPress(socialLinks.instagram, 'instagram')}
                   style={styles.socialIcon}
                   testID="instagram-button"
                 >
@@ -111,7 +136,7 @@ const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => v
 
               {socialLinks.twitter && (
                 <TouchableOpacity 
-                  onPress={() => handleSocialLinkPress(socialLinks.twitter)}
+                  onPress={() => handleSocialLinkPress(socialLinks.twitter, 'twitter')}
                   style={styles.socialIcon}
                   testID="twitter-button"
                 >
@@ -121,7 +146,7 @@ const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => v
 
               {socialLinks.discord && (
                 <TouchableOpacity 
-                  onPress={() => handleSocialLinkPress(socialLinks.discord)}
+                  onPress={() => handleSocialLinkPress(socialLinks.discord, 'discord')}
                   style={styles.socialIcon}
                   testID="discord-button"
                 >
@@ -131,7 +156,7 @@ const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => v
 
               {socialLinks.tiktok && (
                 <TouchableOpacity 
-                  onPress={() => handleSocialLinkPress(socialLinks.tiktok)}
+                  onPress={() => handleSocialLinkPress(socialLinks.tiktok, 'tiktok')}
                   style={styles.socialIcon}
                   testID="tiktok-button"
                 >
@@ -141,7 +166,7 @@ const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => v
 
               {socialLinks.line && (
                 <TouchableOpacity 
-                  onPress={() => handleSocialLinkPress(socialLinks.line)}
+                  onPress={() => handleSocialLinkPress(socialLinks.line, 'line')}
                   style={styles.socialIcon}
                   testID="line-button"
                 >
