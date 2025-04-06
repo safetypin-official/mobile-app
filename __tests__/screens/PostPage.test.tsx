@@ -342,56 +342,44 @@ describe('PostPage Component', () => {
     const requestBodyCapture = jest.fn();
     let s3ImageUrl = '';
     
-    const handlePresignedUrlRequest = async () => {
-      s3ImageUrl = 'https://s3.example.com/upload';
-      return {
-        ok: true,
-        json: async () => ({
-          url: 'https://s3.example.com/upload?signature=abc',
-          imageUrl: s3ImageUrl,
-        }),
-      };
-    };
-    
-    const handleUploadRequest = async () => {
-      return {
-        ok: true,
-        status: 200,
-        json: async () => ({}),
-      };
-    };
-    
-    const handlePostRequest = async (init: RequestInit | undefined) => {
-      if (init?.body) {
-        const bodyObj = JSON.parse(typeof init.body === 'string' ? init.body : JSON.stringify(init.body));
-        // Ensure imageUrl is set in the request
-        if (!bodyObj.imageUrl && s3ImageUrl) {
-          bodyObj.imageUrl = s3ImageUrl;
-        }
-        requestBodyCapture(bodyObj);
-      }
-      return {
-        ok: true,
-        json: async () => ({ id: '123', success: true }),
-      };
-    };
-    
-    mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
+    mockFetch.mockImplementation(async (url: string | URL | Request, init?: RequestInit) => {
       if (typeof url === 'string') {
-        switch (url) {
-          case 'https://safetypin.ppl.cs.ui.ac.id/post/s3/presigned-url':
-            return handlePresignedUrlRequest();
-          case 'https://s3.example.com/upload?signature=abc':
-            return handleUploadRequest();
-          case 'https://safetypin.ppl.cs.ui.ac.id/post':
-            return handlePostRequest(init);
-          default:
-            return handleNotFoundRequest();
+        if (url === 'https://safetypin.ppl.cs.ui.ac.id/post/s3/presigned-url') {
+          s3ImageUrl = 'https://s3.example.com/upload';
+          return {
+            ok: true,
+            json: async () => ({ 
+              url: 'https://s3.example.com/upload?signature=abc',
+              imageUrl: s3ImageUrl 
+            })
+          };
+        } else if (url === 'https://s3.example.com/upload?signature=abc') {
+          return {
+            ok: true,
+            status: 200,
+            json: async () => ({})
+          };
+        } else if (url === 'https://safetypin.ppl.cs.ui.ac.id/post') {
+          if (init && init.body) {
+            const bodyObj = JSON.parse(init.body.toString());
+            // Ensure imageUrl is set in the request
+            if (!bodyObj.imageUrl && s3ImageUrl) {
+              bodyObj.imageUrl = s3ImageUrl;
+            }
+            requestBodyCapture(bodyObj);
+          }
+          return {
+            ok: true,
+            json: async () => ({ id: '123', success: true })
+          };
         }
       }
-    
-      return handleNotFoundRequest();
-    });    
+      return {
+        ok: false,
+        status: 404,
+        json: async () => ({ error: 'Not found' })
+      };
+    });
     
     const { getByTestId } = render(<PostPage />);
     
@@ -459,14 +447,9 @@ test('extracts file extension correctly', async () => {
   
   // Capture arguments passed to fetch untuk presigned URL
   let presignedUrlPayload: any = null;
-  mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
+  mockFetch.mockImplementation(async (url: string | URL | Request, init?: RequestInit) => {
     if (typeof url === 'string' && url === 'https://safetypin.ppl.cs.ui.ac.id/post/s3/presigned-url') {
-      if (init?.body) {
-        const body = typeof init.body === 'string' ? init.body : JSON.stringify(init.body);
-        presignedUrlPayload = JSON.parse(body);
-      } else {
-        presignedUrlPayload = null;
-      }
+      presignedUrlPayload = init && init.body ? JSON.parse(init.body.toString()) : null;
       return {
         ok: true,
         json: async () => ({ url: 'https://s3.example.com/upload?signature=abc' })
@@ -631,7 +614,7 @@ test('extracts file extension correctly', async () => {
   // Test untuk error handling pada server response (baris 289)
   test('handles server error response', async () => {
     // Mock fetch to return a server error response
-    mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
+    mockFetch.mockImplementation(async (url: string | URL | Request, init?: RequestInit) => {
       if (typeof url === 'string' && url === 'https://safetypin.ppl.cs.ui.ac.id/post') {
         return {
           ok: false,
@@ -1106,57 +1089,46 @@ test('extracts clean S3 URL by removing query parameters', async () => {
   // Capture request body untuk verifikasi
   const requestBodyCapture = jest.fn();
   
-  const handlePresignedUrlRequest = async () => {
-    // Save the clean image URL for later use in the post request
-    imageUrlForPost = cleanImageUrl;
-    return {
-      ok: true,
-      json: async () => ({
-        url: complexPresignedUrl,
-        imageUrl: cleanImageUrl, // Provide the clean imageUrl in the response
-      }),
-    };
-  };
-  
-  const handleS3UploadRequest = async () => {
-    // S3 upload success
-    return {
-      ok: true,
-      status: 200,
-      statusText: 'OK',
-    };
-  };
-  
-  const handlePostRequest = async (init: RequestInit | undefined) => {
-    if (init?.body) {
-      const body = JSON.parse(typeof init.body === 'string' ? init.body : JSON.stringify(init.body));
-      // Ensure imageUrl is included in the request
-      if (!body.imageUrl && imageUrlForPost) {
-        body.imageUrl = imageUrlForPost;
-      }
-      requestBodyCapture(body);
-    }
-    return {
-      ok: true,
-      json: async () => ({ id: '123', success: true }),
-    };
-  };
-  
-  mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
+  mockFetch.mockImplementation(async (url: string | URL | Request, init?: RequestInit) => {
     if (typeof url === 'string') {
-      switch (url) {
-        case 'https://safetypin.ppl.cs.ui.ac.id/post/s3/presigned-url':
-          return handlePresignedUrlRequest();
-        case complexPresignedUrl:
-          return handleS3UploadRequest();
-        case 'https://safetypin.ppl.cs.ui.ac.id/post':
-          return handlePostRequest(init);
-        default:
-          return handleNotFoundRequest();
+      if (url === 'https://safetypin.ppl.cs.ui.ac.id/post/s3/presigned-url') {
+        // Save the clean image URL for later use in the post request
+        imageUrlForPost = cleanImageUrl;
+        return {
+          ok: true,
+          json: async () => ({ 
+            url: complexPresignedUrl,
+            imageUrl: cleanImageUrl // Provide the clean imageUrl in the response
+          })
+        };
+      } else if (url === complexPresignedUrl) {
+        // S3 upload sukses
+        return {
+          ok: true,
+          status: 200,
+          statusText: 'OK'
+        };
+      } else if (url === 'https://safetypin.ppl.cs.ui.ac.id/post') {
+        if (init && init.body) {
+          const body = JSON.parse(init.body.toString());
+          // Ensure imageUrl is included in the request
+          if (!body.imageUrl && imageUrlForPost) {
+            body.imageUrl = imageUrlForPost;
+          }
+          requestBodyCapture(body);
+        }
+        return {
+          ok: true,
+          json: async () => ({ id: '123', success: true })
+        };
       }
     }
-    return handleNotFoundRequest();
-  });  
+    return {
+      ok: false,
+      status: 404,
+      json: async () => ({ error: 'Not found' })
+    };
+  });
   
   // Mock response.blob()
   global.Response = class {

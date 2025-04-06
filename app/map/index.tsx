@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
 import NearbyReport from '@/components/displays/NearbyReport';
 import Pin from '@/components/displays/Pin';
+import { router } from 'expo-router';
 import { authenticatedGet } from '@/utils/api'; // Add this import
 
 const { width, height } = Dimensions.get('window');
@@ -127,6 +128,13 @@ export default function ExploreScreen() {
     console.log('Long press detected at:', {
       latitude: event.nativeEvent.coordinate.latitude,
       longitude: event.nativeEvent.coordinate.longitude
+    });
+    router.push({
+      pathname: '/createPost',
+      params: {
+        latitude: event.nativeEvent.coordinate.latitude,
+        longitude: event.nativeEvent.coordinate.longitude,
+      },
     });
   };
 

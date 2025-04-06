@@ -153,6 +153,7 @@ const sendApiRequest = async (url: string, payload: any) => {
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => null);
+      console.log(errorData);
       throw new NetworkError(
         errorData?.message || `Server responded with status: ${response.status}`,
         response.status

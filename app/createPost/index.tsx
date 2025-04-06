@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import { 
-    View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Image, Alert
+    View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, ActivityIndicator
 } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
 import Entypo from '@expo/vector-icons/Entypo';
 import Button from '@/components/buttons/Button';
 import InputField from '@/components/inputs/InputField';
 import TagSelector from '@/components/inputs/TagSelector';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { authenticatedPost } from '@/utils/api';
+import Config from "react-native-config";
+
+const API_KEY = Config.GOOGLE_MAPS_API_KEY;
 
 export const getFileExtension = (uri: string): string => {
     const fileName = uri.split('/');
@@ -26,28 +29,78 @@ export const getFileExtension = (uri: string): string => {
 };
 
 const PostPage = () => {
-    const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+    // Get parameters from the URL or navigation state
+    const params = useLocalSearchParams();
+    
+    // Initialize location state with passed parameters if available
+    const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(
+            params.latitude && params.longitude 
+                ? { 
+                    latitude: typeof params.latitude === 'string' ? parseFloat(params.latitude) : Number(params.latitude), 
+                    longitude: typeof params.longitude === 'string' ? parseFloat(params.longitude) : Number(params.longitude) 
+                  }
+                : null
+        );
+    
+    // New state for storing the address from reverse geocoding
+    const [address, setAddress] = useState<string>('Fetching address...');
+    const [isLoadingAddress, setIsLoadingAddress] = useState<boolean>(false);
+    
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [selectedTag, setSelectedTag] = useState<string | null>(null);
     const [imageUri, setImageUri] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState<boolean>(false);
 
-    useEffect(() => {
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                console.log('Permission to access location was denied');
-                return;
+    // Function to fetch address using Google Maps Geocoding API
+    const fetchAddress = async (latitude: number, longitude: number) => {
+        setIsLoadingAddress(true);
+        try {
+            const geocodingUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${API_KEY}`;
+            
+            const response = await fetch(geocodingUrl);
+            const data = await response.json();
+            
+            if (data.status === 'OK' && data.results && data.results.length > 0) {
+                // Use the first result which is typically the most specific
+                setAddress(data.results[0].formatted_address);
+            } else {
+                setAddress('Address not found');
+                console.log('Geocoding API response:', data);
             }
+        } catch (error) {
+            console.error('Error fetching address:', error);
+            setAddress('Failed to fetch address');
+        } finally {
+            setIsLoadingAddress(false);
+        }
+    };
 
-            let loc = await Location.getCurrentPositionAsync({});
-            setLocation({
-                latitude: loc.coords.latitude,
-                longitude: loc.coords.longitude,
-            });
-        })();
-    }, []);
+    useEffect(() => {
+        // Only fetch current location if no location was passed
+        if (!location) {
+            (async () => {
+                let { status } = await Location.requestForegroundPermissionsAsync();
+                if (status !== 'granted') {
+                    console.log('Permission to access location was denied');
+                    return;
+                }
+
+                let loc = await Location.getCurrentPositionAsync({});
+                const newLocation = {
+                    latitude: loc.coords.latitude,
+                    longitude: loc.coords.longitude,
+                };
+                setLocation(newLocation);
+                
+                // Fetch address once we have the location
+                fetchAddress(newLocation.latitude, newLocation.longitude);
+            })();
+        } else {
+            // If we already have a location (e.g., from params), fetch the address
+            fetchAddress(location.latitude, location.longitude);
+        }
+    }, [location?.latitude, location?.longitude]);
 
     const handleClose = () => {
         router.replace('/map');
@@ -161,13 +214,14 @@ const PostPage = () => {
     
     // Update the submitPost function too
     const submitPost = (imageUrl: string | null) => {
-        // Create the post data with the category as a string
+        // Create the post data with the category as a string and add the address
         const postData = {
-            title: title,
-            caption: description,
-            latitude: location?.latitude ?? 0,
-            longitude: location?.longitude ?? 0,
-            category: selectedTag,
+            Title: title,
+            Caption: description,
+            Latitude: location?.latitude ?? 0,
+            Longitude: location?.longitude ?? 0,
+            Address: address, // Include the address in the post data
+            Category: selectedTag,
             imageUrl: imageUrl
         };
         
@@ -206,8 +260,26 @@ const PostPage = () => {
             <ScrollView style={styles.scroll} contentContainerStyle={{ flexGrow: 1 }} testID="scroll-container">
                 <View style={styles.inputSection} testID="location-section">
                     <Text style={styles.label}>Location</Text>
-                    <Text style={styles.paragraph} testID="latitude-text">Latitude: {location?.latitude ?? 'Fetching...'}</Text>
-                    <Text style={styles.paragraph} testID="longitude-text">Longitude: {location?.longitude ?? 'Fetching...'}</Text>
+                    
+                    {/* New address display */}
+                    <View style={styles.addressContainer} testID="address-container">
+                        {isLoadingAddress ? (
+                            <View style={styles.loadingContainer}>
+                                <ActivityIndicator size="small" color="#904a47" />
+                                <Text style={styles.loadingText}>Fetching address...</Text>
+                            </View>
+                        ) : (
+                            <Text style={styles.addressText} testID="address-text">{address}</Text>
+                        )}
+                    </View>
+                    
+                    {/* Still show coordinates for reference */}
+                    <Text style={styles.coordsText} testID="latitude-text">
+                        Latitude: {location?.latitude ?? 'Fetching...'}
+                    </Text>
+                    <Text style={styles.coordsText} testID="longitude-text">
+                        Longitude: {location?.longitude ?? 'Fetching...'}
+                    </Text>
                 </View>
 
                 <View style={styles.inputSection}>
@@ -304,6 +376,34 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
         color: "#904a47",
+    },
+    addressContainer: {
+        backgroundColor: '#f9f1f1',
+        padding: 12,
+        borderRadius: 6,
+        marginBottom: 8,
+        borderWidth: 1,
+        borderColor: '#e6d0d0',
+    },
+    addressText: {
+        color: '#3b080a',
+        fontSize: 14,
+        lineHeight: 20,
+    },
+    coordsText: {
+        color: "#904a47",
+        fontSize: 12,
+        opacity: 0.8,
+        marginTop: 2,
+    },
+    loadingContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    loadingText: {
+        color: '#904a47',
+        marginLeft: 8,
+        fontSize: 14,
     },
     paragraph: {
         color: "#904a47",
