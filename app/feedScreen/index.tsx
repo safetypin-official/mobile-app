@@ -55,7 +55,7 @@ const FeedScreen: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('http://10.0.2.2/post/all');
+      const response = await fetch('https://safetypin.ppl.cs.ui.ac.id//post/all');
       
       if (!response.ok) {
         throw new Error(`HTTP error: ${response.status}`);
@@ -139,7 +139,9 @@ const FeedScreen: React.FC = () => {
           likeCount={0}
           dislikeCount={0}
           selectedTags={getCategoryTags(item.category)}
-          imageUrl={item.imageUrl ?? "https://i.imgur.com/Ha3UkA3.jpg"} postId={''}        />
+          imageUrl={item.imageUrl ?? "https://i.imgur.com/Ha3UkA3.jpg"}
+          postId={item.id}
+        />
         
         <View style={styles.divider} />
       </View>

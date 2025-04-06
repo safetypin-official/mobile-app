@@ -23,7 +23,7 @@ export default function Layout() {
   const handleMapPress = () => {
     if (activeTab === "map") {
       // If already on map tab, navigate to post
-      router.push("/post");
+      router.push("/createPost");
     } else {
       // If not on map tab, set active tab to map and navigate to map
       setActiveTab("map");

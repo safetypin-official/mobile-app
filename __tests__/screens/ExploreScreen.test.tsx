@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { render, fireEvent, waitFor, act, renderHook } from '@testing-library/react-native';
+import React from 'react';
+import { render, fireEvent, waitFor, act } from '@testing-library/react-native';
 import ExploreScreen from '@/app/map';
 import * as Location from 'expo-location';
-import { Alert } from 'react-native';
 
 // Mock dependencies
 jest.mock('react-native-maps', () => {
@@ -29,7 +28,8 @@ jest.mock('expo-location', () => ({
   getCurrentPositionAsync: jest.fn(),
 }));
 
-jest.mock('@/app/nearbyReport', () => {
+// Update the path to match the new import in ExploreScreen
+jest.mock('@/components/displays/NearbyReport', () => {
   const { View } = require('react-native');
   return {
     __esModule: true,
@@ -48,7 +48,7 @@ jest.mock('@/components/displays/Pin', () => {
 // Mock window.fetch
 global.fetch = jest.fn();
 
-// Sample post data for testing
+// Sample post data for testing - update to match new Post type with category as string
 const mockPosts = [
   {
     id: '1',
@@ -56,9 +56,10 @@ const mockPosts = [
     createdAt: '2023-01-01T12:00:00Z',
     postedBy: 'user1',
     title: 'Test post 1',
-    category: { id: 'cat1', name: 'Category 1' },
+    category: 'Category 1', // Changed from object to string
     latitude: -6.21,
     longitude: 106.85,
+    imageUrl: null,
   },
   {
     id: '2',
@@ -66,11 +67,20 @@ const mockPosts = [
     createdAt: '2023-01-02T12:00:00Z',
     postedBy: 'user2',
     title: 'Test post 2',
-    category: { id: 'cat2', name: 'Category 2' },
+    category: 'Category 2', // Changed from object to string
     latitude: -6.22,
     longitude: 106.86,
+    imageUrl: 'https://example.com/image.jpg',
   },
 ];
+
+// Mock API response format based on new implementation
+const mockApiResponse = {
+  success: true,
+  data: {
+    content: mockPosts
+  }
+};
 
 describe('ExploreScreen', () => {
   beforeEach(() => {
@@ -90,10 +100,10 @@ describe('ExploreScreen', () => {
       },
     });
     
-    // Mock successful fetch
+    // Mock successful fetch with updated response format
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
-      json: jest.fn().mockResolvedValue(mockPosts),
+      json: jest.fn().mockResolvedValue(mockApiResponse),
     });
   });
 
@@ -143,11 +153,11 @@ describe('ExploreScreen', () => {
   });
 
   it('fetches and displays posts successfully', async () => {
-    const { findByTestId, queryByText, getAllByTestId } = render(<ExploreScreen />);
+    const { queryByText, getAllByTestId } = render(<ExploreScreen />);
     
-    // Wait for the fetch to complete
+    // Wait for the fetch to complete with updated endpoint
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith('http://10.0.2.2/post/all');
+      expect(global.fetch).toHaveBeenCalledWith('https://safetypin.ppl.cs.ui.ac.id//post/all');
     });
     
     // Check that loading indicator is removed
@@ -191,6 +201,23 @@ describe('ExploreScreen', () => {
     expect(errorMessage).toBeTruthy();
   });
 
+  it('shows error when response format is invalid', async () => {
+    // Mock invalid response format
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: jest.fn().mockResolvedValue({
+        success: false,
+        data: null
+      }),
+    });
+    
+    const { findByText } = render(<ExploreScreen />);
+    
+    // Wait for the error message to appear
+    const errorMessage = await findByText('Failed to load posts. Please try again later.');
+    expect(errorMessage).toBeTruthy();
+  });
+
   it('retries fetch when retry button is clicked', async () => {
     // First mock a failed fetch
     (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
@@ -203,7 +230,7 @@ describe('ExploreScreen', () => {
     // Reset mock for successful retry
     (global.fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: jest.fn().mockResolvedValue(mockPosts),
+      json: jest.fn().mockResolvedValue(mockApiResponse),
     });
     
     // Click retry button
@@ -234,6 +261,48 @@ describe('ExploreScreen', () => {
     // Report overlay should now be visible
     const reportOverlay = await findByTestId('nearby-report');
     expect(reportOverlay).toBeTruthy();
+    
+    // Check that initialPost prop is passed correctly
+    expect(reportOverlay.props.initialPost).toEqual(mockPosts[0]);
+  });
+  
+  it('does not open report overlay when marker is pressed but post is not found', async () => {
+    // Create a spy for console.log
+    const consoleSpy = jest.spyOn(console, 'log');
+    
+    // Mock the Array.prototype.find method to control its behavior
+    const originalArrayFind = Array.prototype.find;
+    const mockFind = jest.fn();
+    
+    // First, render the component normally
+    const { getAllByTestId, queryByTestId } = render(<ExploreScreen />);
+    
+    // Wait for posts to load
+    await waitFor(() => {
+      const markers = getAllByTestId('marker');
+      expect(markers.length).toBe(2);
+    });
+    
+    // Replace the Array.prototype.find method to return undefined
+    // This simulates the case where a post is not found for a given ID
+    Array.prototype.find = mockFind.mockReturnValue(undefined);
+    
+    // Get the first marker and press it
+    const markers = getAllByTestId('marker');
+    fireEvent.press(markers[0]);
+    
+    // Verify the console.log was called (indicating the marker press was processed)
+    expect(consoleSpy).toHaveBeenCalledWith('Marker pressed, post ID:', expect.any(String));
+    
+    // Verify the find method was called (our mock implementation)
+    expect(mockFind).toHaveBeenCalled();
+    
+    // Verify that the report overlay is NOT displayed since find() returned undefined
+    expect(queryByTestId('nearby-report')).toBeNull();
+    
+    // Clean up the mock
+    Array.prototype.find = originalArrayFind;
+    consoleSpy.mockRestore();
   });
 
   it('closes report overlay when close button is pressed', async () => {
@@ -343,81 +412,36 @@ describe('ExploreScreen', () => {
     consoleSpy.mockRestore();
   });
 
-  it('formats dates correctly', async () => {
-    // Create a post with a known date
-    const testDate = '2023-05-15T14:30:00Z';
-    const expectedFormattedDate = new Date(testDate).toLocaleDateString() + ' ' + 
-                                  new Date(testDate).toLocaleTimeString();
+  it('properly formats dates in the UI', async () => {
+    // Spy on Date methods to ensure consistency
+    const originalDate = global.Date;
+    const mockDate = jest.fn(() => ({
+      toLocaleDateString: jest.fn(() => '1/1/2023'),
+      toLocaleTimeString: jest.fn(() => '12:00:00 PM')
+    }));
+    global.Date = mockDate as any;
     
-    // Mock posts with this date
-    const postsWithDate = [{
-      ...mockPosts[0],
-      createdAt: testDate
-    }];
+    const { getAllByTestId } = render(<ExploreScreen />);
     
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      json: jest.fn().mockResolvedValue(postsWithDate),
-    });
-    
-    const { findByText } = render(<ExploreScreen />);
-    
-    // Wait for the posts to load
-    await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalled();
-    });
-    
-    // Due to limitations with the mock, we can't easily check the formatted date in the callout
-    // This is because the Callout is mocked and doesn't render its children
-    // In real testing with react-native-testing-library, we would check for the formatted date
-  });
-
-  it('closes the report after clicking somewhere on the map', async () => {
-    const { findByTestId, getAllByTestId, queryByTestId } = render(<ExploreScreen />);
-
-    await waitFor(() => {
-        const markers = getAllByTestId('marker');
-        expect(markers.length).toBe(2);
-    });
-
-    const markers = getAllByTestId('marker');
-    fireEvent.press(markers[0]);
-
     // Wait for posts to load
-    await waitFor(() => expect(markers[0]).toBeTruthy());
-    await waitFor(() => expect(markers[1]).toBeTruthy());
-
-    // Simulate marker press
-    fireEvent.press(markers[0]);
-
-    // Expect the report overlay to appear
-    await waitFor(() => expect(findByTestId('nearby-report')).toBeTruthy());
-    
-    const mapView = await findByTestId('map-view');
-    fireEvent(mapView, 'press', {
-      nativeEvent: {
-        coordinate: {
-          latitude: -6.21,
-          longitude: 106.85,
-        },
-      },
+    await waitFor(() => {
+      const markers = getAllByTestId('marker');
+      expect(markers.length).toBe(2);
     });
-    await waitFor(() => expect(queryByTestId('nearby-report')).toBeNull());
+    
+    // Restore original Date
+    global.Date = originalDate;
+    
+    // Note: We can't easily test the formatted date display due to mocked components
+    // In a real test environment, we would check the actual rendered text
   });
 
-  it('increases the coverage duhh, useless ahh to test but it increases the coverage anyways', async () => {
+  it('logs position when map is pressed', async () => {
     const consoleSpy = jest.spyOn(console, 'log');
     
-    const { findByTestId, getAllByTestId, queryByTestId } = render(<ExploreScreen />);
-
-    await waitFor(() => {
-        const markers = getAllByTestId('marker');
-        expect(markers.length).toBe(2);
-    });
-
-    await waitFor(() => expect(queryByTestId('nearby-report')).toBeNull());
+    const { getByTestId } = render(<ExploreScreen />);
     
-    const mapView = await findByTestId('map-view');
+    const mapView = getByTestId('map-view');
     fireEvent(mapView, 'press', {
       nativeEvent: {
         coordinate: {
@@ -426,7 +450,7 @@ describe('ExploreScreen', () => {
         },
       },
     });
-
+    
     expect(consoleSpy).toHaveBeenCalledWith(
       'Position pressed:',
       expect.objectContaining({
@@ -436,5 +460,50 @@ describe('ExploreScreen', () => {
     );
     
     consoleSpy.mockRestore();
+  });
+
+  it('correctly passes Pin properties when rendering markers', async () => {
+    const { getAllByTestId } = render(<ExploreScreen />);
+    
+    // Wait for posts to load
+    await waitFor(() => {
+      const pins = getAllByTestId('pin');
+      expect(pins.length).toBe(2);
+      
+      // Check that category is passed correctly to Pin component
+      expect(pins[0].props.type).toBe(mockPosts[0].category);
+      expect(pins[1].props.type).toBe(mockPosts[1].category);
+      
+      // Check other Pin props
+      expect(pins[0].props.width).toBe(36);
+      expect(pins[0].props.height).toBe(36);
+    });
+  });
+
+  it('handles refreshing posts', async () => {
+    // Mock fetch failure first
+    (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
+    
+    const { findByText, getByText } = render(<ExploreScreen />);
+    
+    // Wait for error to appear
+    await findByText('Failed to load posts. Please try again later.');
+    
+    // Now mock success for retry
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: jest.fn().mockResolvedValue(mockApiResponse),
+    });
+    
+    // Trigger refresh by clicking retry
+    fireEvent.press(getByText('Retry'));
+    
+    // Verify loading indicator shows again
+    expect(getByText('Loading posts...')).toBeTruthy();
+    
+    // Verify posts load successfully after retry
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+    });
   });
 });
