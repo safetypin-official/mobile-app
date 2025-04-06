@@ -35,14 +35,19 @@ export class NetworkError extends Error {
 // Constants for storage keys
 const STORAGE_KEYS = {
   JWT_TOKEN: 'auth_jwt_token',
+  REFRESH_TOKEN: 'auth_refresh_token',
 };
 
 // Storage Functions
-export const saveAuthData = async (token: string) => {
+export const saveAuthData = async (accessToken: string, refreshToken?: string) => {
   try {
     const promises = [
-      AsyncStorage.setItem(STORAGE_KEYS.JWT_TOKEN, token)
+      AsyncStorage.setItem(STORAGE_KEYS.JWT_TOKEN, accessToken)
     ];
+    
+    if (refreshToken) {
+      promises.push(AsyncStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken));
+    }
     
     await Promise.all(promises);
     console.log('Authentication data saved successfully');
@@ -55,17 +60,20 @@ export const saveAuthData = async (token: string) => {
 
 export const getAuthData = async () => {
   try {
-    const [token] = await Promise.all([
+    const [token, refreshToken] = await Promise.all([
       AsyncStorage.getItem(STORAGE_KEYS.JWT_TOKEN),
+      AsyncStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN),
     ]);
     
     return {
       token,
+      refreshToken,
     };
   } catch (error: any) {
     console.error('Failed to get authentication data:', error.message);
     return {
       token: null,
+      refreshToken: null,
     };
   }
 };
@@ -74,6 +82,7 @@ export const clearAuthData = async () => {
   try {
     await Promise.all([
       AsyncStorage.removeItem(STORAGE_KEYS.JWT_TOKEN),
+      AsyncStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN),
     ]);
     console.log('Authentication data cleared successfully');
     return true;
@@ -165,8 +174,22 @@ const parseAndSaveAuthResponse = async (response: Response, authType: string) =>
     console.log(`Response from backend (${authType}):`, data);
     
     if (data.data) {
-      await saveAuthData(data.data.tokenValue);
-      console.log(`${authType} authentication data saved`);
+      // Handle new response format with accessToken and refreshToken
+      if (data.data.accessToken) {
+        await saveAuthData(
+          data.data.accessToken, 
+          data.data.refreshToken
+        );
+        console.log(`${authType} authentication data saved (with refresh token)`);
+      } 
+      // For backward compatibility with old tokenValue format
+      else if (data.data.tokenValue) {
+        await saveAuthData(data.data.tokenValue);
+        console.log(`${authType} authentication data saved (legacy format)`);
+      } 
+      else {
+        console.warn(`${authType} authentication response missing token`);
+      }
     }
     
     console.log(data.message || `${authType} authentication successful`);

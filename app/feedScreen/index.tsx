@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 // Import components from NearbyReport
 import UserInfo from "@/components/displays/post/UserInfo";
 import ReportContent, { TagKey } from "@/components/displays/post/ReportContent";
+import { authenticatedGet } from "@/utils/api"; // Add this import
 
 // Reusing types from your existing code
 type Category = {
@@ -55,22 +56,30 @@ const FeedScreen: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('https://safetypin.ppl.cs.ui.ac.id//post/all');
+      const response = await authenticatedGet('https://safetypin.ppl.cs.ui.ac.id/post/all');
+      console.log('Fetched posts response:', response);
       
-      if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`);
+      if (response.success && response.data) {
+        let postsData = [];
+        
+        // Check if the data has a content property (paginated response)
+        if (response.data.content) {
+          postsData = response.data.content;
+        } else {
+          // Else assume the data itself is the posts array
+          postsData = response.data;
+        }
+        
+        // Sort posts by createdAt (newest first)
+        const sortedPosts = [...postsData].sort((a, b) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        
+        setPosts(sortedPosts);
+      } else {
+        throw new Error(response.message ?? 'Failed to get posts data');
       }
-      
-      const data = await response.json();
-      console.log('Fetched posts:', data);
-      
-      // Sort posts by createdAt (newest first)
-      const sortedPosts = [...data].sort((a, b) => 
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-      
-      setPosts(sortedPosts);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching posts:', error);
       setError('Failed to load posts. Please try again by pulling down to refresh.');
     } finally {

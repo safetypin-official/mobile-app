@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { authenticatedGet } from '@/utils/api'; // Add this import
 
 interface Tag {
   id: string;
@@ -38,13 +39,14 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTag, onTagChange, tes
   const fetchTags = async () => {
     try {
       setLoading(true);
-      const response = await fetch('https://safetypin.ppl.cs.ui.ac.id//posts/category');
-      const data: ApiResponse = await response.json();
       
-      if (data.success) {
+      // Replace direct fetch with authenticatedGet
+      const response = await authenticatedGet('https://safetypin.ppl.cs.ui.ac.id/posts/category');
+      
+      if (response.success) {
         // Map string array to Tag format, using the string as both id and name
         // Assign colors based on index
-        const tagsWithColors = data.data.map((categoryName, index) => ({
+        const tagsWithColors = response.data.map((categoryName: string, index: number) => ({
           id: categoryName, // Using the category name as ID
           name: categoryName,
           color: TAG_COLORS[index % TAG_COLORS.length]
@@ -53,9 +55,9 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTag, onTagChange, tes
         setTags(tagsWithColors);
         setError(null);
       } else {
-        setError(data.message || 'Failed to fetch tags');
+        setError(response.message ?? 'Failed to fetch tags');
       }
-    } catch (err) {
+    } catch (err: any) {
       setError('Error connecting to the server');
       console.error('Error fetching tags:', err);
     } finally {

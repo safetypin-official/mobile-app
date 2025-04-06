@@ -3,7 +3,7 @@ import { View, StyleSheet, ScrollView, ActivityIndicator, Text } from "react-nat
 import UserInfo from "@/components/displays/post/UserInfo";
 import ReportContent, { TagKey } from "@/components/displays/post/ReportContent";
 import CommentInput from "@/components/inputs/post/CommentInput";
-import axios from "axios";
+import { authenticatedGet } from "@/utils/api";
 
 type ApiResponse = {
   success: boolean;
@@ -45,12 +45,14 @@ const NearbyReport: React.FC<NearbyReportProps> = ({ initialPost, postId, onClos
       try {
         setIsLoading(true);
         console.log(`Fetching post with ID: ${postId}`);
-        const response = await axios.get<ApiResponse>(
-          `https://safetypin.ppl.cs.ui.ac.id//post/${postId}`
+        
+        // Use the authenticatedGet function instead of axios
+        const response = await authenticatedGet<Post>(
+          `https://safetypin.ppl.cs.ui.ac.id/post/${postId}`
         );
-        console.log("API Response:", response.data);
-        // Extract the post from the data property
-        setPost(response.data.data);
+        
+        console.log("API Response:", response);
+        setPost(response.data);
         setError(null);
       } catch (err) {
         console.error("Error fetching post:", err);

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
 import NearbyReport from '@/components/displays/NearbyReport';
 import Pin from '@/components/displays/Pin';
+import { authenticatedGet } from '@/utils/api'; // Add this import
 
 const { width, height } = Dimensions.get('window');
 
@@ -76,13 +77,9 @@ export default function ExploreScreen() {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const response = await fetch('https://safetypin.ppl.cs.ui.ac.id//post/all');
         
-        if (!response.ok) {
-          throw new Error(`HTTP error: ${response.status}`);
-        }
-        
-        const responseData = await response.json();
+        // Use authenticatedGet instead of direct fetch
+        const responseData = await authenticatedGet('https://safetypin.ppl.cs.ui.ac.id/post/all');
         console.log('Fetched posts response:', responseData);
         
         if (responseData.success && responseData.data?.content) {
