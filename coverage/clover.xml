@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1743867174566" clover="3.2.0">
-  <project timestamp="1743867174566" name="All files">
-    <metrics statements="895" coveredstatements="890" conditionals="448" coveredconditionals="405" methods="220" coveredmethods="215" elements="1563" coveredelements="1510" complexity="0" loc="895" ncloc="895" packages="19" files="49" classes="49"/>
+<coverage generated="1743959929266" clover="3.2.0">
+  <project timestamp="1743959929266" name="All files">
+    <metrics statements="907" coveredstatements="902" conditionals="448" coveredconditionals="405" methods="232" coveredmethods="220" elements="1587" coveredelements="1527" complexity="0" loc="907" ncloc="907" packages="21" files="52" classes="52"/>
     <package name="app">
       <metrics statements="56" coveredstatements="56" conditionals="16" coveredconditionals="16" methods="13" coveredmethods="13"/>
       <file name="_layout.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\_layout.tsx">
@@ -410,6 +410,17 @@
         <line num="132" count="20" type="stmt"/>
         <line num="138" count="20" type="stmt"/>
         <line num="154" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.settings">
+      <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="9" coveredmethods="2"/>
+      <file name="index.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\settings\index.tsx">
+        <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="9" coveredmethods="2"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="11" count="1" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="20" count="2" type="stmt"/>
+        <line num="53" count="1" type="stmt"/>
       </file>
     </package>
     <package name="app.signUp">
@@ -1089,6 +1100,22 @@
         <line num="52" count="21" type="stmt"/>
         <line num="69" count="1" type="stmt"/>
         <line num="93" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="components.settings">
+      <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+      <file name="SettingsItem.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\settings\SettingsItem.tsx">
+        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="9" count="1" type="stmt"/>
+        <line num="10" count="3" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+      </file>
+      <file name="SettingsSection.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\settings\SettingsSection.tsx">
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <line num="10" count="1" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="17" count="2" type="stmt"/>
+        <line num="23" count="1" type="stmt"/>
       </file>
     </package>
     <package name="components.toasts">
