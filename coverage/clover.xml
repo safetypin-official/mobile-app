@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1743862867665" clover="3.2.0">
-  <project timestamp="1743862867666" name="All files">
+<coverage generated="1743929147594" clover="3.2.0">
+  <project timestamp="1743929147594" name="All files">
     <metrics statements="794" coveredstatements="794" conditionals="338" coveredconditionals="338" methods="191" coveredmethods="188" elements="1323" coveredelements="1320" complexity="0" loc="794" ncloc="794" packages="19" files="48" classes="48"/>
     <package name="app">
       <metrics statements="56" coveredstatements="56" conditionals="16" coveredconditionals="16" methods="13" coveredmethods="13"/>
-      <file name="_layout.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\_layout.tsx">
+      <file name="_layout.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\_layout.tsx">
         <metrics statements="24" coveredstatements="24" conditionals="10" coveredconditionals="10" methods="7" coveredmethods="7"/>
         <line num="7" count="30" type="stmt"/>
         <line num="8" count="30" type="stmt"/>
@@ -31,7 +31,7 @@
         <line num="59" count="1" type="stmt"/>
         <line num="62" count="1" type="stmt"/>
       </file>
-      <file name="index.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\index.tsx">
+      <file name="index.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\index.tsx">
         <metrics statements="32" coveredstatements="32" conditionals="6" coveredconditionals="6" methods="6" coveredmethods="6"/>
         <line num="7" count="1" type="stmt"/>
         <line num="8" count="25" type="stmt"/>
@@ -69,7 +69,7 @@
     </package>
     <package name="app.feedScreen">
       <metrics statements="53" coveredstatements="53" conditionals="26" coveredconditionals="26" methods="14" coveredmethods="14"/>
-      <file name="index.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\feedScreen\index.tsx">
+      <file name="index.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\feedScreen\index.tsx">
         <metrics statements="53" coveredstatements="53" conditionals="26" coveredconditionals="26" methods="14" coveredmethods="14"/>
         <line num="39" count="1" type="stmt"/>
         <line num="41" count="1" type="stmt"/>
@@ -128,7 +128,7 @@
     </package>
     <package name="app.forgotPassword">
       <metrics statements="27" coveredstatements="27" conditionals="4" coveredconditionals="4" methods="8" coveredmethods="8"/>
-      <file name="index.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\forgotPassword\index.tsx">
+      <file name="index.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\forgotPassword\index.tsx">
         <metrics statements="10" coveredstatements="10" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="3"/>
         <line num="7" count="1" type="stmt"/>
         <line num="8" count="5" type="stmt"/>
@@ -141,7 +141,7 @@
         <line num="19" count="1" type="stmt"/>
         <line num="22" count="5" type="stmt"/>
       </file>
-      <file name="newPasswordScreen.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\forgotPassword\newPasswordScreen.tsx">
+      <file name="newPasswordScreen.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\forgotPassword\newPasswordScreen.tsx">
         <metrics statements="10" coveredstatements="10" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
         <line num="7" count="1" type="stmt"/>
         <line num="8" count="7" type="stmt"/>
@@ -154,7 +154,7 @@
         <line num="20" count="7" type="stmt"/>
         <line num="50" count="1" type="stmt"/>
       </file>
-      <file name="otpVerificationScreen.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\forgotPassword\otpVerificationScreen.tsx">
+      <file name="otpVerificationScreen.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\forgotPassword\otpVerificationScreen.tsx">
         <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
         <line num="5" count="1" type="stmt"/>
         <line num="6" count="7" type="stmt"/>
@@ -167,7 +167,7 @@
     </package>
     <package name="app.map">
       <metrics statements="60" coveredstatements="60" conditionals="15" coveredconditionals="15" methods="17" coveredmethods="16"/>
-      <file name="index.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\map\index.tsx">
+      <file name="index.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\map\index.tsx">
         <metrics statements="60" coveredstatements="60" conditionals="15" coveredconditionals="15" methods="17" coveredmethods="16"/>
         <line num="8" count="1" type="stmt"/>
         <line num="35" count="1" type="stmt"/>
@@ -233,7 +233,7 @@
     </package>
     <package name="app.nearbyReport">
       <metrics statements="16" coveredstatements="16" conditionals="16" coveredconditionals="16" methods="5" coveredmethods="5"/>
-      <file name="index.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\nearbyReport\index.tsx">
+      <file name="index.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\nearbyReport\index.tsx">
         <metrics statements="16" coveredstatements="16" conditionals="16" coveredconditionals="16" methods="5" coveredmethods="5"/>
         <line num="31" count="1" type="stmt"/>
         <line num="33" count="7" type="stmt"/>
@@ -255,7 +255,7 @@
     </package>
     <package name="app.post">
       <metrics statements="95" coveredstatements="95" conditionals="46" coveredconditionals="46" methods="16" coveredmethods="16"/>
-      <file name="index.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\post\index.tsx">
+      <file name="index.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\post\index.tsx">
         <metrics statements="95" coveredstatements="95" conditionals="46" coveredconditionals="46" methods="16" coveredmethods="16"/>
         <line num="19" count="1" type="stmt"/>
         <line num="20" count="34" type="stmt"/>
@@ -356,7 +356,7 @@
     </package>
     <package name="app.search">
       <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="index.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\search\index.tsx">
+      <file name="index.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\search\index.tsx">
         <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="6" count="4" type="stmt"/>
         <line num="15" count="1" type="stmt"/>
@@ -364,7 +364,7 @@
     </package>
     <package name="app.signUp">
       <metrics statements="48" coveredstatements="48" conditionals="11" coveredconditionals="11" methods="8" coveredmethods="8"/>
-      <file name="index.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\signUp\index.tsx">
+      <file name="index.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\signUp\index.tsx">
         <metrics statements="27" coveredstatements="27" conditionals="5" coveredconditionals="5" methods="5" coveredmethods="5"/>
         <line num="6" count="9" type="stmt"/>
         <line num="7" count="1" type="stmt"/>
@@ -394,7 +394,7 @@
         <line num="61" count="1" type="stmt"/>
         <line num="66" count="9" type="stmt"/>
       </file>
-      <file name="otp.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\signUp\otp.tsx">
+      <file name="otp.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\signUp\otp.tsx">
         <metrics statements="21" coveredstatements="21" conditionals="6" coveredconditionals="6" methods="3" coveredmethods="3"/>
         <line num="7" count="1" type="stmt"/>
         <line num="8" count="10" type="stmt"/>
@@ -421,11 +421,11 @@
     </package>
     <package name="assets">
       <metrics statements="53" coveredstatements="53" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="TagData.ts" path="C:\Users\aanma\sandbox\mobile-app\assets\TagData.ts">
+      <file name="TagData.ts" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\assets\TagData.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="14" count="2" type="stmt"/>
       </file>
-      <file name="icons.ts" path="C:\Users\aanma\sandbox\mobile-app\assets\icons.ts">
+      <file name="icons.ts" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\assets\icons.ts">
         <metrics statements="20" coveredstatements="20" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="7" type="stmt"/>
         <line num="10" count="7" type="stmt"/>
@@ -448,7 +448,7 @@
         <line num="117" count="7" type="stmt"/>
         <line num="123" count="7" type="stmt"/>
       </file>
-      <file name="pins.ts" path="C:\Users\aanma\sandbox\mobile-app\assets\pins.ts">
+      <file name="pins.ts" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\assets\pins.ts">
         <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="9" count="1" type="stmt"/>
@@ -461,7 +461,7 @@
         <line num="59" count="1" type="stmt"/>
         <line num="66" count="1" type="stmt"/>
       </file>
-      <file name="tags.ts" path="C:\Users\aanma\sandbox\mobile-app\assets\tags.ts">
+      <file name="tags.ts" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\assets\tags.ts">
         <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="7" count="1" type="stmt"/>
@@ -474,7 +474,7 @@
         <line num="55" count="1" type="stmt"/>
         <line num="61" count="1" type="stmt"/>
       </file>
-      <file name="tagsDark.ts" path="C:\Users\aanma\sandbox\mobile-app\assets\tagsDark.ts">
+      <file name="tagsDark.ts" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\assets\tagsDark.ts">
         <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="2" type="stmt"/>
         <line num="6" count="2" type="stmt"/>
@@ -487,7 +487,7 @@
         <line num="54" count="2" type="stmt"/>
         <line num="60" count="2" type="stmt"/>
       </file>
-      <file name="userInteractions.ts" path="C:\Users\aanma\sandbox\mobile-app\assets\userInteractions.ts">
+      <file name="userInteractions.ts" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\assets\userInteractions.ts">
         <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="7" count="1" type="stmt"/>
@@ -495,19 +495,19 @@
     </package>
     <package name="components.buttons">
       <metrics statements="14" coveredstatements="14" conditionals="19" coveredconditionals="19" methods="4" coveredmethods="4"/>
-      <file name="Button.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\buttons\Button.tsx">
+      <file name="Button.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\buttons\Button.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="11" count="11" type="cond" truecount="1" falsecount="0"/>
         <line num="12" count="237" type="stmt"/>
         <line num="19" count="11" type="stmt"/>
       </file>
-      <file name="MapButton.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\buttons\MapButton.tsx">
+      <file name="MapButton.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\buttons\MapButton.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="4" coveredconditionals="4" methods="1" coveredmethods="1"/>
         <line num="12" count="1" type="cond" truecount="2" falsecount="0"/>
         <line num="13" count="4" type="stmt"/>
         <line num="20" count="1" type="stmt"/>
       </file>
-      <file name="NavButton.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\buttons\NavButton.tsx">
+      <file name="NavButton.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\buttons\NavButton.tsx">
         <metrics statements="5" coveredstatements="5" conditionals="13" coveredconditionals="13" methods="1" coveredmethods="1"/>
         <line num="13" count="1" type="stmt"/>
         <line num="20" count="1" type="cond" truecount="3" falsecount="0"/>
@@ -515,7 +515,7 @@
         <line num="23" count="9" type="stmt"/>
         <line num="41" count="1" type="stmt"/>
       </file>
-      <file name="SocialButton.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\buttons\SocialButton.tsx">
+      <file name="SocialButton.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\buttons\SocialButton.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="11" count="3" type="cond" truecount="1" falsecount="0"/>
         <line num="12" count="193" type="stmt"/>
@@ -524,7 +524,7 @@
     </package>
     <package name="components.buttons.post">
       <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
-      <file name="MoreOptionsButton.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\buttons\post\MoreOptionsButton.tsx">
+      <file name="MoreOptionsButton.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\buttons\post\MoreOptionsButton.tsx">
         <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
         <line num="6" count="1" type="stmt"/>
         <line num="14" count="1" type="stmt"/>
@@ -538,7 +538,7 @@
     </package>
     <package name="components.displays">
       <metrics statements="38" coveredstatements="38" conditionals="22" coveredconditionals="22" methods="3" coveredmethods="3"/>
-      <file name="NavContainer.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\displays\NavContainer.tsx">
+      <file name="NavContainer.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\displays\NavContainer.tsx">
         <metrics statements="5" coveredstatements="5" conditionals="4" coveredconditionals="4" methods="1" coveredmethods="1"/>
         <line num="16" count="1" type="stmt"/>
         <line num="18" count="1" type="stmt"/>
@@ -546,7 +546,7 @@
         <line num="30" count="10" type="stmt"/>
         <line num="49" count="1" type="stmt"/>
       </file>
-      <file name="Pin.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\displays\Pin.tsx">
+      <file name="Pin.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\displays\Pin.tsx">
         <metrics statements="30" coveredstatements="30" conditionals="17" coveredconditionals="17" methods="1" coveredmethods="1"/>
         <line num="24" count="1" type="stmt"/>
         <line num="32" count="17" type="cond" truecount="14" falsecount="0"/>
@@ -579,7 +579,7 @@
         <line num="73" count="4" type="stmt"/>
         <line num="76" count="17" type="stmt"/>
       </file>
-      <file name="UserLocationMarker.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\displays\UserLocationMarker.tsx">
+      <file name="UserLocationMarker.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\displays\UserLocationMarker.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="11" count="1" type="cond" truecount="1" falsecount="0"/>
         <line num="12" count="2" type="stmt"/>
@@ -588,7 +588,7 @@
     </package>
     <package name="components.displays.post">
       <metrics statements="111" coveredstatements="111" conditionals="39" coveredconditionals="39" methods="36" coveredmethods="34"/>
-      <file name="CommentSection.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\displays\post\CommentSection.tsx">
+      <file name="CommentSection.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\displays\post\CommentSection.tsx">
         <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="9" coveredmethods="9"/>
         <line num="17" count="1" type="stmt"/>
         <line num="27" count="23" type="stmt"/>
@@ -605,7 +605,7 @@
         <line num="86" count="1" type="stmt"/>
         <line num="96" count="1" type="stmt"/>
       </file>
-      <file name="ReportContent.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\displays\post\ReportContent.tsx">
+      <file name="ReportContent.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\displays\post\ReportContent.tsx">
         <metrics statements="44" coveredstatements="44" conditionals="18" coveredconditionals="18" methods="13" coveredmethods="13"/>
         <line num="31" count="1" type="stmt"/>
         <line num="40" count="27" type="stmt"/>
@@ -652,7 +652,7 @@
         <line num="208" count="1" type="stmt"/>
         <line num="210" count="1" type="stmt"/>
       </file>
-      <file name="ReportTags.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\displays\post\ReportTags.tsx">
+      <file name="ReportTags.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\displays\post\ReportTags.tsx">
         <metrics statements="7" coveredstatements="7" conditionals="1" coveredconditionals="1" methods="2" coveredmethods="2"/>
         <line num="17" count="1" type="stmt"/>
         <line num="39" count="1" type="stmt"/>
@@ -662,7 +662,7 @@
         <line num="89" count="26" type="stmt"/>
         <line num="100" count="1" type="stmt"/>
       </file>
-      <file name="Tags.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\displays\post\Tags.tsx">
+      <file name="Tags.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\displays\post\Tags.tsx">
         <metrics statements="24" coveredstatements="24" conditionals="12" coveredconditionals="12" methods="1" coveredmethods="1"/>
         <line num="22" count="1" type="cond" truecount="1" falsecount="0"/>
         <line num="25" count="12" type="cond" truecount="11" falsecount="0"/>
@@ -689,7 +689,7 @@
         <line num="57" count="1" type="stmt"/>
         <line num="60" count="12" type="stmt"/>
       </file>
-      <file name="UserInfo.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\displays\post\UserInfo.tsx">
+      <file name="UserInfo.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\displays\post\UserInfo.tsx">
         <metrics statements="14" coveredstatements="14" conditionals="1" coveredconditionals="1" methods="10" coveredmethods="8"/>
         <line num="18" count="1" type="stmt"/>
         <line num="29" count="24" type="stmt"/>
@@ -706,7 +706,7 @@
         <line num="79" count="1" type="stmt"/>
         <line num="89" count="1" type="stmt"/>
       </file>
-      <file name="UserInteraction.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\displays\post\UserInteraction.tsx">
+      <file name="UserInteraction.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\displays\post\UserInteraction.tsx">
         <metrics statements="8" coveredstatements="8" conditionals="7" coveredconditionals="7" methods="1" coveredmethods="1"/>
         <line num="18" count="1" type="stmt"/>
         <line num="27" count="5" type="cond" truecount="3" falsecount="0"/>
@@ -720,28 +720,28 @@
     </package>
     <package name="components.displays.profile">
       <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="ProfileCard.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\displays\profile\ProfileCard.tsx">
+      <file name="ProfileCard.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\displays\profile\ProfileCard.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="15" count="1" type="stmt"/>
-        <line num="23" count="6" type="stmt"/>
+        <line num="23" count="12" type="stmt"/>
         <line num="58" count="1" type="stmt"/>
       </file>
     </package>
     <package name="components.forms">
       <metrics statements="71" coveredstatements="71" conditionals="41" coveredconditionals="41" methods="16" coveredmethods="16"/>
-      <file name="ForgotPasswordForm.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\forms\ForgotPasswordForm.tsx">
+      <file name="ForgotPasswordForm.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\forms\ForgotPasswordForm.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="12" count="2" type="cond" truecount="1" falsecount="0"/>
         <line num="13" count="8" type="stmt"/>
         <line num="35" count="2" type="stmt"/>
       </file>
-      <file name="LoginForm.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\forms\LoginForm.tsx">
+      <file name="LoginForm.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\forms\LoginForm.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="19" count="1" type="stmt"/>
         <line num="29" count="7" type="stmt"/>
         <line num="74" count="1" type="stmt"/>
       </file>
-      <file name="OTPVerificationForm.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\forms\OTPVerificationForm.tsx">
+      <file name="OTPVerificationForm.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\forms\OTPVerificationForm.tsx">
         <metrics statements="6" coveredstatements="6" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
         <line num="15" count="3" type="cond" truecount="2" falsecount="0"/>
         <line num="16" count="115" type="stmt"/>
@@ -750,7 +750,7 @@
         <line num="34" count="11" type="stmt"/>
         <line num="42" count="3" type="stmt"/>
       </file>
-      <file name="SignUpForm.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\forms\SignUpForm.tsx">
+      <file name="SignUpForm.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\forms\SignUpForm.tsx">
         <metrics statements="59" coveredstatements="59" conditionals="37" coveredconditionals="37" methods="12" coveredmethods="12"/>
         <line num="29" count="1" type="stmt"/>
         <line num="30" count="87" type="stmt"/>
@@ -815,7 +815,7 @@
     </package>
     <package name="components.hooks">
       <metrics statements="14" coveredstatements="14" conditionals="11" coveredconditionals="11" methods="3" coveredmethods="3"/>
-      <file name="useOTP.ts" path="C:\Users\aanma\sandbox\mobile-app\components\hooks\useOTP.ts">
+      <file name="useOTP.ts" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\hooks\useOTP.ts">
         <metrics statements="14" coveredstatements="14" conditionals="11" coveredconditionals="11" methods="3" coveredmethods="3"/>
         <line num="4" count="3" type="stmt"/>
         <line num="5" count="115" type="stmt"/>
@@ -835,7 +835,7 @@
     </package>
     <package name="components.inputs">
       <metrics statements="96" coveredstatements="96" conditionals="57" coveredconditionals="57" methods="38" coveredmethods="38"/>
-      <file name="FilterModal.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\inputs\FilterModal.tsx">
+      <file name="FilterModal.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\inputs\FilterModal.tsx">
         <metrics statements="17" coveredstatements="17" conditionals="12" coveredconditionals="12" methods="8" coveredmethods="8"/>
         <line num="14" count="13" type="stmt"/>
         <line num="16" count="2" type="stmt"/>
@@ -855,13 +855,13 @@
         <line num="60" count="1" type="stmt"/>
         <line num="69" count="2" type="stmt"/>
       </file>
-      <file name="InputField.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\inputs\InputField.tsx">
+      <file name="InputField.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\inputs\InputField.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="8" coveredconditionals="8" methods="1" coveredmethods="1"/>
         <line num="14" count="6" type="stmt"/>
         <line num="23" count="475" type="stmt"/>
         <line num="39" count="6" type="stmt"/>
       </file>
-      <file name="OTPInput.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\inputs\OTPInput.tsx">
+      <file name="OTPInput.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\inputs\OTPInput.tsx">
         <metrics statements="7" coveredstatements="7" conditionals="1" coveredconditionals="1" methods="5" coveredmethods="5"/>
         <line num="12" count="4" type="cond" truecount="1" falsecount="0"/>
         <line num="13" count="118" type="stmt"/>
@@ -871,7 +871,7 @@
         <line num="25" count="11" type="stmt"/>
         <line num="33" count="4" type="stmt"/>
       </file>
-      <file name="SearchBar.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\inputs\SearchBar.tsx">
+      <file name="SearchBar.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\inputs\SearchBar.tsx">
         <metrics statements="7" coveredstatements="7" conditionals="3" coveredconditionals="3" methods="3" coveredmethods="3"/>
         <line num="11" count="2" type="stmt"/>
         <line num="12" count="1" type="cond" truecount="1" falsecount="0"/>
@@ -881,7 +881,7 @@
         <line num="22" count="12" type="stmt"/>
         <line num="40" count="2" type="stmt"/>
       </file>
-      <file name="SearchBarFilter.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\inputs\SearchBarFilter.tsx">
+      <file name="SearchBarFilter.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\inputs\SearchBarFilter.tsx">
         <metrics statements="15" coveredstatements="15" conditionals="3" coveredconditionals="3" methods="7" coveredmethods="7"/>
         <line num="14" count="2" type="stmt"/>
         <line num="15" count="2" type="cond" truecount="1" falsecount="0"/>
@@ -899,7 +899,7 @@
         <line num="41" count="1" type="stmt"/>
         <line num="49" count="2" type="stmt"/>
       </file>
-      <file name="TagDropdown.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\inputs\TagDropdown.tsx">
+      <file name="TagDropdown.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\inputs\TagDropdown.tsx">
         <metrics statements="6" coveredstatements="6" conditionals="3" coveredconditionals="3" methods="3" coveredmethods="3"/>
         <line num="13" count="1" type="cond" truecount="1" falsecount="0"/>
         <line num="14" count="8" type="stmt"/>
@@ -908,7 +908,7 @@
         <line num="25" count="1" type="stmt"/>
         <line num="33" count="1" type="stmt"/>
       </file>
-      <file name="TagSelector.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\inputs\TagSelector.tsx">
+      <file name="TagSelector.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\inputs\TagSelector.tsx">
         <metrics statements="32" coveredstatements="32" conditionals="22" coveredconditionals="22" methods="7" coveredmethods="7"/>
         <line num="19" count="1" type="stmt"/>
         <line num="31" count="1" type="stmt"/>
@@ -943,7 +943,7 @@
         <line num="111" count="2" type="stmt"/>
         <line num="121" count="1" type="stmt"/>
       </file>
-      <file name="TagSelectorModal.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\inputs\TagSelectorModal.tsx">
+      <file name="TagSelectorModal.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\inputs\TagSelectorModal.tsx">
         <metrics statements="9" coveredstatements="9" conditionals="5" coveredconditionals="5" methods="4" coveredmethods="4"/>
         <line num="16" count="1" type="cond" truecount="1" falsecount="0"/>
         <line num="17" count="10" type="stmt"/>
@@ -958,7 +958,7 @@
     </package>
     <package name="components.inputs.post">
       <metrics statements="25" coveredstatements="25" conditionals="13" coveredconditionals="13" methods="4" coveredmethods="4"/>
-      <file name="CommentInput.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\inputs\post\CommentInput.tsx">
+      <file name="CommentInput.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\inputs\post\CommentInput.tsx">
         <metrics statements="25" coveredstatements="25" conditionals="13" coveredconditionals="13" methods="4" coveredmethods="4"/>
         <line num="18" count="1" type="cond" truecount="1" falsecount="0"/>
         <line num="19" count="21" type="stmt"/>
@@ -989,7 +989,7 @@
     </package>
     <package name="components.toasts">
       <metrics statements="4" coveredstatements="4" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
-      <file name="Toast.tsx" path="C:\Users\aanma\sandbox\mobile-app\components\toasts\Toast.tsx">
+      <file name="Toast.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\toasts\Toast.tsx">
         <metrics statements="4" coveredstatements="4" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
         <line num="10" count="1" type="stmt"/>
         <line num="12" count="1" type="stmt"/>
