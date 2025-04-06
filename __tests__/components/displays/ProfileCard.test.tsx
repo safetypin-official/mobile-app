@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import ProfileCard from '@/components/displays/profile/ProfileCard';
-import { Alert, Linking } from 'react-native';
+import { Linking } from 'react-native';
 
 jest.mock('react-native-vector-icons/AntDesign', () => 'AntDesign');
 jest.mock('react-native-vector-icons/MaterialIcons', () => 'MaterialIcons');
@@ -24,11 +24,11 @@ describe('ProfileCard Component', () => {
     onEditPress: jest.fn(),
     onSettingsPress: jest.fn(),
     socialLinks: {
-      tiktok: 'https://tiktok.com/@johndoe',
-      line: 'https://line.me/ti/p/~johndoe',
-      discord: 'https://discord.gg/johndoe',
-      twitter: 'https://twitter.com/johndoe',
-      instagram: 'https://instagram.com/johndoe',
+      tiktok: 'johndoe',
+      line: 'johndoe',
+      discord: 'johndoe',
+      twitter: 'johndoe',
+      instagram: 'johndoe',
     },
   };
 
@@ -100,20 +100,20 @@ describe('ProfileCard Component', () => {
     expect(queryByTestId('socialIconsOuterContainer')).toBeNull();
   });
 
-  it('opens social media links when icons are pressed', async () => {
+  it('opens correct social media URLs when icons are pressed', async () => {
     const { getByTestId } = render(<ProfileCard {...mockProps} />);
     
     fireEvent.press(getByTestId('AntDesign-instagram'));
-    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://instagram.com/johndoe');
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://www.instagram.com/johndoe');
     
     fireEvent.press(getByTestId('AntDesign-twitter'));
     expect(Linking.canOpenURL).toHaveBeenCalledWith('https://twitter.com/johndoe');
     
     fireEvent.press(getByTestId('MaterialIcons-discord'));
-    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://discord.gg/johndoe');
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://discord.com/users/johndoe');
     
     fireEvent.press(getByTestId('FontAwesome5-tiktok'));
-    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://tiktok.com/@johndoe');
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://www.tiktok.com/@johndoe');
     
     fireEvent.press(getByTestId('Fontisto-line'));
     expect(Linking.canOpenURL).toHaveBeenCalledWith('https://line.me/ti/p/~johndoe');
@@ -128,7 +128,7 @@ describe('ProfileCard Component', () => {
     
     await Promise.resolve();
     
-    expect(consoleSpy).toHaveBeenCalledWith("Don't know how to open URI: https://instagram.com/johndoe");
+    expect(consoleSpy).toHaveBeenCalledWith("Don't know how to open URI: https://www.instagram.com/johndoe");
     consoleSpy.mockRestore();
   });
 
@@ -172,7 +172,7 @@ describe('ProfileCard Component', () => {
   });
 });
 
-describe('URL Validation in ProfileCard', () => {
+describe('Social Link Construction', () => {
   const mockProps = {
     id: 'user123',
     username: '@mimie',
@@ -183,164 +183,165 @@ describe('URL Validation in ProfileCard', () => {
     onEditPress: jest.fn(),
     onSettingsPress: jest.fn(),
     socialLinks: {
-      tiktok: 'https://tiktok.com/@johndoe',
-      line: 'https://line.me/ti/p/~johndoe',
-      discord: 'https://discord.gg/johndoe',
-      twitter: 'https://twitter.com/johndoe',
-      instagram: 'https://instagram.com/johndoe',
+      tiktok: 'johndoe',
+      line: 'johndoe',
+      discord: 'johndoe',
+      twitter: 'johndoe',
+      instagram: 'johndoe',
     },
   };
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-    jest.spyOn(Alert, 'alert');
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
-  it('shows alert for invalid Instagram URL', () => {
-    const invalidProps = {
-      ...mockProps,
-      socialLinks: {
-        ...mockProps.socialLinks,
-        instagram: 'https://invalid.com/johndoe'
-      }
-    };
-    
-    const { getByTestId } = render(<ProfileCard {...invalidProps} />);
+  it('constructs correct Instagram URL', () => {
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
     fireEvent.press(getByTestId('AntDesign-instagram'));
-    
-    expect(Alert.alert).toHaveBeenCalledWith(
-      'Invalid Link',
-      'Please provide a valid instagram URL starting with instagram.com',
-      [{ text: 'OK' }]
-    );
-    expect(Linking.canOpenURL).not.toHaveBeenCalled();
-  });
-
-  it('shows alert for invalid Twitter URL', () => {
-    const invalidProps = {
-      ...mockProps,
-      socialLinks: {
-        ...mockProps.socialLinks,
-        twitter: 'https://wrong.com/johndoe'
-      }
-    };
-    
-    const { getByTestId } = render(<ProfileCard {...invalidProps} />);
-    fireEvent.press(getByTestId('AntDesign-twitter'));
-    
-    expect(Alert.alert).toHaveBeenCalledWith(
-      'Invalid Link',
-      'Please provide a valid twitter URL starting with twitter.com',
-      [{ text: 'OK' }]
-    );
-  });
-
-  it('shows alert for invalid Discord URL', () => {
-    const invalidProps = {
-      ...mockProps,
-      socialLinks: {
-        ...mockProps.socialLinks,
-        discord: 'https://notdiscord.com/johndoe'
-      }
-    };
-    
-    const { getByTestId } = render(<ProfileCard {...invalidProps} />);
-    fireEvent.press(getByTestId('MaterialIcons-discord'));
-    
-    expect(Alert.alert).toHaveBeenCalledWith(
-      'Invalid Link',
-      'Please provide a valid discord URL starting with discord.com',
-      [{ text: 'OK' }]
-    );
-  });
-
-  it('shows alert for invalid TikTok URL', () => {
-    const invalidProps = {
-      ...mockProps,
-      socialLinks: {
-        ...mockProps.socialLinks,
-        tiktok: 'https://faketiktok.com/@johndoe'
-      }
-    };
-    
-    const { getByTestId } = render(<ProfileCard {...invalidProps} />);
-    fireEvent.press(getByTestId('FontAwesome5-tiktok'));
-    
-    expect(Alert.alert).toHaveBeenCalledWith(
-      'Invalid Link',
-      'Please provide a valid tiktok URL starting with tiktok.com',
-      [{ text: 'OK' }]
-    );
-  });
-
-  it('shows alert for invalid Line URL', () => {
-    const invalidProps = {
-      ...mockProps,
-      socialLinks: {
-        ...mockProps.socialLinks,
-        line: 'https://notline.com/ti/p/~johndoe'
-      }
-    };
-    
-    const { getByTestId } = render(<ProfileCard {...invalidProps} />);
-    fireEvent.press(getByTestId('Fontisto-line'));
-    
-    expect(Alert.alert).toHaveBeenCalledWith(
-      'Invalid Link',
-      'Please provide a valid line URL starting with line.me',
-      [{ text: 'OK' }]
-    );
-  });
-
-  it('accepts valid Instagram URL with www prefix', () => {
-    const validProps = {
-      ...mockProps,
-      socialLinks: {
-        ...mockProps.socialLinks,
-        instagram: 'https://www.instagram.com/johndoe'
-      }
-    };
-    
-    const { getByTestId } = render(<ProfileCard {...validProps} />);
-    fireEvent.press(getByTestId('AntDesign-instagram'));
-    
-    expect(Alert.alert).not.toHaveBeenCalled();
     expect(Linking.canOpenURL).toHaveBeenCalledWith('https://www.instagram.com/johndoe');
   });
 
-  it('accepts valid Twitter URL without https', () => {
-    const validProps = {
-      ...mockProps,
-      socialLinks: {
-        ...mockProps.socialLinks,
-        twitter: 'twitter.com/johndoe'
-      }
-    };
-    
-    const { getByTestId } = render(<ProfileCard {...validProps} />);
+  it('constructs correct Twitter URL', () => {
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
     fireEvent.press(getByTestId('AntDesign-twitter'));
-    
-    expect(Alert.alert).not.toHaveBeenCalled();
-    expect(Linking.canOpenURL).toHaveBeenCalledWith('twitter.com/johndoe');
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://twitter.com/johndoe');
   });
 
-  it('accepts valid Discord URL with discord.gg domain', () => {
-    const validProps = {
-      ...mockProps,
-      socialLinks: {
-        ...mockProps.socialLinks,
-        discord: 'https://discord.gg/johndoe'
-      }
-    };
-    
-    const { getByTestId } = render(<ProfileCard {...validProps} />);
+  it('constructs correct Discord URL', () => {
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
     fireEvent.press(getByTestId('MaterialIcons-discord'));
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://discord.com/users/johndoe');
+  });
+
+  it('constructs correct TikTok URL', () => {
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    fireEvent.press(getByTestId('FontAwesome5-tiktok'));
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://www.tiktok.com/@johndoe');
+  });
+
+  it('constructs correct Line URL', () => {
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    fireEvent.press(getByTestId('Fontisto-line'));
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://line.me/ti/p/~johndoe');
+  });
+
+  it('calls Linking.openURL when URL can be opened', async () => {
+    (Linking.canOpenURL as jest.Mock).mockResolvedValueOnce(true);
     
-    expect(Alert.alert).not.toHaveBeenCalled();
-    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://discord.gg/johndoe');
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+    
+    await Promise.resolve(); // Wait for the promise to resolve
+    
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://www.instagram.com/johndoe');
+    expect(Linking.openURL).toHaveBeenCalledWith('https://www.instagram.com/johndoe');
+  });
+
+  it('successfully opens URL when canOpenURL returns true', async () => {
+    // Mock canOpenURL to return true
+    (Linking.canOpenURL as jest.Mock).mockResolvedValueOnce(true);
+    
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    
+    // Trigger the social link press
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+    
+    // Wait for promises to resolve
+    await new Promise(resolve => setImmediate(resolve));
+    
+    // Verify both canOpenURL and openURL were called
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://www.instagram.com/johndoe');
+    expect(Linking.openURL).toHaveBeenCalledWith('https://www.instagram.com/johndoe');
+  });
+
+  it('should call Linking.openURL when URL is supported', async () => {
+    // Mock the Promise resolution chain properly
+    (Linking.canOpenURL as jest.Mock).mockImplementationOnce(() => Promise.resolve(true));
+    (Linking.openURL as jest.Mock).mockImplementationOnce(() => Promise.resolve());
+  
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+  
+    // Wait for all promises to resolve
+    await new Promise(process.nextTick);
+  
+    // Verify the flow
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://www.instagram.com/johndoe');
+    expect(Linking.openURL).toHaveBeenCalledWith('https://www.instagram.com/johndoe');
+  });
+
+  it('should cover the Linking.openURL call (line 73)', async () => {
+    // Setup mocks
+    const mockCanOpenURL = Linking.canOpenURL as jest.Mock;
+    const mockOpenURL = Linking.openURL as jest.Mock;
+    
+    mockCanOpenURL.mockResolvedValue(true);
+    mockOpenURL.mockResolvedValue(undefined);
+  
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    
+    // Trigger the press
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+  
+    // Wait for next event loop iteration
+    await new Promise(resolve => setImmediate(resolve));
+  
+    // Verify
+    expect(mockCanOpenURL).toHaveBeenCalled();
+    expect(mockOpenURL).toHaveBeenCalledWith(expect.stringContaining('instagram.com'));
+  });
+
+  it('should directly test the Linking.openURL call on line 73', async () => {
+    // Clear all mock calls before starting this test
+    jest.clearAllMocks();
+    
+    // Setup fresh mocks for this test
+    const mockCanOpenURL = Linking.canOpenURL as jest.Mock;
+    const mockOpenURL = Linking.openURL as jest.Mock;
+    
+    // Mock canOpenURL to resolve to true
+    mockCanOpenURL.mockResolvedValue(true);
+    
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    
+    // Trigger the Instagram button press
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+    
+    // Wait for all promises to resolve
+    await new Promise(resolve => setImmediate(resolve));
+    
+    // Verify the exact call we want to cover
+    expect(mockOpenURL).toHaveBeenCalledWith('https://www.instagram.com/johndoe');
+    
+    // Verify call counts - these should now be accurate
+    expect(mockCanOpenURL).toHaveBeenCalledTimes(1);
+    expect(mockOpenURL).toHaveBeenCalledTimes(1);
+  });
+
+  describe('Imperative Handle', () => {
+    it('should call Linking.openURL when handleSocialLinkPress is called via ref with a URL', async () => {
+      const mockOpenURL = jest.spyOn(Linking, 'openURL');
+      const ref = React.createRef<{handleSocialLinkPress: (url?: string) => void}>();
+      
+      render(<ProfileCard {...mockProps} ref={ref} />);
+      
+      const testUrl = 'https://test.com';
+      ref.current?.handleSocialLinkPress(testUrl);
+      
+      await new Promise(resolve => setImmediate(resolve)); // Wait for promise
+      
+      expect(mockOpenURL).toHaveBeenCalledWith(testUrl);
+      mockOpenURL.mockRestore();
+    });
+  
+    it('should do nothing when handleSocialLinkPress is called via ref without URL', () => {
+      const mockOpenURL = jest.spyOn(Linking, 'openURL');
+      const ref = React.createRef<{handleSocialLinkPress: (url?: string) => void}>();
+      
+      render(<ProfileCard {...mockProps} ref={ref} />);
+      
+      ref.current?.handleSocialLinkPress();
+      
+      expect(mockOpenURL).not.toHaveBeenCalled();
+      mockOpenURL.mockRestore();
+    });
   });
 });
+

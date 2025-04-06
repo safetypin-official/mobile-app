@@ -25,13 +25,13 @@ interface ProfileCardProps {
   };
 }
 
-// URL validation patterns for each social media
-const SOCIAL_MEDIA_PATTERNS = {
-  instagram: /^(https?:\/\/)?(www\.)?instagram\.com\/.+/i,
-  twitter: /^(https?:\/\/)?(www\.)?twitter\.com\/.+/i,
-  discord: /^(https?:\/\/)?(www\.)?discord\.(gg|com)\/.+/i,
-  tiktok: /^(https?:\/\/)?(www\.)?tiktok\.com\/@.+/i,
-  line: /^(https?:\/\/)?(www\.)?line\.me\/.+/i
+// Base URLs for each social media
+const SOCIAL_MEDIA_BASE_URLS = {
+  instagram: 'https://www.instagram.com/',
+  twitter: 'https://twitter.com/',
+  discord: 'https://discord.com/users/',
+  tiktok: 'https://www.tiktok.com/@',
+  line: 'https://line.me/ti/p/~'
 };
 
 const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => void}, ProfileCardProps>(
@@ -48,25 +48,16 @@ const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => v
       socialLinks = {},
     } = props;
 
-    const validateSocialLink = (platform: keyof typeof SOCIAL_MEDIA_PATTERNS, url: string): boolean => {
-      const pattern = SOCIAL_MEDIA_PATTERNS[platform];
-      return pattern.test(url);
+    const constructSocialLink = (platform: keyof typeof SOCIAL_MEDIA_BASE_URLS, username: string): string => {
+      const baseUrl = SOCIAL_MEDIA_BASE_URLS[platform];
+      return `${baseUrl}${username}`;
     };
 
-    const handleSocialLinkPress = (url?: string, platform?: keyof typeof SOCIAL_MEDIA_PATTERNS) => {
-      if (!url) return;
+    const handleSocialLinkPress = (username?: string, platform?: keyof typeof SOCIAL_MEDIA_BASE_URLS) => {
+      if (!username || !platform) return;
       
-      if (platform && !validateSocialLink(platform, url)) {
-        Alert.alert(
-          'Invalid Link',
-          `Please provide a valid ${platform} URL starting with ${
-            platform === 'line' ? 'line.me' : `${platform}.com`
-          }`,
-          [{ text: 'OK' }]
-        );
-        return;
-      }
-
+      const url = constructSocialLink(platform, username);
+      
       Linking.canOpenURL(url).then(supported => {
         if (supported) {
           Linking.openURL(url);
@@ -77,7 +68,11 @@ const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => v
     };
 
     React.useImperativeHandle(ref, () => ({
-      handleSocialLinkPress: (url?: string) => handleSocialLinkPress(url)
+      handleSocialLinkPress: (url?: string) => {
+        if (url) {
+          Linking.openURL(url);
+        }
+      }
     }));
 
     const hasSocialLinks = Object.values(socialLinks).some(link => link);
