@@ -1,73 +1,188 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, Linking } from 'react-native';
 import { SvgXml } from "react-native-svg";
 import { settings, pencil } from '@/assets/icons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Fontisto from '@expo/vector-icons/Fontisto';
 
 interface ProfileCardProps {
-  name: string;
+  id: string;
   username: string;
+  role: string;
+  verified: boolean;
   profileImage: string;
   profileBanner: string;
   onEditPress: () => void;
   onSettingsPress: () => void;
+  socialLinks?: {
+    tiktok?: string;
+    line?: string;
+    discord?: string;
+    twitter?: string;
+    instagram?: string;
+  };
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({
-  name,
-  username,
-  profileImage,
-  profileBanner,
-  onEditPress,
-  onSettingsPress,
-}) => {
-  return (
-    <ImageBackground
-      source={{ uri: profileBanner }}
-      style={styles.container}
-      imageStyle={styles.backgroundImage}
-      testID="backgroundImage"
-    >
-      <View style={styles.overlay} />
+const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => void}, ProfileCardProps>(
+  (props, ref) => {
+    const { 
+      id,
+      username,
+      role,
+      verified,
+      profileImage,
+      profileBanner,
+      onEditPress,
+      onSettingsPress,
+      socialLinks = {},
+    } = props;
 
-      <View style={styles.content}>
-        <TouchableOpacity onPress={onSettingsPress} style={styles.settingsIcon} testID='settingsButton'>
-          <SvgXml xml={settings} width={36} height={36} fill='#d0c4c3' />
-        </TouchableOpacity>
+    const handleSocialLinkPress = (url?: string) => {
+      if (url) {
+        Linking.canOpenURL(url).then(supported => {
+          if (supported) {
+            Linking.openURL(url);
+          } else {
+            console.log("Don't know how to open URI: " + url);
+          }
+        });
+      }
+    };
 
-        <Image
-          style={styles.profileImage}
-          source={{ uri: profileImage }} 
-          testID="profileImage"
-        />
+    React.useImperativeHandle(ref, () => ({
+      handleSocialLinkPress
+    }));
 
-        <View style={styles.infoRow}>
-          <View style={styles.infoContainer}>
-            <Text style={styles.name}>{name}</Text>
-            <Text style={styles.username}>@{username}</Text>
+    const hasSocialLinks = Object.values(socialLinks).some(link => link);
+
+    return (
+      <View style={styles.outerContainer}>
+        <View style={styles.backgroundShape} testID="backgroundShape" />
+        <ImageBackground
+          source={{ uri: profileBanner }}
+          style={styles.container}
+          imageStyle={styles.backgroundImage}
+          testID="backgroundImage"
+        >
+          <View style={styles.overlay} />
+          <View style={styles.content}>
+            <TouchableOpacity onPress={onSettingsPress} style={styles.settingsIcon} testID='settingsButton'>
+              <SvgXml xml={settings} width={36} height={36} fill='#d0c4c3' testID='svg-xml' />
+            </TouchableOpacity>
+
+            <Image
+              style={styles.profileImage}
+              source={{ uri: profileImage }} 
+              testID="profileImage"
+            />
+
+            <View style={styles.infoRow}>
+              <View style={styles.infoContainer}>
+                <Text style={styles.name}>{username}</Text>
+                <View style={styles.roleContainer}>
+                  <Text style={styles.role}>{role}</Text>
+                  {verified && (
+                    <MaterialIcons name="verified" size={16} color="#4285F4" style={styles.verifiedIcon} testID='MaterialIcons-verified'/>
+                  )}
+                </View>
+              </View>
+              <TouchableOpacity style={styles.editButton} onPress={onEditPress}>
+                <SvgXml xml={pencil} width={17} height={17} style={styles.iconGap} testID='svg-xml'/>
+                <Text style={styles.editText}>Edit Profile</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <TouchableOpacity style={styles.editButton} onPress={onEditPress}>
-            <SvgXml xml={pencil} width={17} height={17} style={styles.iconGap} />
-            <Text style={styles.editText}>Edit Profile</Text>
-          </TouchableOpacity>
-        </View>
+        </ImageBackground>
+
+        {hasSocialLinks && (
+          <View style={styles.socialIconsOuterContainer}>
+            <View style={styles.socialIconsContainer}>
+              {socialLinks.instagram && (
+                <TouchableOpacity 
+                  onPress={() => handleSocialLinkPress(socialLinks.instagram)}
+                  style={styles.socialIcon}
+                  testID="instagram-button"
+                >
+                  <AntDesign name="instagram" size={20} color="#4d4544" testID='AntDesign-instagram'/>
+                </TouchableOpacity>
+              )}
+
+              {socialLinks.twitter && (
+                <TouchableOpacity 
+                  onPress={() => handleSocialLinkPress(socialLinks.twitter)}
+                  style={styles.socialIcon}
+                  testID="twitter-button"
+                >
+                  <AntDesign name="twitter" size={20} color="#4d4544" testID='AntDesign-twitter'/>
+                </TouchableOpacity>
+              )}
+
+              {socialLinks.discord && (
+                <TouchableOpacity 
+                  onPress={() => handleSocialLinkPress(socialLinks.discord)}
+                  style={styles.socialIcon}
+                  testID="discord-button"
+                >
+                  <MaterialIcons name="discord" size={20} color="#4d4544" testID='MaterialIcons-discord'/>
+                </TouchableOpacity>
+              )}
+
+              {socialLinks.tiktok && (
+                <TouchableOpacity 
+                  onPress={() => handleSocialLinkPress(socialLinks.tiktok)}
+                  style={styles.socialIcon}
+                  testID="tiktok-button"
+                >
+                  <FontAwesome5 name="tiktok" size={20} color="#4d4544" testID='FontAwesome5-tiktok'/>
+                </TouchableOpacity>
+              )}
+
+              {socialLinks.line && (
+                <TouchableOpacity 
+                  onPress={() => handleSocialLinkPress(socialLinks.line)}
+                  style={styles.socialIcon}
+                  testID="line-button"
+                >
+                  <Fontisto name="line" size={20} color="#4d4544" testID='Fontisto-line'/>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        )}
       </View>
-    </ImageBackground>
-  );
-};
+    );
+  }
+);
 
 const styles = StyleSheet.create({
+  outerContainer: {
+    width: '100%',
+  },
   container: {
     width: '100%',
     minHeight: 250,
     justifyContent: 'center',
+    borderRadius: 0,
+    overflow: 'hidden',
+  },
+  backgroundShape: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 270,
+    backgroundColor: '#fff',
+    zIndex: -1,
   },
   backgroundImage: {
-    borderRadius: 30,
+    borderRadius: 0,
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.63)',
-    borderRadius: 30,
+    borderRadius: 0,
   },
   content: {
     padding: 15,
@@ -104,11 +219,18 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     fontFamily: 'Inter',
   },
-  username: {
+  roleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  role: {
     fontSize: 16,
     color: '#D0C4C3',
     fontFamily: 'Inter',
     marginTop: 4,
+  },
+  verifiedIcon: {
+    marginLeft: 4,
   },
   editButton: {
     flexDirection: 'row',
@@ -126,6 +248,21 @@ const styles = StyleSheet.create({
   },
   iconGap: {
     marginRight: 8,
+  },
+  socialIconsOuterContainer: {
+    backgroundColor: '#fff',
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    paddingVertical: 8,
+  },
+  socialIconsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 10,
+  },
+  socialIcon: {
+    padding: 8,
   },
 });
 

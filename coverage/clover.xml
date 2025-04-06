@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1743929147594" clover="3.2.0">
-  <project timestamp="1743929147594" name="All files">
-    <metrics statements="794" coveredstatements="794" conditionals="338" coveredconditionals="338" methods="191" coveredmethods="188" elements="1323" coveredelements="1320" complexity="0" loc="794" ncloc="794" packages="19" files="48" classes="48"/>
+<coverage generated="1743929249669" clover="3.2.0">
+  <project timestamp="1743929249669" name="All files">
+    <metrics statements="808" coveredstatements="808" conditionals="357" coveredconditionals="357" methods="200" coveredmethods="197" elements="1365" coveredelements="1362" complexity="0" loc="808" ncloc="808" packages="19" files="48" classes="48"/>
     <package name="app">
       <metrics statements="56" coveredstatements="56" conditionals="16" coveredconditionals="16" methods="13" coveredmethods="13"/>
       <file name="_layout.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\app\_layout.tsx">
@@ -719,12 +719,26 @@
       </file>
     </package>
     <package name="components.displays.profile">
-      <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <metrics statements="17" coveredstatements="17" conditionals="19" coveredconditionals="19" methods="10" coveredmethods="10"/>
       <file name="ProfileCard.tsx" path="C:\Users\Asus\OneDrive\Desktop\Sasha\Kuliah\Sem 6\PPL (EVIL) (Github)\mobile-app\components\displays\profile\ProfileCard.tsx">
-        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="15" count="1" type="stmt"/>
-        <line num="23" count="12" type="stmt"/>
-        <line num="58" count="1" type="stmt"/>
+        <metrics statements="17" coveredstatements="17" conditionals="19" coveredconditionals="19" methods="10" coveredmethods="10"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="40" count="12" type="stmt"/>
+        <line num="42" count="12" type="stmt"/>
+        <line num="43" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="44" count="6" type="stmt"/>
+        <line num="45" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="46" count="5" type="stmt"/>
+        <line num="48" count="1" type="stmt"/>
+        <line num="54" count="12" type="stmt"/>
+        <line num="58" count="12" type="stmt"/>
+        <line num="60" count="12" type="stmt"/>
+        <line num="104" count="2" type="stmt"/>
+        <line num="114" count="1" type="stmt"/>
+        <line num="124" count="1" type="stmt"/>
+        <line num="134" count="1" type="stmt"/>
+        <line num="144" count="1" type="stmt"/>
+        <line num="159" count="1" type="stmt"/>
       </file>
     </package>
     <package name="components.forms">
