@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 
 export type Post = {
+  address: string;
   id: string;
   title: string;
   caption: string;
@@ -24,6 +25,8 @@ export type Post = {
   imageUrl?: string;
   latitude: number;
   longitude: number;
+  upvoteCount: number;
+  downvoteCount: number;
 };
 
 export type FetchResult = {
@@ -36,6 +39,7 @@ export type TabConfig = {
   key: string;
   label: string;
   fetchPosts: (page: number, refresh: boolean) => Promise<FetchResult>;
+  refreshTrigger?: boolean | string | number; // Add this line to track external state changes
 };
 
 type TabState = {
@@ -141,6 +145,18 @@ const PostsTabs: React.FC<PostsTabsProps> = ({
     }
   }, [activeTab, loadPosts, disableAutoLoad]);
 
+  // Add this useEffect to watch for refreshTrigger changes
+  useEffect(() => {
+    // Find the active tab configuration
+    const activeTabConfig = tabs.find(tab => tab.key === activeTab);
+    
+    if (activeTabConfig && activeTabConfig.refreshTrigger !== undefined) {
+      // If there's a refreshTrigger property, reload data when it changes
+      loadPosts(activeTab, 0, true);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tabs.map(tab => tab.refreshTrigger).join(','), activeTab]);
+
   const onRefresh = () => {
     loadPosts(activeTab, 0, true);
   };
@@ -243,7 +259,7 @@ const PostsTabs: React.FC<PostsTabsProps> = ({
               onEndReached={handleLoadMore}
               onEndReachedThreshold={0.5}
               onScroll={onScroll}
-              scrollEventThrottle={400}
+              scrollEventThrottle={16}
               ListFooterComponent={renderFooter}
               ListEmptyComponent={
                 <View style={styles.emptyContainer}>
