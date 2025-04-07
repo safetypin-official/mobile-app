@@ -11,7 +11,11 @@ type ApiResponse = {
   data: Post;
 };
 
-type Post = {
+export type Post = {
+  currentVote: string;
+  downvoteCount: number;
+  upvoteCount: number;
+  address?: string | null;
   id: string;
   caption: string;
   createdAt: string;
@@ -134,7 +138,7 @@ const NearbyReport: React.FC<NearbyReportProps> = ({ initialPost, postId, onClos
               username={getUsername()}
               handle={getHandle()}
               date={formatDate(post.createdAt)}
-              location="Location"
+              location={post.address ?? "Nearby"}
               moreOptionsIconUrl="https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/43f6a47c22e1c702925915e6626ae6f483d1e56e047a9647d4ff9e5de9751425?placeholderIfAbsent=true"
               longitude={post.longitude}
               latitude={post.latitude}
@@ -144,11 +148,12 @@ const NearbyReport: React.FC<NearbyReportProps> = ({ initialPost, postId, onClos
             <ReportContent
               title={post.title}
               content={post.caption}
-              likeCount={0}
-              dislikeCount={0}
+              likeCount={post.upvoteCount ?? 0}
+              dislikeCount={post.downvoteCount ?? 0}
               selectedTags={getCategoryTags()}
               imageUrl={post.imageUrl ?? "https://i.imgur.com/Ha3UkA3.jpg"}
-              postId={post.id} // Pass the post ID to ReportContent
+              postId={post.id}
+              currentVote={post.currentVote || "NONE"}
             />
 
             <View style={styles.divider} />
