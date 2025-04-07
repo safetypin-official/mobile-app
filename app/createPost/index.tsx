@@ -129,8 +129,9 @@ const PostPage = () => {
                 fileType: fileType
             });
 
-            console.log('Received presigned URL:', response.data.url);
-            return response.data.url;
+            console.log('Presigned URL response:', response.url);
+            
+            return response.url;
         } catch (error) {
             console.error('Error getting presigned URL:', error);
             return null;
@@ -257,7 +258,13 @@ const PostPage = () => {
                 </View>
             </View>
 
-            <ScrollView style={styles.scroll} contentContainerStyle={{ flexGrow: 1 }} testID="scroll-container">
+            <ScrollView 
+                style={styles.scroll} 
+                contentContainerStyle={{ 
+                    flexGrow: 1,
+                    paddingBottom: 100 // Add significant bottom padding
+                }} 
+                testID="scroll-container">
                 <View style={styles.inputSection} testID="location-section">
                     <Text style={styles.label}>Location</Text>
                     
