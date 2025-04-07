@@ -35,6 +35,12 @@ const UserInfo: React.FC<{
     setTimeout(() => setToastVisible(false), 3000);
   };
 
+  const handleDelete = () => {
+    // setModalVisible(false);
+    // setToastVisible(true);
+    // setTimeout(() => setToastVisible(false), 3000);
+  };
+
   return (
     <View style={styles.userInfo}>
       <Image source={{ uri: avatarUrl }} style={styles.avatar} />
@@ -68,7 +74,7 @@ const UserInfo: React.FC<{
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback>
               <View style={styles.modalContent}>
-              <MoreOptionsButton closeModal={() => setModalVisible(false)} onSendMessage={() => console.log("Send Message")} onReport={handleReport} />
+              <MoreOptionsButton closeModal={() => setModalVisible(false)} onSendMessage={() => console.log("Send Message")} onReport={handleReport} onDelete={handleDelete}/>
               </View>
             </TouchableWithoutFeedback>
           </View>
@@ -79,6 +85,14 @@ const UserInfo: React.FC<{
         <TouchableWithoutFeedback onPress={() => setToastVisible(false)}>
           <View style={styles.toastOverlay}>
             <Toast text="Report Submitted" />
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+
+      <Modal transparent animationType="fade" visible={toastVisible}>
+        <TouchableWithoutFeedback onPress={() => setToastVisible(false)}>
+          <View style={styles.toastOverlay}>
+            <Toast text="Post Deleted" />
           </View>
         </TouchableWithoutFeedback>
       </Modal>
