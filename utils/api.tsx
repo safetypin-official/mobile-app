@@ -146,3 +146,16 @@ export const authenticatedPut = async <T = any>(
     body: JSON.stringify(body),
   });
 };
+
+/**
+ * Makes a DELETE request with authentication
+ */
+export const authenticatedDelete = async <T = any>(
+  url: string,
+  options: RequestInit = {}
+): Promise<ApiResponse<T>> => {
+  return authenticatedFetch<T>(url, {
+    ...options,
+    method: 'DELETE',
+  });
+};
