@@ -131,3 +131,18 @@ export const authenticatedGet = async <T = any>(
     method: 'GET',
   });
 };
+
+/**
+ * Makes a PUT request with authentication
+ */
+export const authenticatedPut = async <T = any>(
+  url: string,
+  body: any,
+  options: Omit<RequestInit, 'body' | 'method'> = {}
+): Promise<ApiResponse<T>> => {
+  return authenticatedFetch<T>(url, {
+    ...options,
+    method: 'PUT',
+    body: JSON.stringify(body),
+  });
+};
