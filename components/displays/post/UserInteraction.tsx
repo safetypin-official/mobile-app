@@ -26,13 +26,14 @@ const UserInteraction: React.FC<UserInteractionProps> = ({
 
     switch (type) {
         case 'like-icon':
-            userInteractionXml = likeIcon;
+            // Dynamically replace the fill color in the SVG
+            userInteractionXml = likeIcon.replace('fill="#5E9F3D"', `fill="${fill}"`);
             break;
         case 'dislike-icon':
-            userInteractionXml = dislikeIcon;
+            userInteractionXml = dislikeIcon.replace('fill="#904A47"', `fill="${fill}"`);
             break;
         default:
-            userInteractionXml = likeIcon;
+            userInteractionXml = likeIcon.replace('fill="#5E9F3D"', `fill="${fill}"`);
     }
 
     return (
@@ -41,7 +42,6 @@ const UserInteraction: React.FC<UserInteractionProps> = ({
                 xml={userInteractionXml} 
                 width={width} 
                 height={height}
-                fill={fill}
             />
         </TouchableOpacity>
     );
