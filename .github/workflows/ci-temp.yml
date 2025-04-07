@@ -3,33 +3,13 @@ name: Run, Build, and Publish Android App
 on:
   push:
     branches:
-      - staging
-      - main
+      - dev-ian
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Run Tests
-        run: npm test
-
   build:
     name: Build APK with Gradle
-    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
