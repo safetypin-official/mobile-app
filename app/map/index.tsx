@@ -2,7 +2,7 @@ import { StyleSheet, View, Dimensions, Text, TouchableOpacity, ActivityIndicator
 import MapView, { PROVIDER_GOOGLE, MapPressEvent, LongPressEvent, Marker, Callout } from 'react-native-maps';
 import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
-import NearbyReport from '@/components/displays/NearbyReport';
+import NearbyReport, { Post } from '@/components/displays/NearbyReport';
 import Pin from '@/components/displays/Pin';
 import { router } from 'expo-router';
 import { authenticatedGet } from '@/utils/api'; // Add this import
@@ -14,19 +14,6 @@ type LocationType = {
   longitude: number;
   latitudeDelta: number;
   longitudeDelta: number;
-};
-
-// Updated Post type definition to match NearbyReport
-type Post = {
-  id: string;
-  caption: string;
-  createdAt: string;
-  postedBy?: string | null;
-  title: string;
-  category: string; // Changed from Category object to string
-  latitude: number;
-  longitude: number;
-  imageUrl?: string | null;
 };
 
 // Default location
