@@ -133,16 +133,17 @@ const ReportContent: React.FC<ReportContentProps> = ({
   const handleShareClick = async () => {
     try {
       // Create the safetypin deep link if postId is provided
-      const deepLink = `safetypin://post/${postId}`;
+      const universalLink = `https://safety-pin.up.railway.app/open-post/${postId}`;
+      
       
       let message = `${title}\n\n${content}`;
 
-      message += `\n\n${deepLink}`;
+      message += `\n\n${universalLink}`;
       
       const shareOptions = {
         title: title,
         message: message,
-        url: deepLink // Prioritize the deep link if available
+        url: universalLink // Prioritize the deep link if available
       };
       
       const result = await Share.share(shareOptions);
