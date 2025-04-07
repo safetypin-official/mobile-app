@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, TouchableWithoutFeedback } from "react-native";
+import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, TouchableWithoutFeedback, Alert } from "react-native";
 import MoreOptionsButton from "@/components/buttons/post/MoreOptionsButton";
 import Toast from "../../toasts/Toast";
 import Pin from "@/components/displays/Pin";
+import { authenticatedDelete } from "@/utils/api";
 
-// Update the props interface to include category type
+// Update the props interface to include postId
 const UserInfo: React.FC<{ 
   avatarUrl: string; 
   username: string; 
@@ -14,7 +15,9 @@ const UserInfo: React.FC<{
   moreOptionsIconUrl: string; 
   longitude: number;
   latitude: number;
-  categoryType?: string; // Add category type for pin
+  categoryType?: string;
+  postId: string; // Add postId for deletion
+  onPostDeleted?: () => void; // Callback for when post is deleted
 }> = ({
   avatarUrl,
   username,
@@ -24,21 +27,66 @@ const UserInfo: React.FC<{
   moreOptionsIconUrl,
   longitude,
   latitude,
-  categoryType = "other-crime", // Default value if not provided
+  categoryType = "other-crime",
+  postId,
+  onPostDeleted,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState("Report Submitted");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleReport = () => {
     setModalVisible(false);
+    setToastMessage("Report Submitted");
     setToastVisible(true);
     setTimeout(() => setToastVisible(false), 3000);
   };
 
-  const handleDelete = () => {
-    // setModalVisible(false);
-    // setToastVisible(true);
-    // setTimeout(() => setToastVisible(false), 3000);
+  const handleDelete = async () => {
+    try {
+      setIsDeleting(true);
+      setModalVisible(false);
+      
+      // Confirm deletion
+      Alert.alert(
+        "Delete Post",
+        "Are you sure you want to delete this post?",
+        [
+          { text: "Cancel", style: "cancel" },
+          { 
+            text: "Delete", 
+            style: "destructive",
+            onPress: async () => {
+              try {
+                const response = await authenticatedDelete(`https://safetypin.ppl.cs.ui.ac.id/post/${postId}`);
+                
+                if (response.success) {
+                  setToastMessage("Post Deleted");
+                  setToastVisible(true);
+                  setTimeout(() => setToastVisible(false), 3000);
+                  
+                  // Call the callback to refresh the posts list
+                  if (onPostDeleted) {
+                    onPostDeleted();
+                  }
+                } else {
+                  Alert.alert("Error", "Failed to delete post");
+                }
+              } catch (error) {
+                console.error("Error deleting post:", error);
+                Alert.alert("Error", "Failed to delete post");
+              } finally {
+                setIsDeleting(false);
+              }
+            }
+          }
+        ]
+      );
+    } catch (error) {
+      console.error("Error preparing deletion:", error);
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -56,7 +104,6 @@ const UserInfo: React.FC<{
           </TouchableOpacity>
         </View>
         <View style={styles.locationContainer}>
-          {/* Replace Image with Pin component */}
           <View style={styles.pinWrapper}>
             <Pin 
               type={categoryType} 
@@ -74,7 +121,7 @@ const UserInfo: React.FC<{
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback>
               <View style={styles.modalContent}>
-              <MoreOptionsButton closeModal={() => setModalVisible(false)} onSendMessage={() => console.log("Send Message")} onReport={handleReport} onDelete={handleDelete}/>
+                <MoreOptionsButton closeModal={() => setModalVisible(false)} onSendMessage={() => console.log("Send Message")} onReport={handleReport} onDelete={handleDelete}/>
               </View>
             </TouchableWithoutFeedback>
           </View>
@@ -84,15 +131,7 @@ const UserInfo: React.FC<{
       <Modal transparent animationType="fade" visible={toastVisible}>
         <TouchableWithoutFeedback onPress={() => setToastVisible(false)}>
           <View style={styles.toastOverlay}>
-            <Toast text="Report Submitted" />
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-
-      <Modal transparent animationType="fade" visible={toastVisible}>
-        <TouchableWithoutFeedback onPress={() => setToastVisible(false)}>
-          <View style={styles.toastOverlay}>
-            <Toast text="Post Deleted" />
+            <Toast text={toastMessage} />
           </View>
         </TouchableWithoutFeedback>
       </Modal>
@@ -150,7 +189,6 @@ const styles = StyleSheet.create({
     width: 10,
     height: 20,
   },
-  // Update location styles
   locationContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -158,7 +196,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   pinWrapper: {
-    // Use a wrapper to control Pin component size
     height: 20,
     width: 15,
     justifyContent: 'center',

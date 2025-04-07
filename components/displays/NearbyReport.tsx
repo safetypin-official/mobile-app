@@ -142,7 +142,9 @@ const NearbyReport: React.FC<NearbyReportProps> = ({ initialPost, postId, onClos
               moreOptionsIconUrl="https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/43f6a47c22e1c702925915e6626ae6f483d1e56e047a9647d4ff9e5de9751425?placeholderIfAbsent=true"
               longitude={post.longitude}
               latitude={post.latitude}
-              categoryType={post.category} // Pass the category directly as the pin type
+              categoryType={post.category}
+              postId={post.id}
+              onPostDeleted={onClose}
             />
 
             <ReportContent
