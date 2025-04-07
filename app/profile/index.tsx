@@ -48,6 +48,7 @@ const ProfileScreen = () => {
   const [newProfilePic, setNewProfilePic] = useState<string | null>(null);
   const [newProfileBanner, setNewProfileBanner] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [searchRefresh, setSearchRefresh] = useState<boolean>(false);
 
   const getPresignedUrl = async (fileType: string): Promise<string | null> => {
     try {
@@ -251,6 +252,8 @@ const ProfileScreen = () => {
           longitude={item.longitude}
           latitude={item.latitude}
           categoryType={item.category}
+          postId={item.id}
+          onPostDeleted={() => setSearchRefresh(prev => !prev)}
         />
 
         <ReportContent
@@ -270,8 +273,8 @@ const ProfileScreen = () => {
   };
 
   const tabsConfig: TabConfig[] = [
-    { key: 'posts', label: 'Posts', fetchPosts: fetchUserPosts },
-    { key: 'comments', label: 'Comments', fetchPosts: fetchCommentedPosts },
+    { key: 'posts', label: 'Posts', fetchPosts: fetchUserPosts, refreshTrigger: searchRefresh },
+    { key: 'comments', label: 'Comments', fetchPosts: fetchCommentedPosts, refreshTrigger: searchRefresh },
   ];
 
   const handleSettingsPress = () => {

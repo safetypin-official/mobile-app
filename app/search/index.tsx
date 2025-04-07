@@ -172,6 +172,8 @@ export default function SearchPage() {
           longitude={item.longitude}
           latitude={item.latitude}
           categoryType={item.category}
+          postId={item.id}
+          onPostDeleted={() => setSearchRefresh(prev => !prev)}
         />
 
         <ReportContent
