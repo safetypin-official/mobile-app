@@ -102,7 +102,7 @@ const FeedScreen: React.FC = () => {
       const date = new Date(dateString);
       return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     };
-    const getUsername = (postedBy: string | null) => postedBy ?? 'Anonymous';
+    const getUsername = (postedBy: string | null) => (postedBy ?? 'Anonymous');
     const getHandle = (postedBy: string | null) =>
       `@${getUsername(postedBy).toLowerCase().replace(/\s/g, '')}`;
     const getCategoryTags = (category: string): TagKey[] => [category as TagKey];

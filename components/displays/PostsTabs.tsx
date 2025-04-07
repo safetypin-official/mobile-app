@@ -1,3 +1,4 @@
+// components/PostsTabs.tsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View,
@@ -52,6 +53,7 @@ export type PostsTabsProps = {
   renderItem: (info: ListRenderItemInfo<Post>) => JSX.Element;
   initialActiveTab?: string;
   contentContainerStyle?: ViewStyle;
+  disableAutoLoad?: boolean; // <-- new prop for testing
 };
 
 const PostsTabs: React.FC<PostsTabsProps> = ({
@@ -59,6 +61,7 @@ const PostsTabs: React.FC<PostsTabsProps> = ({
   renderItem,
   initialActiveTab,
   contentContainerStyle,
+  disableAutoLoad = false, // <-- default value for new prop
 }) => {
   const initialTabKey = initialActiveTab ?? tabs[0].key;
   const [activeTab, setActiveTab] = useState<string>(initialTabKey);
@@ -133,10 +136,10 @@ const PostsTabs: React.FC<PostsTabsProps> = ({
 
   // Load initial posts for active tab on mount or when switching tabs
   useEffect(() => {
-    if (tabsState[activeTab].posts.length === 0) {
+    if (!disableAutoLoad && tabsState[activeTab]?.posts?.length === 0) {
       loadPosts(activeTab, 0, true);
     }
-  }, [activeTab, loadPosts, tabsState]);
+  }, [activeTab, loadPosts, disableAutoLoad]);
 
   const onRefresh = () => {
     loadPosts(activeTab, 0, true);
@@ -198,49 +201,59 @@ const PostsTabs: React.FC<PostsTabsProps> = ({
       </View>
 
       {/* List or Loading/Error State */}
-      {currentTabState.loading && currentTabState.posts.length === 0 ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator testID="loading-indicator" size="large" color="#9F3F3D" />
-          <Text style={styles.loadingText}>Loading posts...</Text>
-        </View>
-      ) : currentTabState.error && currentTabState.posts.length === 0 ? (
-        <View style={styles.errorContainer}>
-          <Text testID="error-message" style={styles.errorText}>
-            {currentTabState.error}
-          </Text>
-          <TouchableOpacity
-            onPress={() => loadPosts(activeTab, 0, true)}
-            style={styles.retryButton}
-          >
-            <Text style={styles.retryButtonText}>Retry</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <FlatList
-          ref={flatListRef}
-          data={currentTabState.posts}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          contentContainerStyle={contentContainerStyle}
-          refreshControl={
-            <RefreshControl
-              refreshing={currentTabState.refreshing}
-              onRefresh={onRefresh}
-              colors={['#9F3F3D']}
-            />
-          }
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
-          onScroll={onScroll}
-          scrollEventThrottle={400}
-          ListFooterComponent={renderFooter}
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>No posts available</Text>
+      {(() => {
+        if (currentTabState.loading && currentTabState.posts.length === 0) {
+          return (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator testID="loading-indicator" size="large" color="#9F3F3D" />
+              <Text style={styles.loadingText}>Loading posts...</Text>
             </View>
-          }
-        />
-      )}
+          );
+        } else if (currentTabState.error && currentTabState.posts.length === 0) {
+          return (
+            <View style={styles.errorContainer}>
+              <Text testID="error-message" style={styles.errorText}>
+                {currentTabState.error}
+              </Text>
+              <TouchableOpacity
+                onPress={() => loadPosts(activeTab, 0, true)}
+                style={styles.retryButton}
+              >
+                <Text style={styles.retryButtonText}>Retry</Text>
+              </TouchableOpacity>
+            </View>
+          );
+        } else {
+          return (
+            <FlatList
+              testID="posts-flatlist" // Added testID for testing
+              ref={flatListRef}
+              data={currentTabState.posts}
+              keyExtractor={(item) => item.id}
+              renderItem={renderItem}
+              contentContainerStyle={contentContainerStyle}
+              refreshControl={
+                <RefreshControl
+                  testID="posts-refreshControl" // Added testID for testing
+                  refreshing={currentTabState.refreshing}
+                  onRefresh={onRefresh}
+                  colors={['#9F3F3D']}
+                />
+              }
+              onEndReached={handleLoadMore}
+              onEndReachedThreshold={0.5}
+              onScroll={onScroll}
+              scrollEventThrottle={400}
+              ListFooterComponent={renderFooter}
+              ListEmptyComponent={
+                <View style={styles.emptyContainer}>
+                  <Text style={styles.emptyText}>No posts available</Text>
+                </View>
+              }
+            />
+          );
+        }
+      })()}
     </View>
   );
 };
