@@ -55,10 +55,10 @@ const styles = StyleSheet.create({
   searchBackground: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 12,
+    paddingHorizontal: '1%',
     width: "100%",
     height: "100%",
-    borderRadius: 12,
+    borderRadius: 6,
     backgroundColor: "#f0ecec",
   },
   searchContent: {
