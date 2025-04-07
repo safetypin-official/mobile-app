@@ -92,6 +92,20 @@ export const clearAuthData = async () => {
   }
 };
 
+export const updateAuthData = async (authData: { token: string; refreshToken: string; /* other auth fields */ }) => {
+  try {
+    await Promise.all([
+      AsyncStorage.setItem(STORAGE_KEYS.JWT_TOKEN, authData.token),
+      AsyncStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, authData.refreshToken)
+    ]);
+    console.log('Authentication data updated successfully');
+    return true;
+  } catch (error: any) {
+    console.error('Failed to update authentication data:', error.message);
+    return false;
+  }
+};
+
 // Google Authentication Helper Functions
 const checkPlayServices = async () => {
   try {
