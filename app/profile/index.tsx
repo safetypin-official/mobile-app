@@ -177,6 +177,7 @@ const ProfileScreen = () => {
           upvoteCount: post.upvoteCount || 0,
           downvoteCount: post.downvoteCount || 0,
           address: post.address || '',
+          currentVote: post.currentVote || 'NONE',
         };
       });
       const hasMore = response.data ? response.data.hasNext : false;
@@ -213,6 +214,7 @@ const ProfileScreen = () => {
           upvoteCount: post.upvoteCount || 0,
           downvoteCount: post.downvoteCount || 0,
           address: post.address || '',
+          currentVote: post.currentVote || 'NONE',
         };
       });
       const hasMore = response.data ? !response.data.last : posts.length === PAGE_SIZE;
@@ -244,7 +246,7 @@ const ProfileScreen = () => {
           username={getUsername(item.postedBy)}
           handle={getHandle(item.postedBy)}
           date={formatDate(item.createdAt)}
-          location={item.address || "Nearby"}
+          location={item.address ?? 'Nearby'}
           moreOptionsIconUrl="https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/43f6a47c22e1c702925915e6626ae6f483d1e56e047a9647d4ff9e5de9751425?placeholderIfAbsent=true"
           longitude={item.longitude}
           latitude={item.latitude}
@@ -259,6 +261,7 @@ const ProfileScreen = () => {
           selectedTags={getCategoryTags(item.category)}
           imageUrl={item.imageUrl ?? 'https://i.imgur.com/Ha3UkA3.jpg'}
           postId={item.id}
+          currentVote={item.currentVote || 'NONE'}
         />
 
         <View style={styles.divider} />
@@ -434,11 +437,11 @@ const styles = StyleSheet.create({
   postsContent: {
     padding: 4,
     paddingBottom: 60,
-    backgroundColor: '#1E1E1E',
+    backgroundColor: '#FFFFFF', // Changed from dark to light
     alignItems: 'center',
   },
   postCard: {
-    backgroundColor: '#2A2A2A',
+    backgroundColor: '#FEFEFE', // Changed from dark to light
     marginBottom: 8,
     paddingVertical: 12,
     width: '100%',
@@ -447,7 +450,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: '#444',
+    backgroundColor: '#E0E0E0', // Changed from dark to light
     marginVertical: 10,
   },
   modal: {
