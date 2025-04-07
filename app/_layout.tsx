@@ -11,7 +11,7 @@ export default function Layout() {
   const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState);
   const [appReady, setAppReady] = useState(false);
 
-  const hideNavBarRoutes = ["/", "/forgotPassword", "/forgotPassword/newPasswordScreen", "/forgotPassword/otpVerificationScreen", "/signUp", "/signUp/otp", "/post", "/profile"];
+  const hideNavBarRoutes = ["/", "/forgotPassword", "/forgotPassword/newPasswordScreen", "/forgotPassword/otpVerificationScreen", "/signUp", "/signUp/otp", "/post"];
 
   // Check auth status on mount and app state changes
   useEffect(() => {
