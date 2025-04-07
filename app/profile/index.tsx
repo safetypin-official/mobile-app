@@ -158,7 +158,7 @@ const ProfileScreen = () => {
   const fetchUserPosts = async (page: number, refresh: boolean): Promise<FetchResult> => {
     try {
       const response = await authenticatedGet(
-        `https://safetypin.ppl.cs.ui.ac.id/post/user/${profileData.id}?page=${page}&size=${PAGE_SIZE}`
+        `https://safetypin.ppl.cs.ui.ac.id/post/user?postUserId=${profileData.id}?page=${page}&size=${PAGE_SIZE}`
       );
       
       const data = response.data?.content || [];
@@ -194,7 +194,7 @@ const ProfileScreen = () => {
   const fetchCommentedPosts = async (page: number, refresh: boolean): Promise<FetchResult> => {
     try {
       const response = await authenticatedGet(
-        `https://safetypin.ppl.cs.ui.ac.id/post/comment/${profileData.id}?page=${page}&size=${PAGE_SIZE}`
+        `https://safetypin.ppl.cs.ui.ac.id/post/user?postUserId=${profileData.id}?page=${page}&size=${PAGE_SIZE}`
       );
       
       const data = response.data?.content || [];
