@@ -15,6 +15,7 @@ import ReportTags, { TAG_KEYS } from "./ReportTags";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import UserInteraction from '@/components/displays/post/UserInteraction';
+import { authenticatedPost } from "@/utils/api";
 
 type TagKey = (typeof TAG_KEYS)[number];
 
@@ -25,7 +26,8 @@ interface ReportContentProps {
   dislikeCount: number;
   selectedTags: TagKey[];
   imageUrl?: string;
-  postId: string; // Add postId prop
+  postId: string;
+  currentVote?: string;
 }
 
 const ReportContent: React.FC<ReportContentProps> = ({
@@ -35,46 +37,88 @@ const ReportContent: React.FC<ReportContentProps> = ({
   dislikeCount: initialDislikeCount,
   selectedTags,
   imageUrl,
-  postId, // Accept postId in props
+  postId,
+  currentVote = 'NONE',
 }) => {
   const [likes, setLikes] = useState(initialLikeCount);
   const [dislikes, setDislikes] = useState(initialDislikeCount);
-  const [likeColor, setLikeColor] = useState("#7F7574");
-  const [dislikeColor, setDislikeColor] = useState("#7F7574");
+  
+  // Initialize colors based on currentVote
+  const [likeColor, setLikeColor] = useState(currentVote === 'UPVOTE' ? "#5E9F3D" : "#7F7574");
+  const [dislikeColor, setDislikeColor] = useState(currentVote === 'DOWNVOTE' ? "#904A47" : "#7F7574");
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [imageModalVisible, setImageModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleBookmarkClick = () => {
     setIsBookmarked(!isBookmarked);
   };
 
-  const handleLikeClick = () => {
-    if (likeColor === "#7F7574") {
-      setLikes(prevLikes => prevLikes + 1);
-      setLikeColor("#5E9F3D");
+  const handleLikeClick = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    
+    try {
+      if (likeColor === "#7F7574") {
+        // User is liking the post
+        const response = await authenticatedPost(`https://safetypin.ppl.cs.ui.ac.id/posts/vote/upvote?postId=${postId}`, {});
+        console.log('Upvote response:', response);
+        
+        setLikes(prevLikes => prevLikes + 1);
+        setLikeColor("#5E9F3D");
 
-      if (dislikeColor === "#904A47") {
-        setDislikes(prevDislikes => prevDislikes - 1);
-        setDislikeColor("#7F7574");
-      }
-    } else {
-      setLikes(prevLikes => prevLikes - 1);
-      setLikeColor("#7F7574");
-    }
-  };
-
-  const handleDislikeClick = () => {
-    if (dislikeColor === "#7F7574") {
-      setDislikes(prevDislikes => prevDislikes + 1);
-      setDislikeColor("#904A47");
-
-      if (likeColor === "#5E9F3D") {
+        if (dislikeColor === "#904A47") {
+          // If post was previously disliked, remove the dislike
+          setDislikes(prevDislikes => prevDislikes - 1);
+          setDislikeColor("#7F7574");
+        }
+      } else {
+        // User is canceling their like
+        const response = await authenticatedPost(`https://safetypin.ppl.cs.ui.ac.id/posts/vote/cancel-vote?postId=${postId}`, {});
+        console.log('Cancel vote response:', response);
+        
         setLikes(prevLikes => prevLikes - 1);
         setLikeColor("#7F7574");
       }
-    } else {
-      setDislikes(prevDislikes => prevDislikes - 1);
-      setDislikeColor("#7F7574");
+    } catch (error) {
+      console.error('Error updating vote:', error);
+      // Revert UI changes if API call fails
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDislikeClick = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    
+    try {
+      if (dislikeColor === "#7F7574") {
+        // User is disliking the post
+        const response = await authenticatedPost(`https://safetypin.ppl.cs.ui.ac.id/posts/vote/downvote?postId=${postId}`, {});
+        console.log('Downvote response:', response);
+        
+        setDislikes(prevDislikes => prevDislikes + 1);
+        setDislikeColor("#904A47");
+
+        if (likeColor === "#5E9F3D") {
+          // If post was previously liked, remove the like
+          setLikes(prevLikes => prevLikes - 1);
+          setLikeColor("#7F7574");
+        }
+      } else {
+        // User is canceling their dislike
+        const response = await authenticatedPost(`https://safetypin.ppl.cs.ui.ac.id/posts/vote/cancel-vote?postId=${postId}`, {});
+        console.log('Cancel vote response:', response);
+        
+        setDislikes(prevDislikes => prevDislikes - 1);
+        setDislikeColor("#7F7574");
+      }
+    } catch (error) {
+      console.error('Error updating vote:', error);
+      // Revert UI changes if API call fails
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -143,7 +187,7 @@ const ReportContent: React.FC<ReportContentProps> = ({
               onPress={handleLikeClick}
               width={14}
               height={14}
-              fill={likeColor}
+              fill={likeColor}  // Pass dynamic likeColor instead of hardcoded value
             />
             <Text testID="like-count" style={[styles.countText, { color: likeColor }]}>{likes}</Text>
           </View>
@@ -153,7 +197,7 @@ const ReportContent: React.FC<ReportContentProps> = ({
               onPress={handleDislikeClick}
               width={14}
               height={14}
-              fill={dislikeColor}
+              fill={dislikeColor}  // Pass dynamic dislikeColor instead of hardcoded value
             />
             <Text testID="dislike-count" style={[styles.countText, { color: dislikeColor }]}>{dislikes}</Text>
           </View>
