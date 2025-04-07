@@ -115,6 +115,7 @@ export default function Layout() {
           }}
           onProfilePress={() => {
             setActiveTab("profile");
+            router.replace("/profile");
           }}
         />
       )}
