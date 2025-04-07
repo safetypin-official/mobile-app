@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 
 export type Post = {
+  currentVote: string;
   address: string;
   id: string;
   title: string;
