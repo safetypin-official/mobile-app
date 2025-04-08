@@ -19,7 +19,11 @@ export type Post = {
   id: string;
   caption: string;
   createdAt: string;
-  postedBy?: string | null;
+  postedBy?: {
+    id: string;
+    name: string;
+    profilePicture?: string;
+  } | null;
   title: string;
   category: string;
   latitude: number;
@@ -80,8 +84,8 @@ const NearbyReport: React.FC<NearbyReportProps> = ({ initialPost, postId, onClos
 
   // Get username or default value
   const getUsername = (): string => {
-    if (post?.postedBy) {
-      return post.postedBy;
+    if (post?.postedBy?.name) {
+      return post.postedBy.name;
     }
     return "Anonymous";
   };
@@ -134,9 +138,7 @@ const NearbyReport: React.FC<NearbyReportProps> = ({ initialPost, postId, onClos
         <View style={styles.mainContent}>
           <View style={styles.contentWrapper}>
             <UserInfo
-              avatarUrl="https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/f806fe330fa9f5d6235dca1cb075682ea60ceeeafa74088633aa747789bbf602?placeholderIfAbsent=true"
-              username={getUsername()}
-              handle={getHandle()}
+              postedBy={post.postedBy}
               date={formatDate(post.createdAt)}
               location={post.address ?? "Nearby"}
               moreOptionsIconUrl="https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/43f6a47c22e1c702925915e6626ae6f483d1e56e047a9647d4ff9e5de9751425?placeholderIfAbsent=true"
@@ -159,8 +161,6 @@ const NearbyReport: React.FC<NearbyReportProps> = ({ initialPost, postId, onClos
             />
 
             <View style={styles.divider} />
-
-            {/* Comment section would go here if we had comments data */}
           </View>
         </View>
       </ScrollView>

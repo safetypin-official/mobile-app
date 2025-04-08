@@ -21,7 +21,11 @@ export type Post = {
   title: string;
   caption: string;
   createdAt: string;
-  postedBy: string | null;
+  postedBy: {
+    id: string;
+    name: string;
+    profilePicture?: string;
+  } | null;
   category: string;
   imageUrl?: string;
   latitude: number;
