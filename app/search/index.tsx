@@ -155,17 +155,13 @@ export default function SearchPage() {
       const date = new Date(dateString);
       return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     };
-    const getUsername = (postedBy: string | null) => (postedBy ?? 'Anonymous');
-    const getHandle = (postedBy: string | null) =>
-      `@${getUsername(postedBy).toLowerCase().replace(/\s/g, '')}`;
+
     const getCategoryTags = (category: string): TagKey[] => [category as TagKey];
 
     return (
       <View style={styles.postCard}>
         <UserInfo
-          avatarUrl="https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/f806fe330fa9f5d6235dca1cb075682ea60ceeeafa74088633aa747789bbf602?placeholderIfAbsent=true"
-          username={getUsername(item.postedBy)}
-          handle={getHandle(item.postedBy)}
+          postedBy={item.postedBy}
           date={formatDate(item.createdAt)}
           location={item.address ?? 'Nearby'}
           moreOptionsIconUrl="https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/43f6a47c22e1c702925915e6626ae6f483d1e56e047a9647d4ff9e5de9751425?placeholderIfAbsent=true"
