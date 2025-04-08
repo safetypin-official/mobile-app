@@ -13,6 +13,7 @@ const PAGE_SIZE = 2;
 const FeedScreen: React.FC = () => {
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
+  const [searchRefresh, setSearchRefresh] = useState<boolean>(false);
 
   const getUserLocation = useCallback(async () => {
     try {
@@ -119,7 +120,11 @@ const FeedScreen: React.FC = () => {
       const date = new Date(dateString);
       return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     };
-    const getUsername = (postedBy: string | null) => (postedBy ?? 'Anonymous');
+    const getUsername = (postedBy: string | null) => {
+      const username = postedBy ?? 'Anonymous';
+      // Truncate username if longer than 15 characters
+      return username.length > 10 ? username.substring(0, 8) + '...' : username;
+    };
     const getHandle = (postedBy: string | null) =>
       `@${getUsername(postedBy).toLowerCase().replace(/\s/g, '')}`;
     const getCategoryTags = (category: string): TagKey[] => [category as TagKey];
@@ -136,6 +141,8 @@ const FeedScreen: React.FC = () => {
           longitude={item.longitude}
           latitude={item.latitude}
           categoryType={item.category}
+          postId={item.id}
+          onPostDeleted={() => setSearchRefresh(prev => !prev)}
         />
 
         <ReportContent
@@ -155,8 +162,8 @@ const FeedScreen: React.FC = () => {
   };
 
   const tabsConfig: TabConfig[] = [
-    { key: 'near_you', label: 'Near You', fetchPosts: fetchNearYouPosts },
-    { key: 'recents', label: 'Recents', fetchPosts: fetchRecentsPosts },
+    { key: 'near_you', label: 'Near You', fetchPosts: fetchNearYouPosts, refreshTrigger: searchRefresh },
+    { key: 'recents', label: 'Recents', fetchPosts: fetchRecentsPosts, refreshTrigger: searchRefresh },
   ];
 
   return (
