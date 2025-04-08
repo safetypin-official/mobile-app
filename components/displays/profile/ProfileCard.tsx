@@ -25,12 +25,27 @@ interface ProfileCardProps {
   };
 }
 
-const SOCIAL_MEDIA_BASE_URLS = {
-  instagram: 'https://www.instagram.com/',
-  twitter: 'https://twitter.com/',
-  discord: 'https://discord.com/users/',
-  tiktok: 'https://www.tiktok.com/@',
-  line: 'https://line.me/ti/p/~'
+const SOCIAL_MEDIA_URLS = {
+  instagram: {
+    web: (username: string) => `https://www.instagram.com/${username}/`,
+    app: (username: string) => `instagram://user?username=${username}`
+  },
+  twitter: {
+    web: (username: string) => `https://twitter.com/${username}`,
+    app: (username: string) => `twitter://user?screen_name=${username}`
+  },
+  tiktok: {
+    web: (username: string) => `https://www.tiktok.com/@${username}`,
+    app: (username: string) => `tiktok://user/profile/${username}`
+  },
+  line: {
+    web: (username: string) => `https://line.me/ti/p/~${username}`,
+    app: (username: string) => `https://line.me/ti/p/~${username}`
+  },
+  discord: {
+    web: (username: string) => `https://discord.com/users/${username}`,
+    app: (username: string) => `https://discord.com/users/${username}`
+  }
 };
 
 const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => void}, ProfileCardProps>(
@@ -47,41 +62,39 @@ const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => v
       socialLinks = {},
     } = props;
 
-    const constructSocialLink = (platform: keyof typeof SOCIAL_MEDIA_BASE_URLS, username: string): string => {
-      const baseUrl = SOCIAL_MEDIA_BASE_URLS[platform];
-      return `${baseUrl}${username}`;
-    };
-
-    const handleSocialLinkPress = async (username?: string, platform?: keyof typeof SOCIAL_MEDIA_BASE_URLS) => {
+    const handleSocialLinkPress = async (username?: string, platform?: keyof typeof SOCIAL_MEDIA_URLS) => {
       if (!username?.trim() || !platform) {
         return;
       }
     
       try {
-        const url = constructSocialLink(platform, username.trim());
+        // Try app scheme first
+        const appUrl = SOCIAL_MEDIA_URLS[platform].app(username.trim());
+        const canOpenApp = await Linking.canOpenURL(appUrl);
         
-        if (!isValidUrl(url)) {
-          console.warn(`Invalid URL constructed: ${url}`);
-          return;
-        }
-    
-        const canOpen = await Linking.canOpenURL(url);
-        if (canOpen) {
-          await Linking.openURL(url);
+        if (canOpenApp) {
+          await Linking.openURL(appUrl);
         } else {
-          console.warn(`Cannot open URL: ${url}`);
+          // Fall back to web URL
+          const webUrl = SOCIAL_MEDIA_URLS[platform].web(username.trim());
+          await Linking.openURL(webUrl);
         }
       } catch (error) {
-        console.error('Error handling social link:', error);
-      }
-    };
-
-    const isValidUrl = (url: string): boolean => {
-      try {
-        new URL(url);
-        return true;
-      } catch {
-        return false;
+        console.error(`Error opening ${platform}:`, error);
+        
+        // Provide feedback to user
+        Alert.alert(
+          "Couldn't Open Link", 
+          `Unable to open ${platform}. Please check if you have the app installed or try again later.`
+        );
+        
+        // Try opening in browser as last resort
+        try {
+          const webUrl = SOCIAL_MEDIA_URLS[platform].web(username.trim());
+          await Linking.openURL(webUrl);
+        } catch {
+          // Silent fail for the last attempt
+        }
       }
     };
 

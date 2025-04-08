@@ -255,8 +255,8 @@ const ProfileScreen = () => {
         <ReportContent
           title={item.title}
           content={item.caption}
-          likeCount={item.upvoteCount}
-          dislikeCount={item.downvoteCount}
+          likeCount={item.upvoteCount ?? 0}
+          dislikeCount={item.downvoteCount ?? 0}
           selectedTags={getCategoryTags(item.category)}
           imageUrl={item.imageUrl ?? 'https://i.imgur.com/Ha3UkA3.jpg'}
           postId={item.id}
@@ -390,11 +390,13 @@ const ProfileScreen = () => {
           />
         </View>
         
-        <PostsTabs
-          tabs={tabsConfig}
-          renderItem={renderPostItem}
-          contentContainerStyle={styles.postsContent}
-        />
+        <View style={styles.tabsContainer}>
+          <PostsTabs
+            tabs={tabsConfig}
+            renderItem={renderPostItem}
+            contentContainerStyle={styles.postsContent}
+          />
+        </View>
       </ScrollView>
 
       <Modal
@@ -433,24 +435,28 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  tabsContainer: {
+    flex: 1,
+    width: '100%',
+    paddingHorizontal: 16,
+  },
   postsContent: {
     padding: 4,
     paddingBottom: 60,
-    backgroundColor: '#FFFFFF', // Changed from dark to light
-    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
   },
   postCard: {
-    backgroundColor: '#FEFEFE', // Changed from dark to light
+    backgroundColor: '#FEFEFE',
     marginBottom: 8,
     paddingVertical: 12,
     width: '100%',
     borderRadius: 8,
-    alignItems: 'center',
   },
   divider: {
     height: 1,
-    backgroundColor: '#E0E0E0', // Changed from dark to light
+    backgroundColor: '#ddd',
     marginVertical: 10,
+    width: '100%',
   },
   modal: {
     justifyContent: 'flex-end',
