@@ -4,22 +4,33 @@ import MoreOptionsButton from "@/components/buttons/post/MoreOptionsButton";
 import Toast from "../../toasts/Toast";
 import Pin from "@/components/displays/Pin";
 import { authenticatedDelete } from "@/utils/api";
+import { moreOptionsIcon } from "@/assets/icons";
+import { SvgXml } from "react-native-svg";
 
-// Update the props interface to include postId
+// Updated user interface to match new API response
+export interface PostedByUser {
+  id: string;
+  name: string;
+  profilePicture?: string;
+}
+
+// Update the props interface to include the new postedBy structure
 const UserInfo: React.FC<{ 
-  avatarUrl: string; 
-  username: string; 
-  handle: string; 
+  postedBy?: PostedByUser | null; 
+  avatarUrl?: string; // Fallback avatar URL
+  username?: string; // Fallback username
+  handle?: string; // Fallback handle
   date: string; 
   location: string; 
   moreOptionsIconUrl: string; 
   longitude: number;
   latitude: number;
   categoryType?: string;
-  postId: string; // Add postId for deletion
-  onPostDeleted?: () => void; // Callback for when post is deleted
+  postId: string;
+  onPostDeleted?: () => void;
 }> = ({
-  avatarUrl,
+  postedBy,
+  avatarUrl = "https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/f806fe330fa9f5d6235dca1cb075682ea60ceeeafa74088633aa747789bbf602?placeholderIfAbsent=true",
   username,
   handle,
   date,
@@ -35,6 +46,11 @@ const UserInfo: React.FC<{
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("Report Submitted");
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Determine the user display name and avatar from postedBy or fallbacks
+  const displayName = postedBy?.name || username || "Anonymous";
+  const displayHandle = handle || `@${displayName.toLowerCase().replace(/\s/g, "")}`;
+  const displayAvatar = postedBy?.profilePicture || avatarUrl;
 
   const handleReport = () => {
     setModalVisible(false);
@@ -91,16 +107,20 @@ const UserInfo: React.FC<{
 
   return (
     <View style={styles.userInfo}>
-      <Image source={{ uri: avatarUrl }} style={styles.avatar} />
+      <Image source={{ uri: displayAvatar }} style={styles.avatar} />
       <View style={styles.userDetails}>
         <View style={styles.userHeader}>
           <View style={styles.userNameGroup}>
-            <Text style={styles.username}>{username}</Text>
-            <Text style={styles.handle}>{handle}</Text>
+            <Text style={styles.username}>{displayName}</Text>
+            <Text style={styles.handle}>{displayHandle}</Text>
             <Text style={styles.dateInfo}> • {date}</Text>
           </View>
           <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.moreOptionsButton} testID="more-options-button">
-            <Image source={{ uri: moreOptionsIconUrl }} style={styles.moreOptionsIcon} />
+            <SvgXml
+                    xml={moreOptionsIcon}
+                    width={24}
+                    height={24}
+                  />
           </TouchableOpacity>
         </View>
         <View style={styles.locationContainer}>
