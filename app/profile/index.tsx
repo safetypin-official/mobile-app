@@ -128,7 +128,7 @@ const ProfileScreen = () => {
           const apiProfile = response.data;
           setProfileData({
             id: apiProfile.id,
-            username: apiProfile.username || 'Anonymous User',
+            username: apiProfile.name || 'Anonymous User',
             role: apiProfile.role || 'User',
             verified: apiProfile.verified || false,
             profileImage: apiProfile.profilePicture || dummyProfile.profileImage,
