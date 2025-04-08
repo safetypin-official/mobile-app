@@ -111,16 +111,28 @@ const UserInfo: React.FC<{
       <View style={styles.userDetails}>
         <View style={styles.userHeader}>
           <View style={styles.userNameGroup}>
-            <Text style={styles.username}>{displayName}</Text>
-            <Text style={styles.handle}>{displayHandle}</Text>
+            <Text 
+              style={styles.username}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {displayName}
+            </Text>
+            <Text 
+              style={styles.handle}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {displayHandle}
+            </Text>
             <Text style={styles.dateInfo}> • {date}</Text>
           </View>
-          <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.moreOptionsButton} testID="more-options-button">
-            <SvgXml
-                    xml={moreOptionsIcon}
-                    width={24}
-                    height={24}
-                  />
+          <TouchableOpacity 
+            onPress={() => setModalVisible(true)} 
+            style={styles.moreOptionsButton}
+            testID="more-options-button"
+          >
+            <Text style={styles.moreOptionsText}>⋮</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.locationContainer}>
@@ -132,7 +144,13 @@ const UserInfo: React.FC<{
               height={16}
             />
           </View>
-          <Text style={styles.locationText}>{location}</Text>
+          <Text 
+            style={styles.locationText}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {location}
+          </Text>
         </View>
       </View>
 
@@ -186,21 +204,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
+    flexWrap: "nowrap",
+    flex: 1,
   },
   username: {
     fontSize: 16,
     fontWeight: "700",
     color: "#4d4544",
+    flexShrink: 1,
   },
   handle: {
     fontSize: 16,
     fontWeight: "700",
     color: "#7f7574",
+    flexShrink: 1,
   },
   dateInfo: {
     fontSize: 16,
     fontWeight: "700",
     color: "#7f7574",
+    flexShrink: 0,
   },
   moreOptionsButton: {
     padding: 0,
@@ -208,6 +231,11 @@ const styles = StyleSheet.create({
   moreOptionsIcon: {
     width: 10,
     height: 20,
+  },
+  moreOptionsText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#7f7574",
   },
   locationContainer: {
     flexDirection: "row",
@@ -225,6 +253,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "400",
     color: "#7f7574",
+    flex: 1,
   },
   coordinates: {
     marginTop: 4,
