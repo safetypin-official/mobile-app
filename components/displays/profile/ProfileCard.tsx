@@ -8,7 +8,6 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Fontisto from '@expo/vector-icons/Fontisto';
 
 interface ProfileCardProps {
-  id: string;
   username: string;
   role: string;
   verified: boolean;
