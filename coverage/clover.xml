@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1744640596884" clover="3.2.0">
-  <project timestamp="1744640596884" name="All files">
-    <metrics statements="966" coveredstatements="960" conditionals="482" coveredconditionals="426" methods="252" coveredmethods="240" elements="1700" coveredelements="1626" complexity="0" loc="966" ncloc="966" packages="21" files="53" classes="53"/>
+<coverage generated="1744642120666" clover="3.2.0">
+  <project timestamp="1744642120666" name="All files">
+    <metrics statements="932" coveredstatements="928" conditionals="432" coveredconditionals="401" methods="250" coveredmethods="238" elements="1614" coveredelements="1567" complexity="0" loc="932" ncloc="932" packages="22" files="54" classes="54"/>
     <package name="app">
       <metrics statements="56" coveredstatements="56" conditionals="16" coveredconditionals="16" methods="13" coveredmethods="13"/>
       <file name="_layout.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\_layout.tsx">
@@ -68,62 +68,37 @@
       </file>
     </package>
     <package name="app.feedScreen">
-      <metrics statements="53" coveredstatements="52" conditionals="46" coveredconditionals="28" methods="12" coveredmethods="12"/>
+      <metrics statements="28" coveredstatements="28" conditionals="10" coveredconditionals="9" methods="10" coveredmethods="10"/>
       <file name="index.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\feedScreen\index.tsx">
-        <metrics statements="53" coveredstatements="52" conditionals="46" coveredconditionals="28" methods="12" coveredmethods="12"/>
+        <metrics statements="28" coveredstatements="28" conditionals="10" coveredconditionals="9" methods="10" coveredmethods="10"/>
         <line num="10" count="1" type="stmt"/>
-        <line num="12" count="1" type="stmt"/>
-        <line num="13" count="18" type="stmt"/>
+        <line num="11" count="18" type="stmt"/>
+        <line num="12" count="18" type="stmt"/>
         <line num="14" count="18" type="stmt"/>
-        <line num="16" count="18" type="stmt"/>
-        <line num="17" count="9" type="stmt"/>
-        <line num="18" count="9" type="stmt"/>
-        <line num="19" count="9" type="cond" truecount="2" falsecount="0"/>
-        <line num="20" count="1" type="stmt"/>
-        <line num="21" count="1" type="stmt"/>
-        <line num="23" count="8" type="stmt"/>
-        <line num="24" count="7" type="stmt"/>
-        <line num="26" count="1" type="stmt"/>
-        <line num="30" count="18" type="stmt"/>
-        <line num="31" count="9" type="stmt"/>
-        <line num="35" count="18" type="stmt"/>
-        <line num="36" count="5" type="cond" truecount="2" falsecount="0"/>
-        <line num="37" count="4" type="cond" truecount="2" falsecount="0"/>
-        <line num="39" count="1" type="stmt"/>
-        <line num="40" count="1" type="stmt"/>
-        <line num="41" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="42" count="0" type="stmt"/>
+        <line num="15" count="9" type="stmt"/>
+        <line num="16" count="9" type="stmt"/>
+        <line num="17" count="9" type="cond" truecount="2" falsecount="0"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="21" count="8" type="stmt"/>
+        <line num="22" count="7" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="28" count="18" type="stmt"/>
+        <line num="29" count="9" type="stmt"/>
+        <line num="32" count="18" type="stmt"/>
+        <line num="33" count="5" type="cond" truecount="4" falsecount="0"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="37" count="18" type="stmt"/>
+        <line num="38" count="2" type="stmt"/>
+        <line num="41" count="18" type="stmt"/>
+        <line num="42" count="1" type="stmt"/>
+        <line num="43" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="44" count="1" type="stmt"/>
-        <line num="45" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="46" count="1" type="stmt"/>
-        <line num="47" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="48" count="1" type="stmt"/>
-        <line num="60" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="61" count="1" type="stmt"/>
-        <line num="69" count="18" type="stmt"/>
-        <line num="70" count="2" type="stmt"/>
-        <line num="71" count="2" type="stmt"/>
-        <line num="72" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="73" count="1" type="stmt"/>
-        <line num="75" count="1" type="stmt"/>
-        <line num="76" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="77" count="1" type="stmt"/>
-        <line num="78" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="79" count="1" type="stmt"/>
-        <line num="91" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="92" count="1" type="stmt"/>
-        <line num="100" count="18" type="stmt"/>
-        <line num="101" count="1" type="stmt"/>
-        <line num="102" count="1" type="stmt"/>
-        <line num="103" count="1" type="stmt"/>
-        <line num="105" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="106" count="1" type="stmt"/>
-        <line num="107" count="1" type="stmt"/>
-        <line num="108" count="1" type="stmt"/>
-        <line num="110" count="1" type="stmt"/>
-        <line num="139" count="18" type="stmt"/>
-        <line num="144" count="18" type="stmt"/>
-        <line num="156" count="1" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+        <line num="47" count="1" type="stmt"/>
+        <line num="74" count="18" type="stmt"/>
+        <line num="79" count="18" type="stmt"/>
+        <line num="91" count="1" type="stmt"/>
       </file>
     </package>
     <package name="app.forgotPassword">
@@ -355,10 +330,9 @@
       </file>
     </package>
     <package name="app.search">
-      <metrics statements="52" coveredstatements="51" conditionals="46" coveredconditionals="28" methods="12" coveredmethods="12"/>
+      <metrics statements="27" coveredstatements="27" conditionals="10" coveredconditionals="9" methods="10" coveredmethods="10"/>
       <file name="index.tsx" path="C:\Users\aanma\sandbox\mobile-app\app\search\index.tsx">
-        <metrics statements="52" coveredstatements="51" conditionals="46" coveredconditionals="28" methods="12" coveredmethods="12"/>
-        <line num="9" count="1" type="stmt"/>
+        <metrics statements="27" coveredstatements="27" conditionals="10" coveredconditionals="9" methods="10" coveredmethods="10"/>
         <line num="12" count="21" type="stmt"/>
         <line num="13" count="20" type="stmt"/>
         <line num="15" count="20" type="stmt"/>
@@ -373,43 +347,19 @@
         <line num="29" count="20" type="stmt"/>
         <line num="30" count="10" type="stmt"/>
         <line num="33" count="20" type="stmt"/>
-        <line num="34" count="4" type="cond" truecount="2" falsecount="0"/>
-        <line num="35" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="37" count="1" type="stmt"/>
-        <line num="38" count="1" type="stmt"/>
-        <line num="39" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="40" count="0" type="stmt"/>
-        <line num="42" count="1" type="stmt"/>
-        <line num="43" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="44" count="1" type="stmt"/>
-        <line num="45" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="34" count="4" type="cond" truecount="4" falsecount="0"/>
+        <line num="35" count="1" type="stmt"/>
+        <line num="38" count="20" type="stmt"/>
+        <line num="39" count="2" type="stmt"/>
+        <line num="42" count="20" type="stmt"/>
+        <line num="43" count="1" type="stmt"/>
+        <line num="44" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="45" count="1" type="stmt"/>
         <line num="46" count="1" type="stmt"/>
-        <line num="58" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="59" count="1" type="stmt"/>
-        <line num="62" count="20" type="stmt"/>
-        <line num="63" count="2" type="stmt"/>
-        <line num="64" count="2" type="stmt"/>
-        <line num="65" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="66" count="1" type="stmt"/>
-        <line num="68" count="1" type="stmt"/>
-        <line num="69" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="70" count="1" type="stmt"/>
-        <line num="71" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="72" count="1" type="stmt"/>
-        <line num="84" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="85" count="1" type="stmt"/>
-        <line num="89" count="20" type="stmt"/>
-        <line num="90" count="1" type="stmt"/>
-        <line num="91" count="1" type="stmt"/>
-        <line num="92" count="1" type="stmt"/>
-        <line num="94" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="95" count="1" type="stmt"/>
-        <line num="96" count="1" type="stmt"/>
+        <line num="48" count="1" type="stmt"/>
+        <line num="75" count="20" type="stmt"/>
+        <line num="81" count="20" type="stmt"/>
         <line num="97" count="1" type="stmt"/>
-        <line num="99" count="1" type="stmt"/>
-        <line num="132" count="20" type="stmt"/>
-        <line num="138" count="20" type="stmt"/>
-        <line num="154" count="1" type="stmt"/>
       </file>
     </package>
     <package name="app.settings">
@@ -1188,6 +1138,28 @@
         <line num="12" count="1" type="stmt"/>
         <line num="16" count="2" type="stmt"/>
         <line num="28" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="utils">
+      <metrics statements="16" coveredstatements="16" conditionals="22" coveredconditionals="13" methods="2" coveredmethods="2"/>
+      <file name="fetchPosts.ts" path="C:\Users\aanma\sandbox\mobile-app\utils\fetchPosts.ts">
+        <metrics statements="16" coveredstatements="16" conditionals="22" coveredconditionals="13" methods="2" coveredmethods="2"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="6" count="6" type="stmt"/>
+        <line num="7" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="8" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="11" count="4" type="stmt"/>
+        <line num="14" count="6" type="stmt"/>
+        <line num="15" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="16" count="2" type="stmt"/>
+        <line num="19" count="4" type="stmt"/>
+        <line num="20" count="4" type="cond" truecount="1" falsecount="1"/>
+        <line num="21" count="4" type="stmt"/>
+        <line num="22" count="4" type="cond" truecount="1" falsecount="1"/>
+        <line num="23" count="4" type="stmt"/>
+        <line num="36" count="4" type="cond" truecount="1" falsecount="1"/>
+        <line num="38" count="4" type="stmt"/>
       </file>
     </package>
   </project>
