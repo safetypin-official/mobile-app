@@ -36,9 +36,7 @@ const UserInfo: React.FC<{
   };
 
   const handleDelete = () => {
-    // setModalVisible(false);
-    // setToastVisible(true);
-    // setTimeout(() => setToastVisible(false), 3000);
+
   };
 
   return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, Linking, Alert } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, Linking } from 'react-native';
 import { SvgXml } from "react-native-svg";
 import { settings, pencil } from '@/assets/icons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -36,7 +36,6 @@ const SOCIAL_MEDIA_BASE_URLS = {
 const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => void}, ProfileCardProps>(
   (props, ref) => {
     const { 
-      id,
       username,
       role,
       verified,
