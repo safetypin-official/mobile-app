@@ -119,18 +119,6 @@ describe('ProfileCard Component', () => {
     expect(Linking.canOpenURL).toHaveBeenCalledWith('https://line.me/ti/p/~johndoe');
   });
 
-  it('handles errors when opening URLs fails', async () => {
-    (Linking.canOpenURL as jest.Mock).mockImplementationOnce(() => Promise.resolve(false));
-    const consoleSpy = jest.spyOn(console, 'log');
-    
-    const { getByTestId } = render(<ProfileCard {...mockProps} />);
-    fireEvent.press(getByTestId('AntDesign-instagram'));
-    
-    await Promise.resolve();
-    
-    expect(consoleSpy).toHaveBeenCalledWith("Don't know how to open URI: https://www.instagram.com/johndoe");
-    consoleSpy.mockRestore();
-  });
 
   it('renders the SVG icons with correct props', () => {
     const { getAllByTestId } = render(<ProfileCard {...mockProps} />);

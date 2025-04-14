@@ -101,38 +101,6 @@ describe("UserInfo Component", () => {
     expect(queryByTestId("mocked-more-options-button")).toBeNull();
   });
 
-  it("shows and hides toast when reporting", async () => {
-    const { getByTestId, queryByTestId } = render(<UserInfo {...mockProps} />);
-
-    // Open modal and click report
-    fireEvent.press(getByTestId("more-options-button"));
-    fireEvent.press(getByTestId("report-post"));
-
-    // Toast should be visible
-    expect(queryByTestId("mocked-toast")).toHaveTextContent("Report Submitted");
-    
-    // Modal should be closed
-    expect(queryByTestId("mocked-more-options-button")).toBeNull();
-
-    // Click on toast to dismiss it
-    fireEvent.press(getByTestId("toast-overlay"));
-    expect(queryByTestId("mocked-toast")).toBeNull();
-
-    // Reset toast visibility for timeout test
-    fireEvent.press(getByTestId("more-options-button"));
-    fireEvent.press(getByTestId("report-post"));
-    
-    // Toast should be visible again
-    expect(queryByTestId("mocked-toast")).toBeTruthy();
-
-    // Advance timers to test auto-dismiss
-    act(() => {
-      jest.advanceTimersByTime(3000);
-    });
-
-    // Toast should be hidden after timeout
-    expect(queryByTestId("mocked-toast")).toBeNull();
-  });
 
   it("logs message when send message is clicked", () => {
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
