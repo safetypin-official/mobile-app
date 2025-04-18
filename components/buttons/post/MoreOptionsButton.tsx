@@ -7,11 +7,12 @@ const screenWidth = Dimensions.get("window").width;
 
 interface MoreOptionsButtonProps {
   onSendMessage: () => void;
+  onDelete: () => void;
   onReport: () => void;
   closeModal: () => void;
 }
 
-const MoreOptionsButton: React.FC<MoreOptionsButtonProps> = ({ onSendMessage, onReport, closeModal }) => {
+const MoreOptionsButton: React.FC<MoreOptionsButtonProps> = ({ onSendMessage, onReport, onDelete, closeModal }) => {
   return (
     <View style={styles.frameParent}>
       <TouchableOpacity
@@ -27,6 +28,20 @@ const MoreOptionsButton: React.FC<MoreOptionsButtonProps> = ({ onSendMessage, on
       </TouchableOpacity>
 
       <View style={styles.instanceChild} />
+
+      <TouchableOpacity
+        style={styles.exclamationCircleParent}
+        onPress={() => {
+          onDelete();
+          closeModal();
+        }}
+        testID="delete-post"
+      >
+        <AntDesign name="delete" size={16} color="#904a47" borderRadius={100} />
+        <Text style={styles.report}>Delete</Text>
+      </TouchableOpacity>
+
+      <View style={styles.instanceChild1} />
 
       <TouchableOpacity
         style={styles.exclamationCircleParent}
@@ -76,6 +91,11 @@ const styles = StyleSheet.create({
   instanceChild: {
     width: "100%",
     height: 2,
+    backgroundColor: "#d9d9d9",
+  },
+  instanceChild1: {
+    width: "100%",
+    height: 1.5,
     backgroundColor: "#d9d9d9",
   },
   exclamationCircleParent: {

@@ -141,8 +141,8 @@ const ReportContent: React.FC<ReportContentProps> = ({
             <UserInteraction
               type="like-icon"
               onPress={handleLikeClick}
-              width={14}
-              height={14}
+              width={20}
+              height={20}
               fill={likeColor}
             />
             <Text testID="like-count" style={[styles.countText, { color: likeColor }]}>{likes}</Text>
@@ -151,8 +151,8 @@ const ReportContent: React.FC<ReportContentProps> = ({
             <UserInteraction
               type="dislike-icon"
               onPress={handleDislikeClick}
-              width={14}
-              height={14}
+              width={20}
+              height={20}
               fill={dislikeColor}
             />
             <Text testID="dislike-count" style={[styles.countText, { color: dislikeColor }]}>{dislikes}</Text>

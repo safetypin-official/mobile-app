@@ -1,22 +1,35 @@
 import React, { useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, TouchableWithoutFeedback } from "react-native";
+import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, TouchableWithoutFeedback, Alert } from "react-native";
 import MoreOptionsButton from "@/components/buttons/post/MoreOptionsButton";
 import Toast from "../../toasts/Toast";
 import Pin from "@/components/displays/Pin";
+import { authenticatedDelete } from "@/utils/api";
 
-// Update the props interface to include category type
+
+// Updated user interface to match new API response
+export interface PostedByUser {
+  id: string;
+  name: string;
+  profilePicture?: string;
+}
+
+// Update the props interface to include the new postedBy structure
 const UserInfo: React.FC<{ 
-  avatarUrl: string; 
-  username: string; 
-  handle: string; 
+  postedBy?: PostedByUser | null; 
+  avatarUrl?: string; // Fallback avatar URL
+  username?: string; // Fallback username
+  handle?: string; // Fallback handle
   date: string; 
   location: string; 
   moreOptionsIconUrl: string; 
   longitude: number;
   latitude: number;
-  categoryType?: string; // Add category type for pin
+  categoryType?: string;
+  postId: string;
+  onPostDeleted?: () => void;
 }> = ({
-  avatarUrl,
+  postedBy,
+  avatarUrl = "https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/f806fe330fa9f5d6235dca1cb075682ea60ceeeafa74088633aa747789bbf602?placeholderIfAbsent=true",
   username,
   handle,
   date,
@@ -24,33 +37,106 @@ const UserInfo: React.FC<{
   moreOptionsIconUrl,
   longitude,
   latitude,
-  categoryType = "other-crime", // Default value if not provided
+  categoryType = "other-crime",
+  postId,
+  onPostDeleted,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState("Report Submitted");
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Determine the user display name and avatar from postedBy or fallbacks
+  const displayName = postedBy?.name ?? username ?? "Anonymous";
+  const displayHandle = handle ?? `@${displayName.toLowerCase().replace(/\s/g, "")}`;
+  const displayAvatar = postedBy?.profilePicture ?? avatarUrl;
 
   const handleReport = () => {
     setModalVisible(false);
+    setToastMessage("Report Submitted");
     setToastVisible(true);
     setTimeout(() => setToastVisible(false), 3000);
   };
 
+  const handleDelete = async () => {
+    try {
+      setIsDeleting(true);
+      setModalVisible(false);
+      
+      // Confirm deletion
+      Alert.alert(
+        "Delete Post",
+        "Are you sure you want to delete this post?",
+        [
+          { text: "Cancel", style: "cancel" },
+          { 
+            text: "Delete", 
+            style: "destructive",
+            onPress: () => {
+              (async () => {
+                try {
+                  const response = await authenticatedDelete(`https://safetypin.ppl.cs.ui.ac.id/post/${postId}`);
+                  
+                  if (response.success) {
+                    setToastMessage("Post Deleted");
+                    setToastVisible(true);
+                    setTimeout(() => setToastVisible(false), 3000);
+                    
+                    // Call the callback to refresh the posts list
+                    if (onPostDeleted) {
+                      onPostDeleted();
+                    }
+                  } else {
+                    Alert.alert("Error", "Failed to delete post");
+                  }
+                } catch (error) {
+                  console.error("Error deleting post:", error);
+                  Alert.alert("Error", "Failed to delete post");
+                } finally {
+                  setIsDeleting(false);
+                }
+              })();
+            }
+          }
+        ]
+      );
+    } catch (error) {
+      console.error("Error preparing deletion:", error);
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <View style={styles.userInfo}>
-      <Image source={{ uri: avatarUrl }} style={styles.avatar} />
+      <Image source={{ uri: displayAvatar }} style={styles.avatar} />
       <View style={styles.userDetails}>
         <View style={styles.userHeader}>
           <View style={styles.userNameGroup}>
-            <Text style={styles.username}>{username}</Text>
-            <Text style={styles.handle}>{handle}</Text>
+            <Text 
+              style={styles.username}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {displayName}
+            </Text>
+            <Text 
+              style={styles.handle}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {displayHandle}
+            </Text>
             <Text style={styles.dateInfo}> • {date}</Text>
           </View>
-          <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.moreOptionsButton} testID="more-options-button">
-            <Image source={{ uri: moreOptionsIconUrl }} style={styles.moreOptionsIcon} />
+          <TouchableOpacity 
+            onPress={() => setModalVisible(true)} 
+            style={styles.moreOptionsButton}
+            testID="more-options-button"
+          >
+            <Text style={styles.moreOptionsText}>⋮</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.locationContainer}>
-          {/* Replace Image with Pin component */}
           <View style={styles.pinWrapper}>
             <Pin 
               type={categoryType} 
@@ -59,7 +145,13 @@ const UserInfo: React.FC<{
               height={16}
             />
           </View>
-          <Text style={styles.locationText}>{location}</Text>
+          <Text 
+            style={styles.locationText}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {location}
+          </Text>
         </View>
       </View>
 
@@ -68,7 +160,7 @@ const UserInfo: React.FC<{
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback>
               <View style={styles.modalContent}>
-              <MoreOptionsButton closeModal={() => setModalVisible(false)} onSendMessage={() => console.log("Send Message")} onReport={handleReport} />
+                <MoreOptionsButton closeModal={() => setModalVisible(false)} onSendMessage={() => console.log("Send Message")} onReport={handleReport} onDelete={handleDelete}/>
               </View>
             </TouchableWithoutFeedback>
           </View>
@@ -78,7 +170,7 @@ const UserInfo: React.FC<{
       <Modal transparent animationType="fade" visible={toastVisible}>
         <TouchableWithoutFeedback onPress={() => setToastVisible(false)}>
           <View style={styles.toastOverlay}>
-            <Toast text="Report Submitted" />
+            <Toast text={toastMessage} />
           </View>
         </TouchableWithoutFeedback>
       </Modal>
@@ -113,21 +205,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
+    flexWrap: "nowrap",
+    flex: 1,
   },
   username: {
     fontSize: 16,
     fontWeight: "700",
     color: "#4d4544",
+    flexShrink: 1,
   },
   handle: {
     fontSize: 16,
     fontWeight: "700",
     color: "#7f7574",
+    flexShrink: 1,
   },
   dateInfo: {
     fontSize: 16,
     fontWeight: "700",
     color: "#7f7574",
+    flexShrink: 0,
   },
   moreOptionsButton: {
     padding: 0,
@@ -136,7 +233,11 @@ const styles = StyleSheet.create({
     width: 10,
     height: 20,
   },
-  // Update location styles
+  moreOptionsText: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#7f7574",
+  },
   locationContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -144,7 +245,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   pinWrapper: {
-    // Use a wrapper to control Pin component size
     height: 20,
     width: 15,
     justifyContent: 'center',
@@ -154,6 +254,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "400",
     color: "#7f7574",
+    flex: 1,
   },
   coordinates: {
     marginTop: 4,
