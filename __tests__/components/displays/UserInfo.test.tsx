@@ -7,7 +7,7 @@ jest.useFakeTimers();
 // Mock the MoreOptionsButton component
 jest.mock("@/components/buttons/post/MoreOptionsButton", () => {
   const { View, Text } = require("react-native");
-  return ({ onSendMessage, onReport }) => (
+  return ({ onSendMessage, onReport }: { onSendMessage: () => void; onReport: () => void }) => (
     <View testID="mocked-more-options-button">
       <Text testID="send-message" onPress={onSendMessage}>Send Message</Text>
       <Text testID="report-post" onPress={onReport}>Report</Text>
@@ -18,7 +18,7 @@ jest.mock("@/components/buttons/post/MoreOptionsButton", () => {
 // Mock the Toast component
 jest.mock("../../../components/toasts/Toast", () => {
   const { Text, View } = require("react-native");
-  return ({ text }) => (
+  return ({ text }: { text: string }) => (
     <View testID="toast-overlay">
       <Text testID="mocked-toast">{text}</Text>
     </View>
@@ -28,7 +28,7 @@ jest.mock("../../../components/toasts/Toast", () => {
 // Mock the Pin component
 jest.mock("@/components/displays/Pin", () => {
   const { View } = require("react-native");
-  return ({ type, onPress, width, height }) => (
+  return ({ type, onPress, width, height }: { type: string; onPress: () => void; width: number; height: number }) => (
     <View 
       testID={`pin-${type}`} 
       style={{ width, height }}
@@ -47,7 +47,8 @@ describe("UserInfo Component", () => {
     moreOptionsIconUrl: "https://example.com/more-options-icon.png",
     longitude: 40.7128,
     latitude: -74.006,
-    categoryType: "theft" // Add the new categoryType prop
+    categoryType: "theft", // Add the new categoryType prop
+    postId: "12345",
   };
 
   /* Happy Path */
@@ -62,8 +63,7 @@ describe("UserInfo Component", () => {
   });
 
   it("renders with default category type when not provided", () => {
-    const propsWithoutCategory = { ...mockProps };
-    delete propsWithoutCategory.categoryType;
+    const { categoryType, ...propsWithoutCategory } = mockProps;
     
     const { getByTestId } = render(<UserInfo {...propsWithoutCategory} />);
     // Should use the default "other-crime" type
@@ -158,6 +158,7 @@ describe("UserInfo Component", () => {
         moreOptionsIconUrl=""
         longitude={0}
         latitude={0}
+        postId=""
       />
     );
 
