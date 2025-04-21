@@ -10,12 +10,6 @@ import InputField from '@/components/inputs/InputField';
 import TagSelector from '@/components/inputs/TagSelector';
 import { router } from 'expo-router';
 
-// Interface for category data from API
-interface Category {
-    id: string;
-    name: string;
-}
-
 export const getFileExtension = (uri: string): string => {
     const fileName = uri.split('/');
     const endpoint = fileName.pop();
@@ -77,7 +71,7 @@ const PostPage = () => {
     // Function to get presigned URL from backend
     const getPresignedUrl = async (fileType: string): Promise<string | null> => {
         try {
-            const response = await fetch('http://10.0.2.2/post/s3/presigned-url', {
+            const response = await fetch('https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -176,22 +170,20 @@ const PostPage = () => {
     };
     
     const submitPost = (imageUrl: string | null) => {
-        // Create the post data with the selected category
+        // Create the post data with the category as a string
         const postData = {
             title: title,
             caption: description,
             latitude: location?.latitude ?? 0,
             longitude: location?.longitude ?? 0,
-            category: {
-                id: selectedTag,
-            },
+            category: selectedTag, // Now passing the category directly as a string
             imageUrl: imageUrl
         };
         
         console.log('Submitting post data:', postData);
         
         // Submit the post directly
-        fetch('http://10.0.2.2/post', {
+        fetch('https://safetypin.ppl.cs.ui.ac.id//post', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

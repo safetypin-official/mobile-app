@@ -4,7 +4,7 @@ import { Alert, View } from 'react-native';
 import * as Location from 'expo-location';
 import * as ImagePicker from 'react-native-image-picker';
 import { router } from 'expo-router';
-import PostPage, { getFileExtension } from '@/app/post'; // Adjust import path based on your project structure
+import PostPage, { getFileExtension } from '@/app/createPost'; // Adjust import path based on your project structure
 
 type FetchURL = string | URL | Request;
 
@@ -83,7 +83,7 @@ jest.mock('@expo/vector-icons/Entypo', () => 'Entypo');
 const mockFetch = jest.fn().mockImplementation(
   async (url: FetchURL, _?: RequestInit): Promise<FetchResponse> => {
     if (typeof url === 'string') {
-      if (url === 'http://10.0.2.2/post/s3/presigned-url') {
+      if (url === 'https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url') {
         return {
           ok: true,
           status: 200,
@@ -96,7 +96,7 @@ const mockFetch = jest.fn().mockImplementation(
           json: async () => ({}),
           blob: () => Promise.resolve(new MockBlob(['test']))
         };
-      } else if (url === 'http://10.0.2.2/post') {
+      } else if (url === 'https://safetypin.ppl.cs.ui.ac.id//post') {
         return {
           ok: true,
           status: 200,
@@ -289,7 +289,7 @@ describe('PostPage Component', () => {
     fireEvent.press(submitButton);
     
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith('http://10.0.2.2/post', expect.anything());
+      expect(mockFetch).toHaveBeenCalledWith('https://safetypin.ppl.cs.ui.ac.id//post', expect.anything());
       expect(Alert.alert).toHaveBeenCalledWith(
         "Success", 
         "Your report has been posted successfully",
@@ -379,11 +379,11 @@ describe('PostPage Component', () => {
     mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
         switch (url) {
-          case 'http://10.0.2.2/post/s3/presigned-url':
+          case 'https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url':
             return handlePresignedUrlRequest();
           case 'https://s3.example.com/upload?signature=abc':
             return handleUploadRequest();
-          case 'http://10.0.2.2/post':
+          case 'https://safetypin.ppl.cs.ui.ac.id//post':
             return handlePostRequest(init);
           default:
             return handleNotFoundRequest();
@@ -460,7 +460,7 @@ test('extracts file extension correctly', async () => {
   // Capture arguments passed to fetch untuk presigned URL
   let presignedUrlPayload: any = null;
   mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
-    if (typeof url === 'string' && url === 'http://10.0.2.2/post/s3/presigned-url') {
+    if (typeof url === 'string' && url === 'https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url') {
       if (init?.body) {
         const body = typeof init.body === 'string' ? init.body : JSON.stringify(init.body);
         presignedUrlPayload = JSON.parse(body);
@@ -514,14 +514,14 @@ test('extracts file extension correctly', async () => {
     // Mock non-OK response for presigned URL
     mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
-        if (url === 'http://10.0.2.2/post/s3/presigned-url') {
+        if (url === 'https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url') {
           return {
             ok: false,
             status: 403,
             statusText: 'Forbidden',
             json: async () => ({ error: 'Access denied' })
           };
-        } else if (url === 'http://10.0.2.2/post') {
+        } else if (url === 'https://safetypin.ppl.cs.ui.ac.id//post') {
           return {
             ok: true,
             json: async () => ({ id: '123', success: true })
@@ -576,7 +576,7 @@ test('extracts file extension correctly', async () => {
     // Mock response sequence: presigned URL success, but upload to S3 fails
     mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
-        if (url === 'http://10.0.2.2/post/s3/presigned-url') {
+        if (url === 'https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url') {
           return {
             ok: true,
             json: async () => ({ url: 'https://s3.example.com/upload?signature=abc' })
@@ -588,7 +588,7 @@ test('extracts file extension correctly', async () => {
             status: 500,
             statusText: 'Internal Server Error'
           };
-        } else if (url === 'http://10.0.2.2/post') {
+        } else if (url === 'https://safetypin.ppl.cs.ui.ac.id//post') {
           return {
             ok: true,
             json: async () => ({ id: '123', success: true })
@@ -632,7 +632,7 @@ test('extracts file extension correctly', async () => {
   test('handles server error response', async () => {
     // Mock fetch to return a server error response
     mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
-      if (typeof url === 'string' && url === 'http://10.0.2.2/post') {
+      if (typeof url === 'string' && url === 'https://safetypin.ppl.cs.ui.ac.id//post') {
         return {
           ok: false,
           status: 500,
@@ -683,13 +683,13 @@ test('extracts file extension correctly', async () => {
     // Mock presigned URL failure
     mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
-        if (url === 'http://10.0.2.2/post/s3/presigned-url') {
+        if (url === 'https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url') {
           return {
             ok: false,
             status: 403,
             statusText: 'Forbidden'
           };
-        } else if (url === 'http://10.0.2.2/post') {
+        } else if (url === 'https://safetypin.ppl.cs.ui.ac.id//post') {
           // Capture that post is made without image
           return {
             ok: true,
@@ -734,7 +734,7 @@ test('extracts file extension correctly', async () => {
     await waitFor(() => {
       // Verify that fetch was called to create post without an image
       const postCalls = mockFetch.mock.calls.filter(call => 
-        typeof call[0] === 'string' && call[0] === 'http://10.0.2.2/post'
+        typeof call[0] === 'string' && call[0] === 'https://safetypin.ppl.cs.ui.ac.id//post'
       );
       expect(postCalls.length).toBeGreaterThan(0);
       
@@ -853,7 +853,7 @@ test('extracts file extension correctly', async () => {
     
     mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
-        if (url === 'http://10.0.2.2/post/s3/presigned-url') {
+        if (url === 'https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url') {
           // Delay response to simulate network lag
           await presignedUrlPromise;
           return {
@@ -866,7 +866,7 @@ test('extracts file extension correctly', async () => {
             status: 200,
             json: async () => ({})
           };
-        } else if (url === 'http://10.0.2.2/post') {
+        } else if (url === 'https://safetypin.ppl.cs.ui.ac.id//post') {
           return {
             ok: true,
             json: async () => ({ id: '123', success: true })
@@ -924,12 +924,12 @@ test('extracts file extension correctly', async () => {
     // Mock fetch untuk mengembalikan respons yang valid tetapi dengan JSON yang invalid
     mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
-        if (url === 'http://10.0.2.2/post/s3/presigned-url') {
+        if (url === 'https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url') {
           return {
             ok: true, // response.ok = true
             json: async () => { throw new Error('Invalid JSON'); } // tetapi json() throw error
           };
-        } else if (url === 'http://10.0.2.2/post') {
+        } else if (url === 'https://safetypin.ppl.cs.ui.ac.id//post') {
           return {
             ok: true,
             json: async () => ({ id: '123', success: true })
@@ -984,9 +984,9 @@ test('extracts file extension correctly', async () => {
     // Mock fetch untuk throw network error langsung
     mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
-        if (url === 'http://10.0.2.2/post/s3/presigned-url') {
+        if (url === 'https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url') {
           throw new Error('Network error: Unable to connect to server');
-        } else if (url === 'http://10.0.2.2/post') {
+        } else if (url === 'https://safetypin.ppl.cs.ui.ac.id//post') {
           return {
             ok: true,
             json: async () => ({ id: '123', success: true })
@@ -1041,12 +1041,12 @@ test('extracts file extension correctly', async () => {
     // Mock fetch untuk return empty URL object
     mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
-        if (url === 'http://10.0.2.2/post/s3/presigned-url') {
+        if (url === 'https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url') {
           return {
             ok: true,
             json: async () => ({ /* url property missing */ })
           };
-        } else if (url === 'http://10.0.2.2/post') {
+        } else if (url === 'https://safetypin.ppl.cs.ui.ac.id//post') {
           return {
             ok: true,
             json: async () => ({ id: '123', success: true })
@@ -1145,11 +1145,11 @@ test('extracts clean S3 URL by removing query parameters', async () => {
   mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
     if (typeof url === 'string') {
       switch (url) {
-        case 'http://10.0.2.2/post/s3/presigned-url':
+        case 'https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url':
           return handlePresignedUrlRequest();
         case complexPresignedUrl:
           return handleS3UploadRequest();
-        case 'http://10.0.2.2/post':
+        case 'https://safetypin.ppl.cs.ui.ac.id//post':
           return handlePostRequest(init);
         default:
           return handleNotFoundRequest();
@@ -1211,7 +1211,7 @@ test('extracts clean S3 URL by removing query parameters', async () => {
     
     mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
-        if (url === 'http://10.0.2.2/post/s3/presigned-url') {
+        if (url === 'https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url') {
           return {
             ok: true,
             json: async () => ({ url: presignedUrl })
@@ -1223,7 +1223,7 @@ test('extracts clean S3 URL by removing query parameters', async () => {
             status: 403,
             statusText: 'Forbidden'
           };
-        } else if (url === 'http://10.0.2.2/post') {
+        } else if (url === 'https://safetypin.ppl.cs.ui.ac.id//post') {
           return {
             ok: true,
             json: async () => ({ id: '123', success: true })
@@ -1289,7 +1289,7 @@ test('extracts clean S3 URL by removing query parameters', async () => {
     
     mockFetch.mockImplementation(async (url: FetchURL, init?: RequestInit) => {
       if (typeof url === 'string') {
-        if (url === 'http://10.0.2.2/post/s3/presigned-url') {
+        if (url === 'https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url') {
           return {
             ok: true,
             json: async () => ({ url: presignedUrl })
@@ -1297,7 +1297,7 @@ test('extracts clean S3 URL by removing query parameters', async () => {
         } else if (url === presignedUrl) {
           // S3 upload fails dengan network error
           throw new Error('Network error during upload');
-        } else if (url === 'http://10.0.2.2/post') {
+        } else if (url === 'https://safetypin.ppl.cs.ui.ac.id//post') {
           return {
             ok: true,
             json: async () => ({ id: '123', success: true })
@@ -1374,7 +1374,7 @@ describe("PostPage - handleSubmit", () => {
           fetchedUrls.push(url);
           
           // First request - get presigned URL
-          if (url === 'http://10.0.2.2/post/s3/presigned-url') {
+          if (url === 'https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url') {
             return {
               ok: true,
               status: 200,
@@ -1395,7 +1395,7 @@ describe("PostPage - handleSubmit", () => {
             };
           }
           // Third request - create post
-          else if (url === 'http://10.0.2.2/post') {
+          else if (url === 'https://safetypin.ppl.cs.ui.ac.id//post') {
             return {
               ok: true,
               status: 200,
@@ -1454,13 +1454,13 @@ describe("PostPage - handleSubmit", () => {
       expect(mockFetch).toHaveBeenCalledTimes(4);
       
       // Check that fetch was called for these URLs (order may vary)
-      expect(fetchedUrls).toContain('http://10.0.2.2/post/s3/presigned-url');
+      expect(fetchedUrls).toContain('https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url');
       expect(fetchedUrls).toContain('https://s3.example.com/upload?signature=abc');
-      expect(fetchedUrls).toContain('http://10.0.2.2/post');
+      expect(fetchedUrls).toContain('https://safetypin.ppl.cs.ui.ac.id//post');
       
       // Verify the post request was made with the image URL
       const postCall = mockFetch.mock.calls.find(call => 
-        call[0] === 'http://10.0.2.2/post'
+        call[0] === 'https://safetypin.ppl.cs.ui.ac.id//post'
       );
       
       expect(postCall).toBeTruthy();
@@ -1496,7 +1496,7 @@ describe("PostPage - handleSubmit", () => {
         if (typeof url === 'string') {
           
           // First request - get presigned URL
-          if (url === 'http://10.0.2.2/post/s3/presigned-url') {
+          if (url === 'https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url') {
             return {
               ok: true,
               status: 200,
@@ -1530,7 +1530,7 @@ describe("PostPage - handleSubmit", () => {
             };
           }
           // Third request - create post (potentially without image)
-          else if (url === 'http://10.0.2.2/post') {
+          else if (url === 'https://safetypin.ppl.cs.ui.ac.id//post') {
             return {
               ok: true,
               status: 200,
@@ -1612,7 +1612,7 @@ describe("PostPage - handleSubmit", () => {
     await waitFor(() => {
       // Verify the post request was made without an image URL
       const postCall = mockFetch.mock.calls.find(call => 
-        call[0] === 'http://10.0.2.2/post'
+        call[0] === 'https://safetypin.ppl.cs.ui.ac.id//post'
       );
       
       expect(postCall).toBeTruthy();
@@ -1652,7 +1652,7 @@ describe("PostPage - handleSubmit", () => {
           fetchedUrls.push(url);
           
           // Only handle the post request - we shouldn't see S3 requests
-          if (url === 'http://10.0.2.2/post') {
+          if (url === 'https://safetypin.ppl.cs.ui.ac.id//post') {
             return {
               ok: true,
               status: 200,
@@ -1711,15 +1711,15 @@ describe("PostPage - handleSubmit", () => {
     await waitFor(() => {
       // Verify fetch was only called for the post endpoint, not for S3
       expect(mockFetch).toHaveBeenCalledTimes(1);
-      expect(fetchedUrls).toContain('http://10.0.2.2/post');
+      expect(fetchedUrls).toContain('https://safetypin.ppl.cs.ui.ac.id//post');
       
       // Importantly, we should NOT see calls to get presigned URL or upload to S3
-      expect(fetchedUrls).not.toContain('http://10.0.2.2/post/s3/presigned-url');
+      expect(fetchedUrls).not.toContain('https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url');
       expect(fetchedUrls.some(url => url.includes('s3.example.com'))).toBeFalsy();
       
       // Verify the post request was made without an image URL
       const postCall = mockFetch.mock.calls[0];
-      expect(postCall[0]).toBe('http://10.0.2.2/post');
+      expect(postCall[0]).toBe('https://safetypin.ppl.cs.ui.ac.id//post');
       
       const requestOptions = postCall[1];
       const requestBody = JSON.parse(requestOptions.body as string);

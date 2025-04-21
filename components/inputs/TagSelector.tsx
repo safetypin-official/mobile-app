@@ -10,10 +10,7 @@ interface Tag {
 interface ApiResponse {
   success: boolean;
   message: string;
-  data: Array<{
-    id: string;
-    name: string;
-  }>;
+  data: string[]; // Updated to match new response format (array of strings)
 }
 
 const TAG_COLORS = [
@@ -25,7 +22,7 @@ const TAG_COLORS = [
 interface TagSelectorProps {
   selectedTag: string | null;
   onTagChange: (tagId: string | null) => void;
-  testID?: string; // Add testID prop
+  testID?: string;
 }
 
 const TagSelector: React.FC<TagSelectorProps> = ({ selectedTag, onTagChange, testID }) => {
@@ -41,14 +38,15 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTag, onTagChange, tes
   const fetchTags = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://10.0.2.2/post/category');
+      const response = await fetch('https://safetypin.ppl.cs.ui.ac.id//posts/category');
       const data: ApiResponse = await response.json();
       
       if (data.success) {
-        // Map API data to Tag format, assigning colors based on index
-        const tagsWithColors = data.data.map((item, index) => ({
-          id: item.id,
-          name: item.name,
+        // Map string array to Tag format, using the string as both id and name
+        // Assign colors based on index
+        const tagsWithColors = data.data.map((categoryName, index) => ({
+          id: categoryName, // Using the category name as ID
+          name: categoryName,
           color: TAG_COLORS[index % TAG_COLORS.length]
         }));
         

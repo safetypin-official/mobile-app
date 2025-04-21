@@ -29,11 +29,7 @@ describe('TagSelector Component', () => {
     const mockTags = {
       success: true,
       message: 'Tags fetched successfully',
-      data: [
-        { id: '1', name: 'React' },
-        { id: '2', name: 'TypeScript' },
-        { id: '3', name: 'JavaScript' }
-      ]
+      data: ['React', 'TypeScript', 'JavaScript']
     };
     
     fetchMock.mockResponseOnce(JSON.stringify(mockTags));
@@ -46,7 +42,7 @@ describe('TagSelector Component', () => {
     
     expect(getAllByText(/React|TypeScript|JavaScript/).length).toBe(3);
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith('http://10.0.2.2/post/category');
+    expect(fetchMock).toHaveBeenCalledWith('https://safetypin.ppl.cs.ui.ac.id//posts/category');
   });
 
   // Test error handling with API error message
@@ -97,7 +93,7 @@ describe('TagSelector Component', () => {
     const mockTags = {
       success: true,
       message: 'Tags fetched successfully',
-      data: [{ id: '1', name: 'React' }]
+      data: ['React']
     };
     fetchMock.mockResponseOnce(JSON.stringify(mockTags));
     
@@ -114,10 +110,7 @@ describe('TagSelector Component', () => {
     const mockTags = {
       success: true,
       message: 'Tags fetched successfully',
-      data: [
-        { id: '1', name: 'React' },
-        { id: '2', name: 'TypeScript' }
-      ]
+      data: ['React', 'TypeScript']
     };
     
     fetchMock.mockResponseOnce(JSON.stringify(mockTags));
@@ -129,10 +122,10 @@ describe('TagSelector Component', () => {
     
     await waitFor(() => expect(getByTestId('test-selector')).toBeTruthy());
     
-    // Press the first tag
-    fireEvent.press(getByTestId('test-selector-tag-1'));
+    // Press the first tag (with ID "React" now)
+    fireEvent.press(getByTestId('test-selector-tag-React'));
     
-    expect(mockOnTagChange).toHaveBeenCalledWith('1');
+    expect(mockOnTagChange).toHaveBeenCalledWith('React');
   });
 
   // Test tag deselection
@@ -140,23 +133,20 @@ describe('TagSelector Component', () => {
     const mockTags = {
       success: true,
       message: 'Tags fetched successfully',
-      data: [
-        { id: '1', name: 'React' },
-        { id: '2', name: 'TypeScript' }
-      ]
+      data: ['React', 'TypeScript']
     };
     
     fetchMock.mockResponseOnce(JSON.stringify(mockTags));
     
     const mockOnTagChange = jest.fn();
     const { getByTestId } = render(
-      <TagSelector selectedTag="1" onTagChange={mockOnTagChange} testID="test-selector" />
+      <TagSelector selectedTag="React" onTagChange={mockOnTagChange} testID="test-selector" />
     );
     
     await waitFor(() => expect(getByTestId('test-selector')).toBeTruthy());
     
     // Press the already selected tag
-    fireEvent.press(getByTestId('test-selector-tag-1'));
+    fireEvent.press(getByTestId('test-selector-tag-React'));
     
     expect(mockOnTagChange).toHaveBeenCalledWith(null);
   });
@@ -194,10 +184,7 @@ describe('TagSelector Component', () => {
     const mockTags = {
       success: true,
       message: 'Tags fetched successfully',
-      data: Array.from({ length: 12 }, (_, i) => ({ 
-        id: `${i+1}`, 
-        name: `Tag ${i+1}` 
-      }))
+      data: Array.from({ length: 12 }, (_, i) => `Tag ${i+1}`)
     };
     
     fetchMock.mockResponseOnce(JSON.stringify(mockTags));
