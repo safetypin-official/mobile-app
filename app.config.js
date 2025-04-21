@@ -7,7 +7,7 @@ export default {
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
-    scheme: "myapp",
+    scheme: "safetypin",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     ios: {
@@ -18,7 +18,8 @@ export default {
       },
       config: {
         googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY
-      }
+      },
+      associatedDomains: ["applinks:safetypin.ppl.cs.ui.ac.id"]
     },
     android: {
       package: "com.safetypin",
@@ -30,7 +31,16 @@ export default {
         googleMaps: {
           apiKey: process.env.GOOGLE_MAPS_API_KEY
         }
-      }
+      },
+      intentFilters: [
+        {
+          action: "VIEW",
+          category: ["DEFAULT", "BROWSABLE"],
+          data: {
+            scheme: "safetypin"
+          }
+        }
+      ]
     },
     web: {
       bundler: "metro",

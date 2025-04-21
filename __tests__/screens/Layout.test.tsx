@@ -106,7 +106,7 @@ describe("Layout", () => {
     fireEvent.press(getByTestId("map-button"));
     
     // Verify router.push was called with "/post"
-    expect(router.push).toHaveBeenCalledWith("/post");
+    expect(router.push).toHaveBeenCalledWith("/createPost");
   });
 
   it("updates activeTab when Notifications button is pressed", () => {
