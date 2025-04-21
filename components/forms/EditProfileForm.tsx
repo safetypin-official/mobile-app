@@ -145,7 +145,7 @@ const EditProfileForm = forwardRef(({
             <View>
               <InputField
                 label="Instagram"
-                placeholder={socialLinks.instagram || "username"}
+                placeholder={socialLinks.instagram ?? "username"}
                 onChangeText={(text) => handleInputChange("instagram", text)}
                 labelColor="#3B080A"
               />
@@ -159,7 +159,7 @@ const EditProfileForm = forwardRef(({
             <View>
               <InputField
                 label="Twitter"
-                placeholder={socialLinks.twitter || "username"}
+                placeholder={socialLinks.twitter ?? "username"}
                 onChangeText={(text) => handleInputChange("twitter", text)}
                 labelColor="#3B080A"
               />
@@ -173,7 +173,7 @@ const EditProfileForm = forwardRef(({
             <View>
               <InputField
                 label="Line"
-                placeholder={socialLinks.line || "username"}
+                placeholder={socialLinks.line ?? "username"}
                 onChangeText={(text) => handleInputChange("line", text)}
                 labelColor="#3B080A"
               />
@@ -182,7 +182,7 @@ const EditProfileForm = forwardRef(({
             <View>
               <InputField
                 label="TikTok"
-                placeholder={socialLinks.tiktok || "username"}
+                placeholder={socialLinks.tiktok ?? "username"}
                 onChangeText={(text) => handleInputChange("tiktok", text)}
                 labelColor="#3B080A"
               />
@@ -196,7 +196,7 @@ const EditProfileForm = forwardRef(({
             <View>
               <InputField
                 label="Discord"
-                placeholder={socialLinks.discord || "username#1234"}
+                placeholder={socialLinks.discord ?? "username#1234"}
                 onChangeText={(text) => handleInputChange("discord", text)}
                 labelColor="#3B080A"
               />
