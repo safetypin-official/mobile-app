@@ -13,13 +13,17 @@ const SettingsSection: React.FC<SettingsSectionProps> = ({ title, items }) => {
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>{title}</Text>
       </View>
-      {items.map((item, index) => (
-        <SettingsItem key={index} {...item} />
+      {items.map((item) => (
+        <SettingsItem 
+          key={item.title}
+          {...item} 
+        />
       ))}
     </View>
   );
 };
 
+// Reuse your existing styles
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
