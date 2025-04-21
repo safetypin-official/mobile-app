@@ -66,18 +66,18 @@ export const authenticatedFetch = async <T = any>(
         // Update stored tokens with new values
         await updateAuthData({
           token: refreshData.accessToken,
-          refreshToken: refreshData.refreshToken || refreshToken,
+          refreshToken: refreshData.refreshToken ?? refreshToken,
           // Include any other auth data that needs to be preserved
         });
         
         // Retry the original request with the new token
         return authenticatedFetch(url, options, true);
       } catch (refreshError) {
-        console.log('Token refresh failed, redirecting to login');
+        console.log('Token refresh failed, redirecting to login:', refreshError);
         // If refresh fails, clear auth and redirect to login
         await clearAuthData();
         router.replace('/');
-        throw new Error('Session expired. Please login again.');
+        throw refreshError; // Re-throw the original error to ensure proper handling
       }
     } else if (response.status === 401) {
       // If we already tried refreshing or no refresh token is available
@@ -94,7 +94,7 @@ export const authenticatedFetch = async <T = any>(
 
     // Handle other non-successful responses
     if (!response.ok) {
-      throw new Error(data.message || `Request failed with status ${response.status}`);
+      throw new Error(data.message ?? `Request failed with status ${response.status}`);
     }
     
     return data;
