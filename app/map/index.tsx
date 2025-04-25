@@ -35,6 +35,7 @@ export default function ExploreScreen() {
   const [showReport, setShowReport] = useState<boolean>(false);
   
   const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
+  const [locationLoaded, setLocationLoaded] = useState<boolean>(false);
 
   // Fetch user location
   useEffect(() => {
@@ -42,6 +43,7 @@ export default function ExploreScreen() {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         setErrorMsg('Permission to access location was denied');
+        setLocationLoaded(true); // Mark as loaded, will use DEFAULT_LOCATION
         return;
       }
 
@@ -56,6 +58,8 @@ export default function ExploreScreen() {
       } catch (error) {
         console.error('Error getting location:', error);
         setErrorMsg('Unable to get current location');
+      } finally {
+        setLocationLoaded(true); // Mark location as loaded regardless of success/failure
       }
     })();
   }, []);
@@ -148,7 +152,7 @@ export default function ExploreScreen() {
       <MapView
         provider={PROVIDER_GOOGLE}
         style={styles.map}
-        initialRegion={location}
+        region={location}
         showsUserLocation
         showsMyLocationButton
         onPress={handleMapPress}
