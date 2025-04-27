@@ -15,7 +15,7 @@ import ReportTags, { TAG_KEYS } from "./ReportTags";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import UserInteraction from '@/components/displays/post/UserInteraction';
-import { authenticatedPost } from "@/utils/api";
+import { authenticatedDelete, authenticatedPost } from "@/utils/api";
 
 type TagKey = (typeof TAG_KEYS)[number];
 
@@ -61,12 +61,12 @@ const ReportContent: React.FC<ReportContentProps> = ({
     try {
       if (likeColor === "#7F7574") {
         // User is liking the post
-        const response = await authenticatedPost(`https://safetypin.ppl.cs.ui.ac.id/posts/vote/upvote?postId=${postId}`, {});
-        console.log('Upvote response:', response);
-        
         setLikes(prevLikes => prevLikes + 1);
         setLikeColor("#5E9F3D");
 
+        const response = await authenticatedPost(`https://safetypin.ppl.cs.ui.ac.id/posts/vote/upvote?postId=${postId}`, {});
+        console.log('Upvote response:', response);
+        
         if (dislikeColor === "#904A47") {
           // If post was previously disliked, remove the dislike
           setDislikes(prevDislikes => prevDislikes - 1);
@@ -74,11 +74,11 @@ const ReportContent: React.FC<ReportContentProps> = ({
         }
       } else {
         // User is canceling their like
-        const response = await authenticatedPost(`https://safetypin.ppl.cs.ui.ac.id/posts/vote/cancel-vote?postId=${postId}`, {});
-        console.log('Cancel vote response:', response);
-        
         setLikes(prevLikes => prevLikes - 1);
         setLikeColor("#7F7574");
+
+        const response = await authenticatedDelete(`https://safetypin.ppl.cs.ui.ac.id/posts/vote/cancel-vote?postId=${postId}`, {});
+        console.log('Cancel vote response:', response);
       }
     } catch (error) {
       console.error('Error updating vote:', error);
@@ -95,11 +95,11 @@ const ReportContent: React.FC<ReportContentProps> = ({
     try {
       if (dislikeColor === "#7F7574") {
         // User is disliking the post
-        const response = await authenticatedPost(`https://safetypin.ppl.cs.ui.ac.id/posts/vote/downvote?postId=${postId}`, {});
-        console.log('Downvote response:', response);
-        
         setDislikes(prevDislikes => prevDislikes + 1);
         setDislikeColor("#904A47");
+
+        const response = await authenticatedPost(`https://safetypin.ppl.cs.ui.ac.id/posts/vote/downvote?postId=${postId}`, {});
+        console.log('Downvote response:', response);
 
         if (likeColor === "#5E9F3D") {
           // If post was previously liked, remove the like
@@ -108,11 +108,11 @@ const ReportContent: React.FC<ReportContentProps> = ({
         }
       } else {
         // User is canceling their dislike
-        const response = await authenticatedPost(`https://safetypin.ppl.cs.ui.ac.id/posts/vote/cancel-vote?postId=${postId}`, {});
-        console.log('Cancel vote response:', response);
-        
         setDislikes(prevDislikes => prevDislikes - 1);
         setDislikeColor("#7F7574");
+
+        const response = await authenticatedDelete(`https://safetypin.ppl.cs.ui.ac.id/posts/vote/cancel-vote?postId=${postId}`, {});
+        console.log('Cancel vote response:', response);
       }
     } catch (error) {
       console.error('Error updating vote:', error);
@@ -186,8 +186,8 @@ const ReportContent: React.FC<ReportContentProps> = ({
             <UserInteraction
               type="like-icon"
               onPress={handleLikeClick}
-              width={14}
-              height={14}
+              width={18}
+              height={18}
               fill={likeColor}  // Pass dynamic likeColor instead of hardcoded value
             />
             <Text testID="like-count" style={[styles.countText, { color: likeColor }]}>{likes}</Text>
@@ -196,11 +196,20 @@ const ReportContent: React.FC<ReportContentProps> = ({
             <UserInteraction
               type="dislike-icon"
               onPress={handleDislikeClick}
-              width={14}
-              height={14}
+              width={18}
+              height={18}
               fill={dislikeColor}  // Pass dynamic dislikeColor instead of hardcoded value
             />
             <Text testID="dislike-count" style={[styles.countText, { color: dislikeColor }]}>{dislikes}</Text>
+          </View>
+          <View style={styles.actionButton} testID="dislike-button">
+            <UserInteraction
+              type="comment-icon"
+              onPress={handleDislikeClick}
+              width={22}
+              height={22}
+            />
+            <Text testID="comment-icon" style={[styles.countText, { color: dislikeColor }]}>{dislikes}</Text>
           </View>
         </View>
         <View style={styles.shareActions}>
