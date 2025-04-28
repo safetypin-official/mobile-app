@@ -75,7 +75,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback>
               <View style={styles.modalContent}>
-                <MoreOptionsButton closeModal={() => setModalVisible(false)} onSendMessage={() => {console.log("Send Message")}} onReport={handleReport} />
+                <MoreOptionsButton closeModal={() => setModalVisible(false)} onSendMessage={() => { console.log("Send Message"); } } onReport={handleReport} onDelete={function (): void {
+                  throw new Error("Function not implemented.");
+                } } />
               </View>
             </TouchableWithoutFeedback>
           </View>
