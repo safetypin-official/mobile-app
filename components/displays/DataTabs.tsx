@@ -8,8 +8,6 @@ import {
   RefreshControl,
   StyleSheet,
   ListRenderItemInfo,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
   ViewStyle,
 } from 'react-native';
 
@@ -149,25 +147,9 @@ export default function DataTabs<T>({
   }, [tabs.map((t) => t.refreshTrigger).join(','), activeTab, loadData, tabs]);
 
   const onRefresh = () => loadData(activeTab, 0, true);
-  const handleLoadMore = () => {
-    if (
-      !currentTabState.loading &&
-      !currentTabState.refreshing &&
-      currentTabState.hasMore
-    ) {
-      loadData(activeTab, currentTabState.currentPage + 1);
-    }
-  };
   const handleTabChange = (key: string) => {
     flatListRef.current?.scrollToOffset({ offset: 0, animated: false });
     setActiveTab(key);
-  };
-  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const y = e.nativeEvent.contentOffset.y;
-    setTabsState((prev) => ({
-      ...prev,
-      [activeTab]: { ...prev[activeTab], scrollPosition: y },
-    }));
   };
 
   const renderFooter = () => {
