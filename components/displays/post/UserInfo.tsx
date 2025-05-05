@@ -58,12 +58,34 @@ const UserInfo: React.FC<{
     setTimeout(() => setToastVisible(false), 3000);
   };
 
+  const deletePost = async () => {
+    try {
+      const response = await authenticatedDelete(`https://safetypin.ppl.cs.ui.ac.id/post/${postId}`);
+      
+      if (response.success) {
+        setToastMessage("Post Deleted");
+        setToastVisible(true);
+        setTimeout(() => setToastVisible(false), 3000);
+        
+        if (onPostDeleted) {
+          onPostDeleted();
+        }
+      } else {
+        Alert.alert("Error", "Failed to delete post");
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      Alert.alert("Error", "Failed to delete post");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
       setModalVisible(false);
       
-      // Confirm deletion
       Alert.alert(
         "Delete Post",
         "Are you sure you want to delete this post?",
@@ -73,29 +95,7 @@ const UserInfo: React.FC<{
             text: "Delete", 
             style: "destructive",
             onPress: () => {
-              (async () => {
-                try {
-                  const response = await authenticatedDelete(`https://safetypin.ppl.cs.ui.ac.id/post/${postId}`);
-                  
-                  if (response.success) {
-                    setToastMessage("Post Deleted");
-                    setToastVisible(true);
-                    setTimeout(() => setToastVisible(false), 3000);
-                    
-                    // Call the callback to refresh the posts list
-                    if (onPostDeleted) {
-                      onPostDeleted();
-                    }
-                  } else {
-                    Alert.alert("Error", "Failed to delete post");
-                  }
-                } catch (error) {
-                  console.error("Error deleting post:", error);
-                  Alert.alert("Error", "Failed to delete post");
-                } finally {
-                  setIsDeleting(false);
-                }
-              })();
+              void deletePost();
             }
           }
         ]
