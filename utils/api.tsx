@@ -2,6 +2,7 @@ import { getAuthData, clearAuthData, updateAuthData } from './auth';
 import { router } from 'expo-router';
 
 export type ApiResponse<T = any> = {
+  last: boolean;
   url: string | PromiseLike<string | null> | null;
   success: boolean;
   message: string | null;

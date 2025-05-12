@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Alert } from "react-native";
 import LoginForm from "@/components/forms/LoginForm";
 import { router } from 'expo-router';
-import { onGoogleAuth, onAppleIDAuth, isValidEmail, loginWithEmail } from "@/utils/auth";
+import { onGoogleAuth, isValidEmail, loginWithEmail } from "@/utils/auth";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -45,18 +45,6 @@ const LoginScreen = () => {
     }
   };
 
-  const handleAppleAuth = async () => {
-    try {
-      const result = await onAppleIDAuth();
-      console.log("Apple auth successful:", result);
-
-      router.push('/map');
-    } catch (error) {
-      // The alerts are already handled in the onAppleIDAuth function
-      console.error("Apple auth failed in component:", error);
-    }
-  };
-
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <LoginForm 
@@ -65,7 +53,6 @@ const LoginScreen = () => {
         onSignUp={() => router.push('/signUp')}
         onLogIn={handleLogin}
         onGoogleAuth={handleGoogleAuth}
-        onAppleAuth={handleAppleAuth}
         setEmail={setEmail}
         setPassword={setPassword}
       />

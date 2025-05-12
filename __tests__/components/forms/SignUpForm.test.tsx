@@ -11,13 +11,11 @@ describe('SignUpForm', () => {
   const mockOnSignUp = jest.fn();
   const mockOnLogIn = jest.fn();
   const mockOnGoogleAuth = jest.fn();
-  const mockOnAppleAuth = jest.fn();
 
   const defaultProps = {
     onSignUp: mockOnSignUp,
     onLogIn: mockOnLogIn,
     onGoogleAuth: mockOnGoogleAuth,
-    onAppleAuth: mockOnAppleAuth,
     testID: 'signup-form'
   };
 
@@ -40,7 +38,6 @@ describe('SignUpForm', () => {
     // For buttons and links
     expect(getByTestId('signup-button')).toBeTruthy();
     expect(getByTestId('google-auth')).toBeTruthy();
-    expect(getByTestId('apple-auth')).toBeTruthy();
     expect(getByTestId('login-link')).toBeTruthy();
     
     // Check the title text is present
@@ -67,12 +64,6 @@ describe('SignUpForm', () => {
     const { getByTestId } = render(<SignUpForm {...defaultProps} />);
     fireEvent.press(getByTestId('google-auth'));
     expect(mockOnGoogleAuth).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls onAppleAuth when Apple button is pressed', () => {
-    const { getByTestId } = render(<SignUpForm {...defaultProps} />);
-    fireEvent.press(getByTestId('apple-auth'));
-    expect(mockOnAppleAuth).toHaveBeenCalledTimes(1);
   });
 
   // Testing form validation errors
