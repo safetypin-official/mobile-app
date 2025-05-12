@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">78.57% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>11/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">82.35% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>14/17</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">78.57% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>11/14</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -112,7 +112,21 @@
 <a name='L47'></a><a href='#L47'>47</a>
 <a name='L48'></a><a href='#L48'>48</a>
 <a name='L49'></a><a href='#L49'>49</a>
-<a name='L50'></a><a href='#L50'>50</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -136,20 +150,30 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -167,7 +191,8 @@ import { SvgXml } from 'react-native-svg';
 &nbsp;
 import {
     likeIcon,
-    dislikeIcon
+    dislikeIcon,
+    commentIcon,
 } from '../../../assets/userInteractions';
 &nbsp;
 interface UserInteractionProps {
@@ -176,6 +201,7 @@ interface UserInteractionProps {
     width?: number;   // New prop for width
     height?: number;  // New prop for height
     fill?: string;    // New prop for fill color
+    testID?: string;  // Add testID prop
 }
 &nbsp;
 const UserInteraction: React.FC&lt;UserInteractionProps&gt; = ({ 
@@ -183,19 +209,29 @@ const UserInteraction: React.FC&lt;UserInteractionProps&gt; = ({
     onPress, 
     width = 24,      // Default width
     height = 24,     // Default height
-    fill = "#7F7574" // Default fill color
+    fill = "#7F7574", // Default fill color
+    testID = "svg-icon" // Default testID
 }) =&gt; {
     let userInteractionXml;
+    let iconTestID;
 &nbsp;
     switch (type) {
         case 'like-icon':
-            userInteractionXml = likeIcon;
+            // Dynamically replace the fill color in the SVG
+            userInteractionXml = likeIcon.replace('fill="#5E9F3D"', `fill="${fill}"`);
+            iconTestID = testID || 'like-icon';
             break;
         case 'dislike-icon':
-            userInteractionXml = dislikeIcon;
+            userInteractionXml = dislikeIcon.replace('fill="#904A47"', `fill="${fill}"`);
+            iconTestID = testID || 'dislike-icon';
             break;
+<span class="branch-2 cbranch-no" title="branch not covered" >        case 'comment-icon':</span>
+<span class="cstat-no" title="statement not covered" >            userInteractionXml = commentIcon.replace('fill="#5E9F3D"', `fill="${fill}"`);</span>
+<span class="cstat-no" title="statement not covered" >            iconTestID = testID || 'comment-icon';</span>
+<span class="cstat-no" title="statement not covered" >            break;</span>
         default:
-            userInteractionXml = likeIcon;
+            userInteractionXml = likeIcon.replace('fill="#5E9F3D"', `fill="${fill}"`);
+            iconTestID = testID || 'default-icon';
     }
 &nbsp;
     return (
@@ -204,7 +240,7 @@ const UserInteraction: React.FC&lt;UserInteractionProps&gt; = ({
                 xml={userInteractionXml} 
                 width={width} 
                 height={height}
-                fill={fill}
+                testID={iconTestID}
             /&gt;
         &lt;/TouchableOpacity&gt;
     );
@@ -217,7 +253,7 @@ export default UserInteraction;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-04-05T15:32:54.309Z
+                at 2025-05-12T09:40:49.098Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
