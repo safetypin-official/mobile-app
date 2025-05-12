@@ -14,8 +14,16 @@ interface ProfileCardProps {
   verified: boolean;
   profileImage: string;
   profileBanner: string;
-  onEditPress: () => void;
-  onSettingsPress: () => void;
+  onEditPress?: () => void;
+  onSettingsPress?: () => void;
+  onFollowPress?: (isFollowing: boolean) => void;
+  isFollowing?: boolean;
+  isOwnProfile?: boolean;
+  followersCount?: number;
+  followingCount?: number;
+  onFollowersPress?: () => void;
+  onFollowingPress?: () => void;
+  onFollowersCountChange?: (newCount: number) => void;
   socialLinks?: {
     tiktok?: string;
     line?: string;
@@ -59,8 +67,25 @@ const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => v
       profileBanner,
       onEditPress,
       onSettingsPress,
+      onFollowPress,
+      onFollowersPress,
+      onFollowingPress,
+      followersCount = 0,
+      followingCount = 0,
+      isFollowing = true,
+      isOwnProfile = true,
+      onFollowersCountChange,
       socialLinks = {},
     } = props;
+
+    const handleFollowPress = () => {
+      const newFollowingState = !isFollowing;
+      
+      if (onFollowPress) {
+        onFollowPress(newFollowingState);
+        console.log(`User Followed ${id}, Count Change: ${onFollowersCountChange}`);
+      }
+    };
 
     const handleSocialLinkPress = async (username?: string, platform?: keyof typeof SOCIAL_MEDIA_URLS) => {
       if (!username?.trim() || !platform) {
@@ -119,9 +144,11 @@ const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => v
         >
           <View style={styles.overlay} />
           <View style={styles.content}>
-            <TouchableOpacity onPress={onSettingsPress} style={styles.settingsIcon} testID='settingsButton'>
-              <SvgXml xml={settings} width={36} height={36} fill='#d0c4c3' testID='svg-xml' />
-            </TouchableOpacity>
+            {isOwnProfile && (
+              <TouchableOpacity onPress={onSettingsPress} style={styles.settingsIcon} testID='settingsButton'>
+                <SvgXml xml={settings} width={36} height={36} fill='#d0c4c3' testID='svg-xml' />
+              </TouchableOpacity>
+            )}
 
             <Image
               style={styles.profileImage}
@@ -138,11 +165,42 @@ const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => v
                     <MaterialIcons name="verified" size={16} color="#4285F4" style={styles.verifiedIcon} testID='MaterialIcons-verified'/>
                   )}
                 </View>
+                <View style={styles.followStatsContainer}>
+                  <TouchableOpacity onPress={onFollowersPress}>
+                    <Text style={styles.followStatText}>
+                      <Text style={styles.followStatNumber}>{followersCount}</Text> Followers
+                    </Text>
+                  </TouchableOpacity>
+                  <Text style={[styles.followStatText, styles.followStatSeparator]}>•</Text>
+                  <TouchableOpacity onPress={onFollowingPress}>
+                    <Text style={styles.followStatText}>
+                      <Text style={styles.followStatNumber}>{followingCount}</Text> Following
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-              <TouchableOpacity style={styles.editButton} onPress={onEditPress}>
-                <SvgXml xml={pencil} width={17} height={17} style={styles.iconGap} testID='svg-xml'/>
-                <Text style={styles.editText}>Edit Profile</Text>
-              </TouchableOpacity>
+              {isOwnProfile ? (
+                <TouchableOpacity style={styles.editButton} onPress={onEditPress}>
+                  <SvgXml xml={pencil} width={17} height={17} style={styles.iconGap}/>
+                  <Text style={styles.editText}>Edit Profile</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity 
+                  style={[
+                    styles.followButton, 
+                    isFollowing && styles.unfollowButton
+                  ]} 
+                  onPress={handleFollowPress}
+                  testID="follow-button"
+                >
+                  <Text style={[
+                    styles.followText,
+                    isFollowing && styles.unfollowText
+                  ]}>
+                    {isFollowing ? 'Following' : 'Follow'}
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </ImageBackground>
@@ -297,6 +355,23 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontFamily: 'Inter',
   },
+  followButton: {
+    backgroundColor: '#9F3F3D',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  unfollowButton: {
+    backgroundColor: '#e0e0e0',
+  },
+  followText: {
+    fontSize: 12,
+    color: '#fff',
+    fontWeight: '600',
+    fontFamily: 'Inter',
+  },
   iconGap: {
     marginRight: 8,
   },
@@ -314,6 +389,26 @@ const styles = StyleSheet.create({
   },
   socialIcon: {
     padding: 8,
+  },
+  followStatsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  followStatText: {
+    fontSize: 14,
+    color: '#D0C4C3',
+    fontFamily: 'Inter',
+  },
+  followStatNumber: {
+    fontWeight: '600',
+    color: '#fff',
+  },
+  followStatSeparator: {
+    marginHorizontal: 8,
+  },
+  unfollowText: {
+    color: '#4d4544', // Dark text for unfollow state
   },
 });
 

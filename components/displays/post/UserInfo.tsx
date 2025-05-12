@@ -4,12 +4,11 @@ import MoreOptionsButton from "@/components/buttons/post/MoreOptionsButton";
 import Toast from "../../toasts/Toast";
 import Pin from "@/components/displays/Pin";
 import { authenticatedDelete } from "@/utils/api";
-import { moreOptionsIcon } from "@/assets/icons";
-import { SvgXml } from "react-native-svg";
+import { router } from "expo-router";
 
 // Updated user interface to match new API response
 export interface PostedByUser {
-  id: string;
+  userId: string;
   name: string;
   profilePicture?: string;
 }
@@ -28,6 +27,7 @@ const UserInfo: React.FC<{
   categoryType?: string;
   postId: string;
   onPostDeleted?: () => void;
+  onUserPress?: () => void; // Add an optional prop for user press action
 }> = ({
   postedBy,
   avatarUrl = "https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/f806fe330fa9f5d6235dca1cb075682ea60ceeeafa74088633aa747789bbf602?placeholderIfAbsent=true",
@@ -41,6 +41,7 @@ const UserInfo: React.FC<{
   categoryType = "other-crime",
   postId,
   onPostDeleted,
+  onUserPress,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
@@ -69,29 +70,30 @@ const UserInfo: React.FC<{
         "Delete Post",
         "Are you sure you want to delete this post?",
         [
-          { text: "Cancel", style: "cancel" },
+          { text: "Cancel", style: "cancel", onPress: () => setIsDeleting(false) },
           { 
             text: "Delete", 
             style: "destructive",
             onPress: async () => {
               try {
-                const response = await authenticatedDelete(`https://safetypin.ppl.cs.ui.ac.id/post/${postId}`);
+                await authenticatedDelete(`https://safetypin.ppl.cs.ui.ac.id/posts/${postId}`);
                 
-                if (response.success) {
-                  setToastMessage("Post Deleted");
-                  setToastVisible(true);
-                  setTimeout(() => setToastVisible(false), 3000);
-                  
-                  // Call the callback to refresh the posts list
-                  if (onPostDeleted) {
-                    onPostDeleted();
-                  }
-                } else {
-                  Alert.alert("Error", "Failed to delete post");
+                // Show success toast - using consistent pattern with CommentSection
+                setToastMessage("Post deleted successfully");
+                setToastVisible(true);
+                setTimeout(() => setToastVisible(false), 3000);
+                
+                // Call the callback to refresh the posts list
+                if (onPostDeleted) {
+                  onPostDeleted();
                 }
+                
               } catch (error) {
                 console.error("Error deleting post:", error);
-                Alert.alert("Error", "Failed to delete post");
+                // Show error toast - matching CommentSection pattern
+                setToastMessage("Failed to delete post");
+                setToastVisible(true);
+                setTimeout(() => setToastVisible(false), 3000);
               } finally {
                 setIsDeleting(false);
               }
@@ -105,54 +107,68 @@ const UserInfo: React.FC<{
     }
   };
 
+  // Default handler for user press that navigates to profile
+  const handleUserPress = () => {
+    if (onUserPress) {
+      // Use provided custom handler if available
+      onUserPress();
+    } else if (postedBy?.userId) {
+      console.log("User ID:", postedBy.userId);
+      // Default navigation to user profile
+      router.push(`/profile?userId=${postedBy.userId}`);
+    }
+  };
+
   return (
     <View style={styles.userInfo}>
-      <Image source={{ uri: displayAvatar }} style={styles.avatar} />
-      <View style={styles.userDetails}>
-        <View style={styles.userHeader}>
-          <View style={styles.userNameGroup}>
+      <TouchableOpacity onPress={handleUserPress} style={styles.userInfoTouchable}>
+        <Image source={{ uri: displayAvatar }} style={styles.avatar} />
+        <View style={styles.userDetails}>
+          <View style={styles.userHeader}>
+            <View style={styles.userNameGroup}>
+              <Text 
+                style={styles.username}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {displayName}
+              </Text>
+              <Text 
+                style={styles.handle}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {displayHandle}
+              </Text>
+              <Text style={styles.dateInfo}> • {date}</Text>
+            </View>
+            <TouchableOpacity 
+              onPress={() => setModalVisible(true)} 
+              style={styles.moreOptionsButton}
+              testID="more-options-button"
+            >
+              <Text style={styles.moreOptionsText}>⋮</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.locationContainer}>
+            <View style={styles.pinWrapper}>
+              <Pin 
+                type={categoryType} 
+                onPress={() => {}} 
+                width={16} 
+                height={16}
+              />
+            </View>
             <Text 
-              style={styles.username}
+              style={styles.locationText}
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {displayName}
+              {location}
             </Text>
-            <Text 
-              style={styles.handle}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {displayHandle}
-            </Text>
-            <Text style={styles.dateInfo}> • {date}</Text>
           </View>
-          <TouchableOpacity 
-            onPress={() => setModalVisible(true)} 
-            style={styles.moreOptionsButton}
-            testID="more-options-button"
-          >
-            <Text style={styles.moreOptionsText}>⋮</Text>
-          </TouchableOpacity>
         </View>
-        <View style={styles.locationContainer}>
-          <View style={styles.pinWrapper}>
-            <Pin 
-              type={categoryType} 
-              onPress={() => {}} 
-              width={16} 
-              height={16}
-            />
-          </View>
-          <Text 
-            style={styles.locationText}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {location}
-          </Text>
-        </View>
-      </View>
+      </TouchableOpacity>
 
       <Modal transparent animationType="fade" visible={modalVisible} onRequestClose={() => setModalVisible(false)} testID="more-options-modal">
         <TouchableWithoutFeedback onPress={() => setModalVisible(false)} testID="modal-overlay">
@@ -179,6 +195,9 @@ const UserInfo: React.FC<{
 
 const styles = StyleSheet.create({
   userInfo: {
+    width: "100%",
+  },
+  userInfoTouchable: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
@@ -228,12 +247,8 @@ const styles = StyleSheet.create({
   moreOptionsButton: {
     padding: 0,
   },
-  moreOptionsIcon: {
-    width: 10,
-    height: 20,
-  },
   moreOptionsText: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "700",
     color: "#7f7574",
   },
@@ -254,18 +269,6 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#7f7574",
     flex: 1,
-  },
-  coordinates: {
-    marginTop: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 10,
-    backgroundColor: "#EEE",
-    alignSelf: "flex-start",
-  },
-  coordText: {
-    fontSize: 12,
-    color: "#333",
   },
   modalOverlay: {
     flex: 1,

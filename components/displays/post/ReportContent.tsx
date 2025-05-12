@@ -16,6 +16,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import UserInteraction from '@/components/displays/post/UserInteraction';
 import { authenticatedDelete, authenticatedPost } from "@/utils/api";
+import { useRouter } from 'expo-router';
 
 type TagKey = (typeof TAG_KEYS)[number];
 
@@ -28,6 +29,7 @@ interface ReportContentProps {
   imageUrl?: string;
   postId: string;
   currentVote?: string;
+  commentCount?: number; // Add this new property
 }
 
 const ReportContent: React.FC<ReportContentProps> = ({
@@ -39,11 +41,12 @@ const ReportContent: React.FC<ReportContentProps> = ({
   imageUrl,
   postId,
   currentVote = 'NONE',
+  commentCount,
 }) => {
+  const router = useRouter();
   const [likes, setLikes] = useState(initialLikeCount);
   const [dislikes, setDislikes] = useState(initialDislikeCount);
   
-  // Initialize colors based on currentVote
   const [likeColor, setLikeColor] = useState(currentVote === 'UPVOTE' ? "#5E9F3D" : "#7F7574");
   const [dislikeColor, setDislikeColor] = useState(currentVote === 'DOWNVOTE' ? "#904A47" : "#7F7574");
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -60,7 +63,6 @@ const ReportContent: React.FC<ReportContentProps> = ({
     
     try {
       if (likeColor === "#7F7574") {
-        // User is liking the post
         setLikes(prevLikes => prevLikes + 1);
         setLikeColor("#5E9F3D");
 
@@ -68,12 +70,10 @@ const ReportContent: React.FC<ReportContentProps> = ({
         console.log('Upvote response:', response);
         
         if (dislikeColor === "#904A47") {
-          // If post was previously disliked, remove the dislike
           setDislikes(prevDislikes => prevDislikes - 1);
           setDislikeColor("#7F7574");
         }
       } else {
-        // User is canceling their like
         setLikes(prevLikes => prevLikes - 1);
         setLikeColor("#7F7574");
 
@@ -82,7 +82,6 @@ const ReportContent: React.FC<ReportContentProps> = ({
       }
     } catch (error) {
       console.error('Error updating vote:', error);
-      // Revert UI changes if API call fails
     } finally {
       setIsLoading(false);
     }
@@ -94,7 +93,6 @@ const ReportContent: React.FC<ReportContentProps> = ({
     
     try {
       if (dislikeColor === "#7F7574") {
-        // User is disliking the post
         setDislikes(prevDislikes => prevDislikes + 1);
         setDislikeColor("#904A47");
 
@@ -102,12 +100,10 @@ const ReportContent: React.FC<ReportContentProps> = ({
         console.log('Downvote response:', response);
 
         if (likeColor === "#5E9F3D") {
-          // If post was previously liked, remove the like
           setLikes(prevLikes => prevLikes - 1);
           setLikeColor("#7F7574");
         }
       } else {
-        // User is canceling their dislike
         setDislikes(prevDislikes => prevDislikes - 1);
         setDislikeColor("#7F7574");
 
@@ -116,7 +112,6 @@ const ReportContent: React.FC<ReportContentProps> = ({
       }
     } catch (error) {
       console.error('Error updating vote:', error);
-      // Revert UI changes if API call fails
     } finally {
       setIsLoading(false);
     }
@@ -132,9 +127,7 @@ const ReportContent: React.FC<ReportContentProps> = ({
 
   const handleShareClick = async () => {
     try {
-      // Create the safetypin deep link if postId is provided
       const universalLink = `https://safety-pin.up.railway.app/open-post/${postId}`;
-      
       
       let message = `${title}\n\n${content}`;
 
@@ -143,7 +136,7 @@ const ReportContent: React.FC<ReportContentProps> = ({
       const shareOptions = {
         title: title,
         message: message,
-        url: universalLink // Prioritize the deep link if available
+        url: universalLink
       };
       
       const result = await Share.share(shareOptions);
@@ -154,32 +147,46 @@ const ReportContent: React.FC<ReportContentProps> = ({
     }
   };
 
+  const handlePostPress = () => {
+    if (commentCount != null && commentCount !== undefined) {
+      router.push(`/post/${postId}`);
+    }
+  };
+
   return (
     <View style={styles.reportContent}>
       <TouchableOpacity 
-        style={styles.imageContainer} 
-        activeOpacity={imageUrl ? 0.9 : 1}
-        onPress={openImageModal}
-        disabled={!imageUrl}
-        testID="image-container"
+        activeOpacity={0.9}
+        onPress={handlePostPress}
+        style={styles.postContainer}
+        testID="post-container"
       >
-        {imageUrl ? (
-          <Image
-            source={{ uri: imageUrl }}
-            style={styles.image}
-            testID="image"
-          />
-        ) : (
-          <View style={styles.placeholderImage} testID="placeholder-image" />
-        )}
+        <TouchableOpacity 
+          style={styles.imageContainer} 
+          activeOpacity={imageUrl ? 0.9 : 1}
+          onPress={openImageModal}
+          disabled={!imageUrl}
+          testID="image-container"
+        >
+          {imageUrl ? (
+            <Image
+              source={{ uri: imageUrl }}
+              style={styles.image}
+              testID="image"
+            />
+          ) : (
+            <View style={styles.placeholderImage} testID="placeholder-image" />
+          )}
+        </TouchableOpacity>
+        <View style={styles.tagsContainer}>
+          <ReportTags selectedTags={selectedTags} />
+        </View>
+        <View style={styles.contentText}>
+          <Text style={styles.contentTitle}>{title}</Text>
+          <Text style={styles.contentDescription}>{content}</Text>
+        </View>
       </TouchableOpacity>
-      <View style={styles.tagsContainer}>
-        <ReportTags selectedTags={selectedTags} />
-      </View>
-      <View style={styles.contentText}>
-        <Text style={styles.contentTitle}>{title}</Text>
-        <Text style={styles.contentDescription}>{content}</Text>
-      </View>
+
       <View style={styles.interactions}>
         <View style={styles.interactionButtons}>
           <View style={styles.actionButton} testID="like-button">
@@ -188,7 +195,7 @@ const ReportContent: React.FC<ReportContentProps> = ({
               onPress={handleLikeClick}
               width={18}
               height={18}
-              fill={likeColor}  // Pass dynamic likeColor instead of hardcoded value
+              fill={likeColor}
             />
             <Text testID="like-count" style={[styles.countText, { color: likeColor }]}>{likes}</Text>
           </View>
@@ -198,19 +205,21 @@ const ReportContent: React.FC<ReportContentProps> = ({
               onPress={handleDislikeClick}
               width={18}
               height={18}
-              fill={dislikeColor}  // Pass dynamic dislikeColor instead of hardcoded value
+              fill={dislikeColor}
             />
             <Text testID="dislike-count" style={[styles.countText, { color: dislikeColor }]}>{dislikes}</Text>
           </View>
-          <View style={styles.actionButton} testID="dislike-button">
-            <UserInteraction
-              type="comment-icon"
-              onPress={handleDislikeClick}
-              width={22}
-              height={22}
-            />
-            <Text testID="comment-icon" style={[styles.countText, { color: dislikeColor }]}>{dislikes}</Text>
-          </View>
+          {commentCount !== null && commentCount !== undefined && (
+            <View style={styles.actionButton} testID="comment-button">
+              <UserInteraction
+                type="comment-icon"
+                onPress={handlePostPress}
+                width={22}
+                height={22}
+              />
+              <Text testID="comment-count" style={[styles.countText, { color: "#7F7574" }]}>{commentCount}</Text>
+            </View>
+          )}
         </View>
         <View style={styles.shareActions}>
           <TouchableOpacity style={styles.actionButton} onPress={handleBookmarkClick} testID="bookmark-button">
@@ -222,7 +231,6 @@ const ReportContent: React.FC<ReportContentProps> = ({
         </View>
       </View>
 
-      {/* Full Screen Image Modal */}
       {imageModalVisible && (
         <Modal
           animationType="fade"
@@ -263,6 +271,9 @@ const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   reportContent: {
+    width: "100%",
+  },
+  postContainer: {
     width: "100%",
   },
   imageContainer: {
@@ -358,7 +369,6 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   
-  // Modal Styles
   modalContainer: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.9)",
