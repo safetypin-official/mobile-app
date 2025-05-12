@@ -137,7 +137,7 @@ const NearbyReport: React.FC<NearbyReportProps> = ({ initialPost, postId, onClos
               longitude={post.longitude}
               latitude={post.latitude}
               categoryType={post.category} // Pass the category directly as the pin type
-            />
+              postId={""}            />
 
             <ReportContent
               title={post.title}

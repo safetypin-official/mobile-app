@@ -15,6 +15,8 @@ import ReportTags, { TAG_KEYS } from "./ReportTags";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import UserInteraction from '@/components/displays/post/UserInteraction';
+import { authenticatedDelete, authenticatedPost } from "@/utils/api";
+import { useRouter } from 'expo-router';
 
 type TagKey = (typeof TAG_KEYS)[number];
 
@@ -25,7 +27,9 @@ interface ReportContentProps {
   dislikeCount: number;
   selectedTags: TagKey[];
   imageUrl?: string;
-  postId: string; // Add postId prop
+  postId: string;
+  currentVote?: string;
+  commentCount?: number; // Add this new property
 }
 
 const ReportContent: React.FC<ReportContentProps> = ({
@@ -35,46 +39,81 @@ const ReportContent: React.FC<ReportContentProps> = ({
   dislikeCount: initialDislikeCount,
   selectedTags,
   imageUrl,
-  postId, // Accept postId in props
+  postId,
+  currentVote = 'NONE',
+  commentCount,
 }) => {
+  const router = useRouter();
   const [likes, setLikes] = useState(initialLikeCount);
   const [dislikes, setDislikes] = useState(initialDislikeCount);
-  const [likeColor, setLikeColor] = useState("#7F7574");
-  const [dislikeColor, setDislikeColor] = useState("#7F7574");
+  
+  const [likeColor, setLikeColor] = useState(currentVote === 'UPVOTE' ? "#5E9F3D" : "#7F7574");
+  const [dislikeColor, setDislikeColor] = useState(currentVote === 'DOWNVOTE' ? "#904A47" : "#7F7574");
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [imageModalVisible, setImageModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleBookmarkClick = () => {
     setIsBookmarked(!isBookmarked);
   };
 
-  const handleLikeClick = () => {
-    if (likeColor === "#7F7574") {
-      setLikes(prevLikes => prevLikes + 1);
-      setLikeColor("#5E9F3D");
+  const handleLikeClick = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    
+    try {
+      if (likeColor === "#7F7574") {
+        setLikes(prevLikes => prevLikes + 1);
+        setLikeColor("#5E9F3D");
 
-      if (dislikeColor === "#904A47") {
-        setDislikes(prevDislikes => prevDislikes - 1);
-        setDislikeColor("#7F7574");
+        const response = await authenticatedPost(`https://safetypin.ppl.cs.ui.ac.id/posts/vote/upvote?postId=${postId}`, {});
+        console.log('Upvote response:', response);
+        
+        if (dislikeColor === "#904A47") {
+          setDislikes(prevDislikes => prevDislikes - 1);
+          setDislikeColor("#7F7574");
+        }
+      } else {
+        setLikes(prevLikes => prevLikes - 1);
+        setLikeColor("#7F7574");
+
+        const response = await authenticatedDelete(`https://safetypin.ppl.cs.ui.ac.id/posts/vote/cancel-vote?postId=${postId}`, {});
+        console.log('Cancel vote response:', response);
       }
-    } else {
-      setLikes(prevLikes => prevLikes - 1);
-      setLikeColor("#7F7574");
+    } catch (error) {
+      console.error('Error updating vote:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleDislikeClick = () => {
-    if (dislikeColor === "#7F7574") {
-      setDislikes(prevDislikes => prevDislikes + 1);
-      setDislikeColor("#904A47");
+  const handleDislikeClick = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    
+    try {
+      if (dislikeColor === "#7F7574") {
+        setDislikes(prevDislikes => prevDislikes + 1);
+        setDislikeColor("#904A47");
 
-      if (likeColor === "#5E9F3D") {
-        setLikes(prevLikes => prevLikes - 1);
-        setLikeColor("#7F7574");
+        const response = await authenticatedPost(`https://safetypin.ppl.cs.ui.ac.id/posts/vote/downvote?postId=${postId}`, {});
+        console.log('Downvote response:', response);
+
+        if (likeColor === "#5E9F3D") {
+          setLikes(prevLikes => prevLikes - 1);
+          setLikeColor("#7F7574");
+        }
+      } else {
+        setDislikes(prevDislikes => prevDislikes - 1);
+        setDislikeColor("#7F7574");
+
+        const response = await authenticatedDelete(`https://safetypin.ppl.cs.ui.ac.id/posts/vote/cancel-vote?postId=${postId}`, {});
+        console.log('Cancel vote response:', response);
       }
-    } else {
-      setDislikes(prevDislikes => prevDislikes - 1);
-      setDislikeColor("#7F7574");
+    } catch (error) {
+      console.error('Error updating vote:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -88,17 +127,16 @@ const ReportContent: React.FC<ReportContentProps> = ({
 
   const handleShareClick = async () => {
     try {
-      // Create the safetypin deep link if postId is provided
-      const deepLink = `safetypin://post/${postId}`;
+      const universalLink = `https://safety-pin.up.railway.app/open-post/${postId}`;
       
       let message = `${title}\n\n${content}`;
 
-      message += `\n\n${deepLink}`;
+      message += `\n\n${universalLink}`;
       
       const shareOptions = {
         title: title,
         message: message,
-        url: deepLink // Prioritize the deep link if available
+        url: universalLink
       };
       
       const result = await Share.share(shareOptions);
@@ -109,40 +147,54 @@ const ReportContent: React.FC<ReportContentProps> = ({
     }
   };
 
+  const handlePostPress = () => {
+    if (commentCount != null && commentCount !== undefined) {
+      router.push(`/post/${postId}`);
+    }
+  };
+
   return (
     <View style={styles.reportContent}>
       <TouchableOpacity 
-        style={styles.imageContainer} 
-        activeOpacity={imageUrl ? 0.9 : 1}
-        onPress={openImageModal}
-        disabled={!imageUrl}
-        testID="image-container"
+        activeOpacity={0.9}
+        onPress={handlePostPress}
+        style={styles.postContainer}
+        testID="post-container"
       >
-        {imageUrl ? (
-          <Image
-            source={{ uri: imageUrl }}
-            style={styles.image}
-            testID="image"
-          />
-        ) : (
-          <View style={styles.placeholderImage} testID="placeholder-image" />
-        )}
+        <TouchableOpacity 
+          style={styles.imageContainer} 
+          activeOpacity={imageUrl ? 0.9 : 1}
+          onPress={openImageModal}
+          disabled={!imageUrl}
+          testID="image-container"
+        >
+          {imageUrl ? (
+            <Image
+              source={{ uri: imageUrl }}
+              style={styles.image}
+              testID="image"
+            />
+          ) : (
+            <View style={styles.placeholderImage} testID="placeholder-image" />
+          )}
+        </TouchableOpacity>
+        <View style={styles.tagsContainer}>
+          <ReportTags selectedTags={selectedTags} />
+        </View>
+        <View style={styles.contentText}>
+          <Text style={styles.contentTitle}>{title}</Text>
+          <Text style={styles.contentDescription}>{content}</Text>
+        </View>
       </TouchableOpacity>
-      <View style={styles.tagsContainer}>
-        <ReportTags selectedTags={selectedTags} />
-      </View>
-      <View style={styles.contentText}>
-        <Text style={styles.contentTitle}>{title}</Text>
-        <Text style={styles.contentDescription}>{content}</Text>
-      </View>
+
       <View style={styles.interactions}>
         <View style={styles.interactionButtons}>
           <View style={styles.actionButton} testID="like-button">
             <UserInteraction
               type="like-icon"
               onPress={handleLikeClick}
-              width={14}
-              height={14}
+              width={18}
+              height={18}
               fill={likeColor}
             />
             <Text testID="like-count" style={[styles.countText, { color: likeColor }]}>{likes}</Text>
@@ -151,12 +203,23 @@ const ReportContent: React.FC<ReportContentProps> = ({
             <UserInteraction
               type="dislike-icon"
               onPress={handleDislikeClick}
-              width={14}
-              height={14}
+              width={18}
+              height={18}
               fill={dislikeColor}
             />
             <Text testID="dislike-count" style={[styles.countText, { color: dislikeColor }]}>{dislikes}</Text>
           </View>
+          {commentCount !== null && commentCount !== undefined && (
+            <View style={styles.actionButton} testID="comment-button">
+              <UserInteraction
+                type="comment-icon"
+                onPress={handlePostPress}
+                width={22}
+                height={22}
+              />
+              <Text testID="comment-count" style={[styles.countText, { color: "#7F7574" }]}>{commentCount}</Text>
+            </View>
+          )}
         </View>
         <View style={styles.shareActions}>
           <TouchableOpacity style={styles.actionButton} onPress={handleBookmarkClick} testID="bookmark-button">
@@ -168,7 +231,6 @@ const ReportContent: React.FC<ReportContentProps> = ({
         </View>
       </View>
 
-      {/* Full Screen Image Modal */}
       {imageModalVisible && (
         <Modal
           animationType="fade"
@@ -209,6 +271,9 @@ const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   reportContent: {
+    width: "100%",
+  },
+  postContainer: {
     width: "100%",
   },
   imageContainer: {
@@ -304,7 +369,6 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   
-  // Modal Styles
   modalContainer: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.9)",
