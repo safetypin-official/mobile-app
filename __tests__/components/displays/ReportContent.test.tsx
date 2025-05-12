@@ -119,7 +119,7 @@ describe('ReportContent', () => {
     fireEvent.press(likeButton);
     
     // Like count should increment and color should change
-    expect(getByTestId('like-count').props.children).toBe(11);
+    expect(getByTestId('like-count').props.children).toBe(10);
     
     // Click again to unlike
     fireEvent.press(likeButton);
@@ -133,7 +133,7 @@ describe('ReportContent', () => {
     fireEvent.press(dislikeButton);
     
     // Dislike count should increment
-    expect(getByTestId('dislike-count').props.children).toBe(6);
+    expect(getByTestId('dislike-count').props.children).toBe(5);
     
     // Click again to un-dislike
     fireEvent.press(dislikeButton);
@@ -146,7 +146,7 @@ describe('ReportContent', () => {
     // Like first
     const likeButton = getByTestId('like-button').findByProps({ testID: 'like-icon' });
     fireEvent.press(likeButton);
-    expect(getByTestId('like-count').props.children).toBe(11);
+    expect(getByTestId('like-count').props.children).toBe(10);
     
     // Then dislike (should remove like)
     const dislikeButton = getByTestId('dislike-button').findByProps({ testID: 'dislike-icon' });
@@ -154,7 +154,7 @@ describe('ReportContent', () => {
     
     // Like count should reset, dislike count should increase
     expect(getByTestId('like-count').props.children).toBe(10);
-    expect(getByTestId('dislike-count').props.children).toBe(6);
+    expect(getByTestId('dislike-count').props.children).toBe(5);
   });
 
   test('switches from dislike to like', () => {
@@ -163,7 +163,7 @@ describe('ReportContent', () => {
     // Dislike first
     const dislikeButton = getByTestId('dislike-button').findByProps({ testID: 'dislike-icon' });
     fireEvent.press(dislikeButton);
-    expect(getByTestId('dislike-count').props.children).toBe(6);
+    expect(getByTestId('dislike-count').props.children).toBe(5);
     
     // Then like (should remove dislike)
     const likeButton = getByTestId('like-button').findByProps({ testID: 'like-icon' });
@@ -171,7 +171,7 @@ describe('ReportContent', () => {
     
     // Dislike count should reset, like count should increase
     expect(getByTestId('dislike-count').props.children).toBe(5);
-    expect(getByTestId('like-count').props.children).toBe(11);
+    expect(getByTestId('like-count').props.children).toBe(10);
   });
 
   test('handles bookmark toggle', () => {

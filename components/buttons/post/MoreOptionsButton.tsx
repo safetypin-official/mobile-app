@@ -91,6 +91,11 @@ const styles = StyleSheet.create({
     height: 2,
     backgroundColor: "#d9d9d9",
   },
+  instanceChild1: {
+    width: "100%",
+    height: 1.5,
+    backgroundColor: "#d9d9d9",
+  },
   exclamationCircleParent: {
     flexDirection: "row",
     alignItems: "center",

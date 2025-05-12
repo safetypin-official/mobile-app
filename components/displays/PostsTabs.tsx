@@ -20,7 +20,11 @@ export type Post = {
   title: string;
   caption: string;
   createdAt: string;
-  postedBy: string | null;
+  postedBy: {
+    id: string;
+    name: string;
+    profilePicture?: string;
+  } | null;
   category: string;
   imageUrl?: string;
   latitude: number;
@@ -130,7 +134,7 @@ const PostsTabs: React.FC<PostsTabsProps> = ({
             ...prev[tabKey],
             loading: false,
             refreshing: false,
-            error: error.message || 'Failed to load posts',
+            error: error.message ?? 'Failed to load posts',
           },
         }));
       }
