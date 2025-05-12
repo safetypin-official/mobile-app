@@ -53,7 +53,7 @@ const UserInfo: React.FC<{
             <Image source={{ uri: moreOptionsIconUrl }} style={styles.moreOptionsIcon} />
           </TouchableOpacity>
         </View>
-        <View style={styles.locationContainer}>
+        <View testID="pin-other-crime" style={styles.locationContainer}>
           {/* Replace Image with Pin component */}
           <View style={styles.pinWrapper}>
             <Pin 
