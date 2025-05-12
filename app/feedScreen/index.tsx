@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import PostsTabs, { TabConfig, FetchResult, Post } from '@/components/displays/PostsTabs';
+import DataTabs, { TabConfig, FetchResult } from '@/components/displays/DataTabs';
+import { Post } from '@/components/displays/Types';
 import * as Location from 'expo-location';
 import { authenticatedGet } from '@/utils/api';
 
-// Components for rendering each post
 import UserInfo from '@/components/displays/post/UserInfo';
 import ReportContent, { TagKey } from '@/components/displays/post/ReportContent';
 
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 10;
 
 const FeedScreen: React.FC = () => {
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -25,52 +25,50 @@ const FeedScreen: React.FC = () => {
       const location = await Location.getCurrentPositionAsync({});
       setUserLocation({ latitude: location.coords.latitude, longitude: location.coords.longitude });
     } catch (error) {
+      console.error('Error fetching user location:', error);
       setLocationError('Unable to fetch location. Please enable location services.');
     }
   }, []);
 
   useEffect(() => {
     getUserLocation();
-  }, [getUserLocation]);
+  }, []);
 
   // Fetch function for "Near You" posts
-  const fetchNearYouPosts = async (page: number, refresh: boolean): Promise<FetchResult> => {
+  const fetchNearYouPosts = async (page: number, refresh: boolean): Promise<FetchResult<Post>> => {
     if (!userLocation) {
       throw new Error(locationError ?? 'Location not available');
     }
-    const url = `https://safetypin.ppl.cs.ui.ac.id/post/feed/distance?lat=${userLocation.latitude}&lon=${userLocation.longitude}&page=${page}&size=${PAGE_SIZE}`;
+    const url = `https://safetypin.ppl.cs.ui.ac.id/posts/feed/distance?lat=${userLocation.latitude}&lon=${userLocation.longitude}&page=${page}&size=${PAGE_SIZE}`;
     console.log(`Fetching: ${url}`);
     
     try {
       const response = await authenticatedGet(url);
       console.log('Response Data:', response);
-      const data = response.data?.content || [];
+      const data = response.data?.content ?? [];
       const posts: Post[] = data.map((item: any) => {
-        const post = item.post || item;
+        const post = item.post ?? item;
         return {
           id: post.id,
-          title: post.title || 'Untitled',
-          caption: post.caption || '',
+          title: post.title ?? 'Untitled',
+          caption: post.caption ?? '',
           createdAt: post.createdAt,
           postedBy: post.postedBy,
-          category: post.category || 'general',
+          category: post.category ?? 'general',
           imageUrl: post.imageUrl,
-          latitude: post.latitude || 0,
-          longitude: post.longitude || 0,
-          address: post.address || null,
-          upvoteCount: post.upvoteCount || 0,
-          downvoteCount: post.downvoteCount || 0,
-          currentVote: post.currentVote || 'NONE',
+          latitude: post.latitude ?? 0,
+          longitude: post.longitude ?? 0,
+          address: post.address ?? null,
+          upvoteCount: post.upvoteCount ?? 0,
+          downvoteCount: post.downvoteCount ?? 0,
+          currentVote: post.currentVote ?? 'NONE',
+          commentCount: post.commentCount ?? null,
         };
       });
       
       const hasMore = response.data ? response.data.hasNext : false;
       console.log('📱 Has more:', hasMore);
-      return {
-        posts,
-        currentPage: page,
-        hasMore,
-      };
+      return { items: posts, currentPage: page, hasMore: hasMore };
     } catch (error) {
       console.error('Error fetching near you posts:', error);
       throw error;
@@ -78,38 +76,69 @@ const FeedScreen: React.FC = () => {
   };
 
   // Fetch function for "Recents" posts
-  const fetchRecentsPosts = async (page: number, refresh: boolean): Promise<FetchResult> => {
-    const url = `https://safetypin.ppl.cs.ui.ac.id/post/feed/timestamp?page=${page}&size=${PAGE_SIZE}`;
+  const fetchRecentsPosts = async (page: number, refresh: boolean): Promise<FetchResult<Post>> => {
+    const url = `https://safetypin.ppl.cs.ui.ac.id/posts/feed/timestamp?page=${page}&size=${PAGE_SIZE}`;
     
     try {
       const response = await authenticatedGet(url);
-      const data = response.data?.content || [];
+      const data = response.data?.content ?? [];
       const posts: Post[] = data.map((item: any) => {
-        const post = item.post || item;
+        const post = item.post ?? item;
         return {
           id: post.id,
-          title: post.title || 'Untitled',
-          caption: post.caption || '',
+          title: post.title ?? 'Untitled',
+          caption: post.caption ?? '',
           createdAt: post.createdAt,
           postedBy: post.postedBy,
-          category: post.category || 'general',
+          category: post.category ?? 'general',
           imageUrl: post.imageUrl,
-          latitude: post.latitude || 0,
-          longitude: post.longitude || 0,
-          address: post.address || null,
-          upvoteCount: post.upvoteCount || 0,
-          downvoteCount: post.downvoteCount || 0,
-          currentVote: post.currentVote || 'NONE',
+          latitude: post.latitude ?? 0,
+          longitude: post.longitude ?? 0,
+          address: post.address ?? null,
+          upvoteCount: post.upvoteCount ?? 0,
+          downvoteCount: post.downvoteCount ?? 0,
+          currentVote: post.currentVote ?? 'NONE',
+          commentCount: post.commentCount ?? null,
         };
       });
       const hasMore = response.data ? response.data.hasNext : false;
-      return {
-        posts,
-        currentPage: page,
-        hasMore,
-      };
+      return { items: posts, currentPage: page, hasMore: hasMore };
     } catch (error) {
       console.error('Error fetching recent posts:', error);
+      throw error;
+    }
+  };
+
+  // Fetch function for "Following" posts
+  const fetchFollowingPosts = async (page: number, refresh: boolean): Promise<FetchResult<Post>> => {
+    const url = `https://safetypin.ppl.cs.ui.ac.id/posts/feed/following?page=${page}&size=${PAGE_SIZE}`;
+    
+    try {
+      const response = await authenticatedGet(url);
+      const data = response.data?.content ?? [];
+      const posts: Post[] = data.map((item: any) => {
+        const post = item.post ?? item;
+        return {
+          id: post.id,
+          title: post.title ?? 'Untitled',
+          caption: post.caption ?? '',
+          createdAt: post.createdAt,
+          postedBy: post.postedBy,
+          category: post.category ?? 'general',
+          imageUrl: post.imageUrl,
+          latitude: post.latitude ?? 0,
+          longitude: post.longitude ?? 0,
+          address: post.address ?? null,
+          upvoteCount: post.upvoteCount ?? 0,
+          downvoteCount: post.downvoteCount ?? 0,
+          currentVote: post.currentVote ?? 'NONE',
+          commentCount: post.commentCount ?? null,
+        };
+      });
+      const hasMore = response.data ? response.data.hasNext : false;
+      return { items: posts, currentPage: page, hasMore: hasMore };
+    } catch (error) {
+      console.error('Error fetching following posts:', error);
       throw error;
     }
   };
@@ -146,6 +175,7 @@ const FeedScreen: React.FC = () => {
           imageUrl={item.imageUrl ?? 'https://i.imgur.com/Ha3UkA3.jpg'}
           postId={item.id}
           currentVote={item.currentVote || 'NONE'}
+          commentCount={item.commentCount ?? null}
         />
 
         <View style={styles.divider} />
@@ -153,17 +183,19 @@ const FeedScreen: React.FC = () => {
     );
   };
 
-  const tabsConfig: TabConfig[] = [
-    { key: 'near_you', label: 'Near You', fetchPosts: fetchNearYouPosts, refreshTrigger: searchRefresh },
-    { key: 'recents', label: 'Recents', fetchPosts: fetchRecentsPosts, refreshTrigger: searchRefresh },
+  const tabsConfig: TabConfig<Post>[] = [
+    { key: 'near_you', label: 'Near You', fetchData: fetchNearYouPosts, refreshTrigger: searchRefresh },
+    { key: 'recents', label: 'Recents', fetchData: fetchRecentsPosts, refreshTrigger: searchRefresh },
+    { key: 'following', label: 'Following', fetchData: fetchFollowingPosts, refreshTrigger: searchRefresh },
   ];
 
   return (
     <View style={styles.container}>
       <Text style={styles.headerTitle}>Explore</Text>
-      <PostsTabs
+      <DataTabs<Post>
         tabs={tabsConfig}
         renderItem={renderPostItem}
+        keyExtractor={(p) => p.id}
         contentContainerStyle={{ ...styles.feedContainer, paddingBottom: 60 }}
       />
     </View>

@@ -11,6 +11,7 @@ import TagSelector from '@/components/inputs/TagSelector';
 import { router, useLocalSearchParams } from 'expo-router';
 import { authenticatedPost } from '@/utils/api';
 import Config from "react-native-config";
+import * as Sentry from '@sentry/react-native';
 
 const API_KEY = Config.GOOGLE_MAPS_API_KEY;
 
@@ -184,6 +185,21 @@ const PostPage = () => {
         }
     };
 
+    const handleSubmitMonitoring = async () => {
+        Sentry.startSpan({ name: 'report_incident' }, async (span) => {
+            try {
+              // Your logic here (e.g., API call)
+              await handleSubmit();
+          
+              // Optional: add attributes to the span
+              span.setAttribute('status', 'success');
+            } catch (error) {
+              span.setAttribute('status', 'error');
+              Sentry.captureException(error);
+            }
+          });
+    }
+
     const handleSubmit = async () => {
         if (!selectedTag) {
             Alert.alert("Missing Information", "Please select at least one category");
@@ -229,7 +245,7 @@ const PostPage = () => {
         console.log('Submitting post data:', postData);
         
         // Use authenticatedPost for the post creation
-        authenticatedPost('https://safetypin.ppl.cs.ui.ac.id/post', postData)
+        authenticatedPost('https://safetypin.ppl.cs.ui.ac.id/posts', postData)
             .then(data => {
                 console.log('Post created successfully:', data);
                 Alert.alert("Success", "Your report has been posted successfully", [
@@ -252,7 +268,7 @@ const PostPage = () => {
                     <Text style={styles.header}>New Report</Text>
                 </View>
                 <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 8, maxWidth: 80 }}>
-                    <Button onPress={handleSubmit} testID="submit-button">
+                    <Button onPress={handleSubmitMonitoring} testID="submit-button">
                         {isUploading ? "Uploading..." : "Post"}
                     </Button>
                 </View>

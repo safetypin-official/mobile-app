@@ -1,20 +1,24 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import fetchMock from 'jest-fetch-mock';
-import TagSelector from '@/components/inputs/TagSelector'; // Adjust import path as needed
+import TagSelector from '@/components/inputs/TagSelector';
 
-// Enable fetch mocks
-fetchMock.enableMocks();
+// Mock the api module
+jest.mock('@/utils/api', () => ({
+  authenticatedGet: jest.fn()
+}));
+
+// Import the mocked module
+import { authenticatedGet } from '@/utils/api';
 
 describe('TagSelector Component', () => {
   beforeEach(() => {
-    fetchMock.resetMocks();
+    jest.clearAllMocks();
   });
 
   // Test loading state
   it('should display loading indicator when fetching tags', () => {
-    // Mock fetch to never resolve, keeping component in loading state
-    fetchMock.mockResponseOnce(() => new Promise(resolve => {}));
+    // Mock a never-resolving promise for loading state
+    (authenticatedGet as jest.Mock).mockReturnValue(new Promise(() => {}));
     
     const { getByTestId, getByText } = render(
       <TagSelector selectedTag={null} onTagChange={jest.fn()} testID="test-selector" />
@@ -32,7 +36,7 @@ describe('TagSelector Component', () => {
       data: ['React', 'TypeScript', 'JavaScript']
     };
     
-    fetchMock.mockResponseOnce(JSON.stringify(mockTags));
+    (authenticatedGet as jest.Mock).mockResolvedValue(mockTags);
     
     const { getByTestId, getAllByText } = render(
       <TagSelector selectedTag={null} onTagChange={jest.fn()} testID="test-selector" />
@@ -41,8 +45,8 @@ describe('TagSelector Component', () => {
     await waitFor(() => expect(getByTestId('test-selector')).toBeTruthy());
     
     expect(getAllByText(/React|TypeScript|JavaScript/).length).toBe(3);
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith('https://safetypin.ppl.cs.ui.ac.id/posts/category');
+    expect(authenticatedGet).toHaveBeenCalledTimes(1);
+    expect(authenticatedGet).toHaveBeenCalledWith('https://safetypin.ppl.cs.ui.ac.id/posts/category');
   });
 
   // Test error handling with API error message
@@ -53,7 +57,7 @@ describe('TagSelector Component', () => {
       data: []
     };
     
-    fetchMock.mockResponseOnce(JSON.stringify(mockError));
+    (authenticatedGet as jest.Mock).mockResolvedValue(mockError);
     
     const { getByTestId, getByText } = render(
       <TagSelector selectedTag={null} onTagChange={jest.fn()} testID="test-selector" />
@@ -67,7 +71,7 @@ describe('TagSelector Component', () => {
 
   // Test error handling with network error
   it('should display error message when network error occurs', async () => {
-    fetchMock.mockRejectOnce(new Error('Network error'));
+    (authenticatedGet as jest.Mock).mockRejectedValue(new Error('Network error'));
     
     const { getByTestId, getByText } = render(
       <TagSelector selectedTag={null} onTagChange={jest.fn()} testID="test-selector" />
@@ -81,7 +85,7 @@ describe('TagSelector Component', () => {
   // Test retry functionality
   it('should retry fetching tags when retry button is pressed', async () => {
     // First request fails
-    fetchMock.mockRejectOnce(new Error('Network error'));
+    (authenticatedGet as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
     
     const { getByTestId } = render(
       <TagSelector selectedTag={null} onTagChange={jest.fn()} testID="test-selector" />
@@ -95,14 +99,14 @@ describe('TagSelector Component', () => {
       message: 'Tags fetched successfully',
       data: ['React']
     };
-    fetchMock.mockResponseOnce(JSON.stringify(mockTags));
+    (authenticatedGet as jest.Mock).mockResolvedValueOnce(mockTags);
     
     // Press retry button
     fireEvent.press(getByTestId('test-selector-retry'));
     
     // Component should now load successfully
     await waitFor(() => expect(getByTestId('test-selector')).toBeTruthy());
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(authenticatedGet).toHaveBeenCalledTimes(2);
   });
 
   // Test tag selection
@@ -113,7 +117,7 @@ describe('TagSelector Component', () => {
       data: ['React', 'TypeScript']
     };
     
-    fetchMock.mockResponseOnce(JSON.stringify(mockTags));
+    (authenticatedGet as jest.Mock).mockResolvedValue(mockTags);
     
     const mockOnTagChange = jest.fn();
     const { getByTestId } = render(
@@ -136,7 +140,7 @@ describe('TagSelector Component', () => {
       data: ['React', 'TypeScript']
     };
     
-    fetchMock.mockResponseOnce(JSON.stringify(mockTags));
+    (authenticatedGet as jest.Mock).mockResolvedValue(mockTags);
     
     const mockOnTagChange = jest.fn();
     const { getByTestId } = render(
@@ -153,7 +157,7 @@ describe('TagSelector Component', () => {
 
   // Test default testID when none is provided
   it('should use default testIDs when no testID prop is provided', async () => {
-    fetchMock.mockResponseOnce(() => new Promise(resolve => {}));
+    (authenticatedGet as jest.Mock).mockReturnValue(new Promise(() => {}));
     
     const { getByTestId } = render(
       <TagSelector selectedTag={null} onTagChange={jest.fn()} />
@@ -169,13 +173,14 @@ describe('TagSelector Component', () => {
       data: []
     };
     
-    fetchMock.mockResponseOnce(JSON.stringify(mockError));
+    (authenticatedGet as jest.Mock).mockResolvedValue(mockError);
     
-    const { getByText } = render(
+    const { getByText, getByTestId } = render(
       <TagSelector selectedTag={null} onTagChange={jest.fn()} />
     );
     
-    await waitFor(() => expect(getByText('Failed to fetch tags')).toBeTruthy());
+    await waitFor(() => expect(getByTestId('tag-selector-error')).toBeTruthy());
+    expect(getByText('Failed to fetch tags')).toBeTruthy();
   });
 
   // Test color cycling for tags
@@ -187,13 +192,14 @@ describe('TagSelector Component', () => {
       data: Array.from({ length: 12 }, (_, i) => `Tag ${i+1}`)
     };
     
-    fetchMock.mockResponseOnce(JSON.stringify(mockTags));
+    (authenticatedGet as jest.Mock).mockResolvedValue(mockTags);
     
-    const { getAllByText } = render(
+    const { getAllByText, getByTestId } = render(
       <TagSelector selectedTag={null} onTagChange={jest.fn()} />
     );
     
-    await waitFor(() => expect(getAllByText(/Tag/).length).toBe(12));
+    await waitFor(() => expect(getByTestId('tag-selector')).toBeTruthy());
+    expect(getAllByText(/Tag/).length).toBe(12);
     
     // The test passes if rendering completes without errors, 
     // indicating the color cycling logic works

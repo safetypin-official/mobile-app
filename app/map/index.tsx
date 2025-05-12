@@ -1,4 +1,4 @@
-import { StyleSheet, View, Dimensions, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Dimensions, Text, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, MapPressEvent, LongPressEvent, Marker, Callout } from 'react-native-maps';
 import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
@@ -71,7 +71,7 @@ export default function ExploreScreen() {
         setLoading(true);
         
         // Use authenticatedGet instead of direct fetch
-        const responseData = await authenticatedGet('https://safetypin.ppl.cs.ui.ac.id/post/all');
+        const responseData = await authenticatedGet('https://safetypin.ppl.cs.ui.ac.id/posts/all?page=0&size=100');
         console.log('Fetched posts response:', responseData);
         
         if (responseData.success && responseData.data?.content) {
@@ -158,6 +158,7 @@ export default function ExploreScreen() {
         onPress={handleMapPress}
         onLongPress={onLongPress}
       >
+        {/* Existing post markers */}
         {posts.map((post) => (
           <Marker
             key={post.id}
@@ -369,5 +370,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
     fontWeight: '600',
-  }
+  },
 });

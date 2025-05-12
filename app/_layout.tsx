@@ -1,17 +1,40 @@
-import { router, Stack, usePathname, Slot } from "expo-router";
+import { router, Stack, usePathname } from "expo-router";
 import { View, AppState, AppStateStatus } from "react-native";
 import NavContainer from "@/components/displays/NavContainer";
 import { useState, useEffect } from "react";
 import { getAuthData } from "@/utils/auth";
+import * as Sentry from '@sentry/react-native';
 
-export default function Layout() {
+Sentry.init({
+  dsn: 'https://769eb726ddaa03cc0e48f597ea4f5b73@o4509202885312512.ingest.us.sentry.io/4509202886361088',
+
+  // Configure Session Replay
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+  integrations: [Sentry.mobileReplayIntegration()],
+
+  // Adds more context data to events (IP address, cookies, user, etc.)
+  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
+  sendDefaultPii: true,
+  // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+  // We recommend adjusting this value in production.
+  tracesSampleRate: 1.0,
+  // profilesSampleRate is relative to tracesSampleRate.
+  // Here, we'll capture profiles for 100% of transactions.
+  profilesSampleRate: 1.0,
+
+  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+  // spotlight: __DEV__,
+});
+
+export default Sentry.wrap(function Layout() {
   const pathname = usePathname();
   const [activeTab, setActiveTab] = useState("map");
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState);
   const [appReady, setAppReady] = useState(false);
 
-  const hideNavBarRoutes = ["/", "/forgotPassword", "/forgotPassword/newPasswordScreen", "/forgotPassword/otpVerificationScreen", "/signUp", "/signUp/otp", "/post"];
+  const hideNavBarRoutes = ["/", "/forgotPassword", "/forgotPassword/newPasswordScreen", "/forgotPassword/otpVerificationScreen", "/signUp", "/signUp/otp", "/createPost", "/post"];
 
   // Check auth status on mount and app state changes
   useEffect(() => {
@@ -104,7 +127,7 @@ export default function Layout() {
           headerShown: false,
         }}
       />
-      {!hideNavBarRoutes.includes(pathname) && (
+      {!(hideNavBarRoutes.includes(pathname) || pathname.startsWith('/post/')) && (
         <NavContainer
           activeTab={activeTab}
           onHomePress={handleHomePress}
@@ -112,6 +135,7 @@ export default function Layout() {
           onMapPress={handleMapPress}
           onNotificationsPress={() => {
             setActiveTab("notifs");
+            router.replace("/notifs");
           }}
           onProfilePress={() => {
             setActiveTab("profile");
@@ -121,4 +145,4 @@ export default function Layout() {
       )}
     </View>
   );
-}
+});

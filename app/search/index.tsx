@@ -1,13 +1,20 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, StyleSheet, SafeAreaView, Text } from 'react-native';
-import PostsTabs, { TabConfig, FetchResult, Post } from '@/components/displays/PostsTabs';
+import { View, StyleSheet, SafeAreaView, Text, ListRenderItemInfo } from 'react-native';
+import DataTabs, { TabConfig, FetchResult } from '@/components/displays/DataTabs';
+import { Post, User } from '@/components/displays/Types';
 import SearchBarFilter from '@/components/inputs/SearchBarFilter';
 import * as Location from 'expo-location';
 import UserInfo from '@/components/displays/post/UserInfo';
 import ReportContent, { TagKey } from '@/components/displays/post/ReportContent';
 import { authenticatedGet } from '@/utils/api';
+import UserResult from '@/components/displays/UserResult';
+import { router } from 'expo-router';
 
 const PAGE_SIZE = 10;
+
+function isUser(item: any): item is User {
+  return typeof item.email === 'string';
+}
 
 export default function SearchPage() {
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -28,6 +35,7 @@ export default function SearchPage() {
       const location = await Location.getCurrentPositionAsync({});
       setUserLocation({ latitude: location.coords.latitude, longitude: location.coords.longitude });
     } catch (error) {
+      console.error('Error fetching user location:', error);
       setLocationError('Unable to fetch location. Please enable location services.');
     }
   }, []);
@@ -36,12 +44,15 @@ export default function SearchPage() {
     getUserLocation();
   }, [getUserLocation]);
 
-  const fetchTopPosts = async (page: number, refresh: boolean): Promise<FetchResult> => {
+  const fetchTopPosts = async (page: number, refresh: boolean): Promise<FetchResult<Post>> => {
     if (!userLocation) {
+      if (locationError) {
+        throw new Error(locationError);
+      }
       throw new Error(locationError ?? 'Location not available');
     }
     
-    let url = `https://safetypin.ppl.cs.ui.ac.id/post/feed/distance?lat=${userLocation.latitude}&lon=${userLocation.longitude}&page=${page}&size=${PAGE_SIZE}`;
+    let url = `https://safetypin.ppl.cs.ui.ac.id/posts/feed/distance?lat=${userLocation.latitude}&lon=${userLocation.longitude}&page=${page}&size=${PAGE_SIZE}`;
     
     if (searchKeyword) {
       url += `&keyword=${encodeURIComponent(searchKeyword)}`;
@@ -61,35 +72,40 @@ export default function SearchPage() {
     
     try {
       const response = await authenticatedGet(url);
-      const data = response.data?.content || [];
+      const data = response.data?.content ?? [];
       const posts: Post[] = data.map((item: any) => {
-        const post = item.post || item;
+        const post = item.post ?? item;
         return {
           id: post.id,
-          title: post.title || 'Untitled',
-          caption: post.caption || '',
+          title: post.title ?? 'Untitled',
+          caption: post.caption ?? '',
           createdAt: post.createdAt,
           postedBy: post.postedBy,
-          category: post.category || 'general',
+          category: post.category ?? 'general',
           imageUrl: post.imageUrl,
-          latitude: post.latitude || 0,
-          longitude: post.longitude || 0,
-          upvoteCount: post.upvoteCount || 0,
-          downvoteCount: post.downvoteCount || 0,
-          address: post.address || null,
-          currentVote: post.currentVote || 'NONE',
+          latitude: post.latitude ?? 0,
+          longitude: post.longitude ?? 0,
+          upvoteCount: post.upvoteCount ?? 0,
+          downvoteCount: post.downvoteCount ?? 0,
+          address: post.address ?? null,
+          currentVote: post.currentVote ?? 'NONE',
+          commentCount: post.commentCount ?? null,
         };
       });
       const hasMore = response.data ? response.data.hasNext : false;
-      return { posts, currentPage: page, hasMore };
+      return {
+        items: posts,
+        currentPage: page,
+        hasMore: hasMore
+      };
     } catch (error) {
       console.error('Error fetching top posts:', error);
       throw error;
     }
   };
 
-  const fetchLatestPosts = async (page: number, refresh: boolean): Promise<FetchResult> => {
-    let url = `https://safetypin.ppl.cs.ui.ac.id/post/feed/timestamp?page=${page}&size=${PAGE_SIZE}`;
+  const fetchLatestPosts = async (page: number, refresh: boolean): Promise<FetchResult<Post>> => {
+    let url = `https://safetypin.ppl.cs.ui.ac.id/posts/feed/timestamp?page=${page}&size=${PAGE_SIZE}`;
     
     if (searchKeyword) {
       url += `&keyword=${encodeURIComponent(searchKeyword)}`;
@@ -107,33 +123,72 @@ export default function SearchPage() {
       url += `&toDate=${encodeURIComponent(toDate)}`;
     }
     
-    console.log(`Fetching latest posts from: ${url}`);
-    
     try {
       const response = await authenticatedGet(url);
-      const data = response.data?.content || [];
+      const data = response.data?.content ?? [];
       const posts: Post[] = data.map((item: any) => {
-        const post = item.post || item;
+        const post = item.post ?? item;
         return {
           id: post.id,
-          title: post.title || 'Untitled',
-          caption: post.caption || '',
+          title: post.title ?? 'Untitled',
+          caption: post.caption ?? '',
           createdAt: post.createdAt,
           postedBy: post.postedBy,
-          category: post.category || 'general',
+          category: post.category ?? 'general',
           imageUrl: post.imageUrl,
-          latitude: post.latitude || 0,
-          longitude: post.longitude || 0,
-          address: post.address || null,
-          upvoteCount: post.upvoteCount || 0,
-          downvoteCount: post.downvoteCount || 0,
-          currentVote: post.currentVote || 'NONE',
+          latitude: post.latitude ?? 0,
+          longitude: post.longitude ?? 0,
+          address: post.address ?? null,
+          upvoteCount: post.upvoteCount ?? 0,
+          downvoteCount: post.downvoteCount ?? 0,
+          currentVote: post.currentVote ?? 'NONE',
+          commentCount: post.commentCount ?? null,
         };
       });
       const hasMore = response.data ? response.data.hasNext : false;
-      return { posts, currentPage: page, hasMore };
+      return { items: posts, currentPage: page, hasMore: hasMore };
     } catch (error) {
       console.error('Error fetching latest posts:', error);
+      throw error;
+    }
+  };
+
+  const fetchUsers = async (
+    page: number,
+    refresh: boolean
+  ): Promise<FetchResult<User>> => {
+    let url =
+      `https://safetypin.ppl.cs.ui.ac.id/api/users/search?page=${page}&size=${PAGE_SIZE}`;
+
+    if (searchKeyword) {
+      url += `&query=${encodeURIComponent(searchKeyword)}`;
+    }
+
+    console.log('Fetching users with URL:', url);
+
+    try {
+      const response = await authenticatedGet(url);
+      const raw = response.content ?? [];
+  
+      const users: User[] = raw.map((item: any) => ({
+        id: item.id,
+        email: item.email,
+        name: item.name,
+        role: item.role,
+        birthdate: item.birthdate,
+        provider: item.provider,
+        profilePicture: item.profilePicture,
+        profileBanner: item.profileBanner,
+        verified: item.verified,
+      }));
+      const hasMore = response.last === false;  
+      return {
+        items: users,
+        currentPage: response.number ?? page,
+        hasMore: hasMore,
+      };
+    } catch (error) {
+      console.error('Error fetching users:', error);
       throw error;
     }
   };
@@ -181,6 +236,7 @@ export default function SearchPage() {
           imageUrl={item.imageUrl ?? 'https://i.imgur.com/Ha3UkA3.jpg'}
           postId={item.id}
           currentVote={item.currentVote || 'NONE'}
+          commentCount={item.commentCount ?? null}
         />
 
         <View style={styles.divider} />
@@ -188,10 +244,32 @@ export default function SearchPage() {
     );
   };
 
-  const tabsConfig: TabConfig[] = [
-    { key: 'top', label: 'Top', fetchPosts: fetchTopPosts, refreshTrigger: searchRefresh },
-    { key: 'latest', label: 'Latest', fetchPosts: fetchLatestPosts, refreshTrigger: searchRefresh },
-    { key: 'people', label: 'People', fetchPosts: fetchTopPosts, refreshTrigger: searchRefresh },
+  const renderItem = ({ item }: ListRenderItemInfo<Post | User>) => {
+    if (isUser(item)) {
+      // it's a User
+      return (
+        <UserResult
+          id={item.id}
+          avatarUri={item.profilePicture ?? 'https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/f806fe330fa9f5d6235dca1cb075682ea60ceeeafa74088633aa747789bbf602?placeholderIfAbsent=true'} // Default placeholder image
+          username={item.name}
+          handle={item.email}
+          onPress={() => {
+            router.push(`/profile?userId=${item.id}`);
+            /* navigate to user profile, e.g.
+               navigation.navigate('UserProfile', { userId: item.id })
+            */
+          }}
+        />
+      );
+    } else {
+      return renderPostItem({ item: item });
+    }
+  };
+
+  const tabsConfig: TabConfig<Post|User>[] = [
+    { key: 'top', label: 'Top', fetchData: fetchTopPosts, refreshTrigger: searchRefresh },
+    { key: 'latest', label: 'Latest', fetchData: fetchLatestPosts, refreshTrigger: searchRefresh },
+    { key: 'people', label: 'People', fetchData: fetchUsers, refreshTrigger: searchRefresh },
   ];
 
   return (
@@ -203,11 +281,13 @@ export default function SearchPage() {
           onSave={handleFilterSave}
         />
         <View style={styles.divider} />
-        <PostsTabs
+        <DataTabs<Post|User>
           tabs={tabsConfig}
-          renderItem={renderPostItem}
+          renderItem={renderItem}
+          keyExtractor={(i) => i.id}
           contentContainerStyle={{ ...styles.feedContainer, paddingBottom: 60 }}
         />
+        <View style={styles.endMargin} />
       </View>
     </SafeAreaView>
   );
@@ -240,5 +320,8 @@ const styles = StyleSheet.create({
   },
   divider: {
     marginVertical: 6,
+  },
+  endMargin: {
+    minHeight: 60, 
   },
 });

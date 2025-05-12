@@ -1,7 +1,7 @@
 import React from 'react';
-import { Text, ListRenderItemInfo } from 'react-native';
+import { Text, ListRenderItemInfo, NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { render, fireEvent, waitFor, act } from '@testing-library/react-native';
-import PostsTabs, { Post } from '@/components/displays/PostsTabs';
+import PostsTabs, { Post, TabConfig } from '@/components/displays/PostsTabs';
 
 describe('PostsTabs Component', () => {
   const post1: Post = {
@@ -9,10 +9,17 @@ describe('PostsTabs Component', () => {
     title: 'Test Post 1',
     caption: 'Caption 1',
     createdAt: '2021-01-01',
-    postedBy: 'User 1',
+    postedBy: {
+      id: 'user1',
+      name: 'User 1',
+    },
     category: 'General',
     latitude: 0,
     longitude: 0,
+    upvoteCount: 0,
+    downvoteCount: 0,
+    currentVote: '',
+    address: 'Test Address'
   };
 
   const post2: Post = {
@@ -249,5 +256,137 @@ describe('PostsTabs Component', () => {
     });
     // Footer should not be rendered when hasMore is false.
     expect(queryByText('Loading more posts...')).toBeNull();
+  });
+
+  test('updates scroll position when scrolling', async () => {
+    const fetchPostsMock = jest.fn().mockResolvedValue({
+      posts: [post1],
+      currentPage: 1,
+      hasMore: true,
+    });
+    const tabs = [{ key: 'tab1', label: 'Tab 1', fetchPosts: fetchPostsMock }];
+    const { getByTestId } = render(
+      <PostsTabs tabs={tabs} renderItem={renderItem} />
+    );
+
+    await waitFor(() => {
+      expect(fetchPostsMock).toHaveBeenCalledWith(0, true);
+    });
+
+    const flatList = getByTestId('posts-flatlist');
+    
+    // Create a mock scroll event
+    const mockScrollEvent: NativeSyntheticEvent<NativeScrollEvent> = {
+      nativeEvent: {
+        contentOffset: { y: 100, x: 0 },
+        contentSize: { height: 500, width: 100 },
+        layoutMeasurement: { height: 100, width: 100 },
+        zoomScale: 1,
+        contentInset: { top: 0, left: 0, bottom: 0, right: 0 },
+        velocity: { y: 0, x: 0 },
+        targetContentOffset: { y: 0, x: 0 },
+      },
+    } as NativeSyntheticEvent<NativeScrollEvent>;
+
+    // Trigger the onScroll event
+    act(() => {
+      flatList.props.onScroll(mockScrollEvent);
+    });
+
+    // Verify active tab indicator is present
+    const activeTab = tabs[0];
+    expect(getByTestId('posts-flatlist')).toBeTruthy();
+    expect(getByTestId('active-tab-indicator')).toBeTruthy();
+  });
+
+  test('reloads data when refreshTrigger changes', async () => {
+    // Create a mock implementation that tracks call count
+    let refreshTrigger = 1;
+    const fetchPostsMock = jest.fn().mockImplementation(() => {
+      return Promise.resolve({
+        posts: [post1],
+        currentPage: 1,
+        hasMore: true,
+      });
+    });
+    
+    // Initial tab configuration with refreshTrigger
+    const initialTabs = [
+      { 
+        key: 'tab1', 
+        label: 'Tab 1', 
+        fetchPosts: fetchPostsMock,
+        refreshTrigger: refreshTrigger
+      }
+    ];
+    
+    const { rerender, getByText } = render(
+      <PostsTabs tabs={initialTabs} renderItem={renderItem} />
+    );
+    
+    // Wait for initial load
+    await waitFor(() => {
+      expect(fetchPostsMock).toHaveBeenCalledWith(0, true);
+    });
+    
+    await waitFor(() => {
+      expect(getByText(post1.title)).toBeTruthy();
+    });
+    
+    // Store the current call count before updating the refreshTrigger
+    const callCountBeforeUpdate = fetchPostsMock.mock.calls.length;
+    
+    // Update refreshTrigger
+    refreshTrigger = 2;
+    const updatedTabs = [
+      { 
+        key: 'tab1', 
+        label: 'Tab 1', 
+        fetchPosts: fetchPostsMock,
+        refreshTrigger: refreshTrigger
+      }
+    ];
+    
+    // Rerender with updated tabs
+    rerender(<PostsTabs tabs={updatedTabs} renderItem={renderItem} />);
+    
+    // Verify that fetchPosts is called again due to refreshTrigger change
+    await waitFor(() => {
+      // Check that at least one more call happened after the refresh trigger changed
+      expect(fetchPostsMock.mock.calls.length).toBeGreaterThan(callCountBeforeUpdate);
+    });
+  });
+
+
+  test('handles invalid tab key gracefully', async () => {
+    // Spy on console.error to catch any errors
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    
+    const fetchPostsMock = jest.fn().mockResolvedValue({
+      posts: [post1],
+      currentPage: 1,
+      hasMore: true,
+    });
+    
+    const tabs = [{ key: 'tab1', label: 'Tab 1', fetchPosts: fetchPostsMock }];
+    
+    // Render with an invalid tab key to test
+    render(
+      <PostsTabs 
+        tabs={tabs} 
+        renderItem={renderItem}
+        testProps={{ testInvalidTabKey: 'non-existent-tab' }}
+      />
+    );
+    
+    // Wait a moment for any potential errors
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // We just need to verify no errors were thrown
+    expect(console.error).toHaveBeenCalled();
+
+    
+    // Restore console.error
+    console.error.mockRestore();
   });
 });

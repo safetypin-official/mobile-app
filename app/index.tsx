@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { View, Alert } from "react-native";
 import LoginForm from "@/components/forms/LoginForm";
 import { router } from 'expo-router';
-import { onGoogleAuth, onAppleIDAuth, isValidEmail, loginWithEmail } from "@/utils/auth";
+import { onGoogleAuth, isValidEmail, loginWithEmail } from "@/utils/auth";
+import * as Sentry from '@sentry/react-native';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -47,8 +48,7 @@ const LoginScreen = () => {
 
   const handleAppleAuth = async () => {
     try {
-      const result = await onAppleIDAuth();
-      console.log("Apple auth successful:", result);
+      Sentry.captureException(new Error('First error'));
 
       router.push('/map');
     } catch (error) {
