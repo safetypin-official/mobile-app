@@ -56,6 +56,7 @@ const DatePickerInput: React.FC<DatePickerInputProps> = ({
         <View style={styles.column}>
           <Text style={styles.inputLabel}>Month</Text>
           <Picker
+            testID="RNPickerSelect"
             style={styles.picker}
             selectedValue={month}
             onValueChange={(value) => handleMonthChange(value)}
@@ -68,6 +69,7 @@ const DatePickerInput: React.FC<DatePickerInputProps> = ({
         <View style={styles.column}>
           <Text style={styles.inputLabel}>Date</Text>
           <Picker
+            testID="RNPickerSelect"
             style={styles.picker}
             selectedValue={day}
             onValueChange={(value) => handleDayChange(value)}
@@ -80,6 +82,7 @@ const DatePickerInput: React.FC<DatePickerInputProps> = ({
         <View style={styles.column}>
           <Text style={styles.inputLabel}>Year</Text>
           <Picker
+            testID="RNPickerSelect"
             style={styles.picker}
             selectedValue={year}
             onValueChange={(value) => handleYearChange(value)}

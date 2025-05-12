@@ -49,9 +49,9 @@ const UserInfo: React.FC<{
   const [isDeleting, setIsDeleting] = useState(false);
 
   // Determine the user display name and avatar from postedBy or fallbacks
-  const displayName = postedBy?.name || username || "Anonymous";
-  const displayHandle = handle || `@${displayName.toLowerCase().replace(/\s/g, "")}`;
-  const displayAvatar = postedBy?.profilePicture || avatarUrl;
+  const displayName = postedBy?.name ?? username ?? "Anonymous";
+  const displayHandle = handle ?? `@${displayName.toLowerCase().replace(/\s/g, "")}`;
+  const displayAvatar = postedBy?.profilePicture ?? avatarUrl;
 
   const handleReport = () => {
     setModalVisible(false);
@@ -60,8 +60,13 @@ const UserInfo: React.FC<{
     setTimeout(() => setToastVisible(false), 3000);
   };
 
+  const setToastVisibleToFalse = () => {
+    setToastVisible(false);
+  }
+
   const handleDelete = async () => {
     try {
+      console.log("Deleting post:", isDeleting);
       setIsDeleting(true);
       setModalVisible(false);
       
@@ -74,29 +79,33 @@ const UserInfo: React.FC<{
           { 
             text: "Delete", 
             style: "destructive",
-            onPress: async () => {
-              try {
-                await authenticatedDelete(`https://safetypin.ppl.cs.ui.ac.id/posts/${postId}`);
-                
-                // Show success toast - using consistent pattern with CommentSection
-                setToastMessage("Post deleted successfully");
-                setToastVisible(true);
-                setTimeout(() => setToastVisible(false), 3000);
-                
-                // Call the callback to refresh the posts list
-                if (onPostDeleted) {
-                  onPostDeleted();
+            onPress: () => {
+              const performDelete = async () => {
+                try {
+                  await authenticatedDelete(`https://safetypin.ppl.cs.ui.ac.id/posts/${postId}`);
+                  
+                  // Show success toast - using consistent pattern with CommentSection
+                  setToastMessage("Post deleted successfully");
+                  setToastVisible(true);
+                  setTimeout(setToastVisibleToFalse, 3000);
+                  
+                  // Call the callback to refresh the posts list
+                  if (onPostDeleted) {
+                    onPostDeleted();
+                  }
+                  
+                } catch (error) {
+                  console.error("Error deleting post:", error);
+                  // Show error toast - matching CommentSection pattern
+                  setToastMessage("Failed to delete post");
+                  setToastVisible(true);
+                  setTimeout(setToastVisibleToFalse, 3000);
+                } finally {
+                  setIsDeleting(false);
                 }
-                
-              } catch (error) {
-                console.error("Error deleting post:", error);
-                // Show error toast - matching CommentSection pattern
-                setToastMessage("Failed to delete post");
-                setToastVisible(true);
-                setTimeout(() => setToastVisible(false), 3000);
-              } finally {
-                setIsDeleting(false);
-              }
+              };
+              
+              performDelete();
             }
           }
         ]

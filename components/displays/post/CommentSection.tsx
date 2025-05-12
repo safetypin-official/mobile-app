@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View, Text, Image, Modal, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, ActivityIndicator } from "react-native";
 import MoreOptionsButton from "@/components/buttons/post/MoreOptionsButton";
 import Toast from "@/components/toasts/Toast";
@@ -87,6 +87,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       setToastMessage("Reply deleted successfully");
       setToastVisible(true);
       setTimeout(() => setToastVisible(false), 3000);
+      console.log("Deleting status:", isDeleting);
       
       // Close the modal
       setActiveReplyModal(null);
@@ -140,6 +141,69 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     });
   };
 
+  // Render replies content
+  const renderRepliesContent = () => {
+    if (repliesLoading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="small" color="#0000ff" />
+          <Text style={styles.loadingText}>Loading replies...</Text>
+        </View>
+      );
+    }
+    
+    if (repliesError) {
+      return <Text style={styles.errorText}>{repliesError}</Text>;
+    }
+    
+    if (!replies || replies.length === 0) {
+      return <Text style={styles.noRepliesText}>No replies yet</Text>;
+    }
+    
+    return replies.map((reply) => (
+      <View key={reply.id} style={styles.replyItem}>
+        <Image 
+          source={{ 
+            uri: reply.postedBy?.profilePicture ?? 
+                "https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/f806fe330fa9f5d6235dca1cb075682ea60ceeeafa74088633aa747789bbf602?placeholderIfAbsent=true" 
+          }} 
+          style={styles.replyAvatar} 
+        />
+        <View style={styles.replyContent}>
+          <View style={styles.replyHeader}>
+            <Text 
+              style={styles.replyUsername}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {reply.postedBy?.name ?? "Anonymous"}
+            </Text>
+            <Text 
+              style={styles.replyHandle}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              @{(reply.postedBy?.name ?? "anonymous").toLowerCase().replace(/\s/g, "")}
+            </Text>
+            <Text style={styles.replyDate}>
+              • {formatDate(reply.createdAt)}
+            </Text>
+          </View>
+          <Text style={styles.replyText}>{reply.caption}</Text>
+        </View>
+        
+        {/* Add more options button for each reply */}
+        <TouchableOpacity
+          testID={`reply-more-options-button-${reply.id}`}
+          onPress={() => setActiveReplyModal(reply.id)}
+          style={styles.replyMoreOptionsButton}
+        >
+          <Text style={styles.moreOptionsText}>⋮</Text>
+        </TouchableOpacity>
+      </View>
+    ));
+  };
+
   return (
     <View style={styles.comment}>
       <View style={styles.commentContent}>
@@ -169,7 +233,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
           <View style={styles.commentBody}>
             <Text style={styles.commentText}>{content}</Text>
             <View style={styles.commentActionsRow}>
-              {commentId && (
+              {!!commentId && (
                 <TouchableOpacity onPress={toggleReplies} style={styles.viewRepliesButton}>
                   <Text style={styles.viewRepliesText}>
                     {showReplies ? "Hide replies" : "View replies"}
@@ -198,59 +262,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       {/* Replies section */}
       {showReplies && (
         <View style={styles.repliesContainer}>
-          {repliesLoading ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="small" color="#0000ff" />
-              <Text style={styles.loadingText}>Loading replies...</Text>
-            </View>
-          ) : repliesError ? (
-            <Text style={styles.errorText}>{repliesError}</Text>
-          ) : !replies || replies.length === 0 ? (
-            <Text style={styles.noRepliesText}>No replies yet</Text>
-          ) : (
-            replies.map((reply) => (
-              <View key={reply.id} style={styles.replyItem}>
-                <Image 
-                  source={{ 
-                    uri: reply.postedBy?.profilePicture || 
-                        "https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/f806fe330fa9f5d6235dca1cb075682ea60ceeeafa74088633aa747789bbf602?placeholderIfAbsent=true" 
-                  }} 
-                  style={styles.replyAvatar} 
-                />
-                <View style={styles.replyContent}>
-                  <View style={styles.replyHeader}>
-                    <Text 
-                      style={styles.replyUsername}
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                    >
-                      {reply.postedBy?.name || "Anonymous"}
-                    </Text>
-                    <Text 
-                      style={styles.replyHandle}
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                    >
-                      @{(reply.postedBy?.name || "anonymous").toLowerCase().replace(/\s/g, "")}
-                    </Text>
-                    <Text style={styles.replyDate}>
-                      • {formatDate(reply.createdAt)}
-                    </Text>
-                  </View>
-                  <Text style={styles.replyText}>{reply.caption}</Text>
-                </View>
-                
-                {/* Add more options button for each reply */}
-                <TouchableOpacity
-                  testID={`reply-more-options-button-${reply.id}`}
-                  onPress={() => setActiveReplyModal(reply.id)}
-                  style={styles.replyMoreOptionsButton}
-                >
-                  <Text style={styles.moreOptionsText}>⋮</Text>
-                </TouchableOpacity>
-              </View>
-            ))
-          )}
+          {renderRepliesContent()}
         </View>
       )}
 

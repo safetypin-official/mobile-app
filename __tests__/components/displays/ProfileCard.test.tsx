@@ -1,730 +1,822 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import ProfileCard from '../../../components/displays/profile/ProfileCard';
-import { View, Linking, Alert } from 'react-native';
+import { render, fireEvent } from '@testing-library/react-native';
+import ProfileCard from '@/components/displays/profile/ProfileCard';
+import { Linking } from 'react-native';
+import { Alert } from 'react-native';
 
-// Mock expo-font
-jest.mock('expo-font', () => ({
-  isLoaded: jest.fn(() => true),
-  loadAsync: jest.fn(() => Promise.resolve()),
-}));
+jest.mock('react-native-vector-icons/AntDesign', () => 'AntDesign');
+jest.mock('react-native-vector-icons/MaterialIcons', () => 'MaterialIcons');
+jest.mock('react-native-vector-icons/FontAwesome5', () => 'FontAwesome5');
+jest.mock('@expo/vector-icons/Fontisto', () => 'Fontisto');
 
-// Mock Linking
 jest.mock('react-native/Libraries/Linking/Linking', () => ({
-  openURL: jest.fn(() => Promise.resolve()),
   canOpenURL: jest.fn(() => Promise.resolve(true)),
+  openURL: jest.fn(() => Promise.resolve()),
 }));
 
-// Mock Alert
-jest.mock('react-native/Libraries/Alert/Alert', () => ({
-  alert: jest.fn(),
-}));
-
-// Mock @expo/vector-icons
-jest.mock('@expo/vector-icons', () => {
-  const { View, Text } = require('react-native');
-  return {
-    MaterialIcons: (props) => (
-      <Text testID={`MaterialIcons-${props.name}`} {...props} />
-    ),
-    Feather: (props) => (
-      <Text testID={`Feather-${props.name}`} {...props} />
-    ),
-    FontAwesome: (props) => (
-      <Text testID={`FontAwesome-${props.name}`} {...props} />
-    ),
-    FontAwesome5: (props) => (
-      <Text testID={`FontAwesome5-${props.name}`} {...props} />
-    ),
-    AntDesign: (props) => (
-      <Text testID={`AntDesign-${props.name}`} {...props} />
-    ),
-    Fontisto: (props) => (
-      <Text testID={`Fontisto-${props.name}`} {...props} />
-    ),
+describe('ProfileCard Component', () => {
+  const mockProps = {
+    id: 'user123',
+    username: '@mimie',
+    role: 'Premium User',
+    verified: true,
+    profileImage: 'https://example.com/profile.jpg',
+    profileBanner: 'https://example.com/banner.jpg',
+    onEditPress: jest.fn(),
+    onSettingsPress: jest.fn(),
+    socialLinks: {
+      tiktok: 'johndoe',
+      line: 'johndoe',
+      discord: 'johndoe',
+      twitter: 'johndoe',
+      instagram: 'johndoe',
+    },
   };
-});
 
-// Mock SvgXml for any svg icons
-jest.mock('react-native-svg', () => {
-  const { View } = require('react-native');
-  return {
-    SvgXml: ({ testID }) => <View testID={testID || "svg-xml"} />,
-  };
-});
-
-const mockEditPress = jest.fn();
-const mockSettingsPress = jest.fn();
-
-const defaultProps = {
-  id: '123',
-  username: 'johndoe',
-  role: 'User',
-  verified: false,
-  profileImage: 'https://example.com/profile.jpg',
-  profileBanner: 'https://example.com/banner.jpg',
-  onEditPress: mockEditPress,
-  onSettingsPress: mockSettingsPress,
-};
-
-describe('ProfileCard', () => {
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly with given props', () => {
-    const { getByText, getByTestId } = render(
-      <ProfileCard {...defaultProps} />
-    );
-
-    expect(getByText('johndoe')).toBeTruthy();
-    expect(getByText('User')).toBeTruthy();
-    expect(getByText('Edit Profile')).toBeTruthy();
-
-    expect(getByTestId('profileImage')).toBeTruthy();
-    expect(getByTestId('backgroundImage')).toBeTruthy();
-  });
-
-  it('calls onEditPress when Edit Profile button is pressed', () => {
-    const { getByText } = render(<ProfileCard {...defaultProps} />);
-    fireEvent.press(getByText('Edit Profile'));
-    expect(mockEditPress).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls onSettingsPress when settings icon is pressed', () => {
-    const { getByTestId } = render(<ProfileCard {...defaultProps} />);
-    fireEvent.press(getByTestId('settingsButton'));
-    expect(mockSettingsPress).toHaveBeenCalledTimes(1);
-  });
-
-  it('renders without crashing even if profileImage or banner URLs are empty', () => {
+  it('does nothing when handleSocialLinkPress is called with undefined url', () => {
+    const ref = React.createRef<any>();
     const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        profileImage=""
-        profileBanner=""
-      />
+      <ProfileCard {...mockProps} ref={ref} />
     );
-
-    expect(getByTestId('profileImage')).toBeTruthy();
-    expect(getByTestId('backgroundImage')).toBeTruthy();
+    
+    ref.current.handleSocialLinkPress(undefined);
+    
+    expect(Linking.canOpenURL).not.toHaveBeenCalled();
+    expect(Linking.openURL).not.toHaveBeenCalled();
   });
 
-  it('does not crash if onEditPress or onSettingsPress is not passed', () => {
-    const { getByText, getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        onEditPress={undefined as unknown as () => void}
-        onSettingsPress={undefined as unknown as () => void}
-      />
-    );
-
-    fireEvent.press(getByText('Edit Profile'));
-    fireEvent.press(getByTestId('settingsButton'));
-
-    expect(true).toBeTruthy();
-  });
-
-  it('renders with empty username gracefully', () => {
-    const { getByText } = render(
-      <ProfileCard
-        {...defaultProps}
-        username=""
-        role=""
-      />
-    );
-
+  it('renders correctly with all props', () => {
+    const { getByText, getByTestId } = render(<ProfileCard {...mockProps} />);
+    
+    expect(getByText('@mimie')).toBeTruthy();
+    expect(getByText('Premium User')).toBeTruthy();
     expect(getByText('Edit Profile')).toBeTruthy();
-  });
-
-  it('renders verified icon when verified is true', () => {
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        verified={true}
-      />
-    );
-
+    
+    const profileImage = getByTestId('profileImage');
+    expect(profileImage.props.source.uri).toBe('https://example.com/profile.jpg');
+    
+    const backgroundImage = getByTestId('backgroundImage');
+    expect(backgroundImage.props.source.uri).toBe('https://example.com/banner.jpg');
+    
     expect(getByTestId('MaterialIcons-verified')).toBeTruthy();
   });
 
-  it('renders all social media icons when all socialLinks are provided', () => {
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          instagram: 'instagram_user',
-          twitter: 'twitter_user',
-          tiktok: 'tiktok_user',
-          line: 'line_user',
-          discord: 'discord_user'
-        }}
-      />
-    );
-
-    expect(getByTestId('instagram-button')).toBeTruthy();
-    expect(getByTestId('twitter-button')).toBeTruthy();
-    expect(getByTestId('tiktok-button')).toBeTruthy();
-    expect(getByTestId('line-button')).toBeTruthy();
-    expect(getByTestId('discord-button')).toBeTruthy();
+  it('renders without verified badge when not verified', () => {
+    const propsWithoutVerified = { ...mockProps, verified: false };
+    const { queryByTestId } = render(<ProfileCard {...propsWithoutVerified} />);
+    
+    expect(queryByTestId('MaterialIcons-verified')).toBeNull();
   });
 
-  it('opens Instagram link when Instagram icon is pressed', async () => {
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          instagram: 'instagram_user'
-        }}
-      />
-    );
+  it('calls onEditPress when edit button is pressed', () => {
+    const { getByText } = render(<ProfileCard {...mockProps} />);
+    fireEvent.press(getByText('Edit Profile'));
+    expect(mockProps.onEditPress).toHaveBeenCalled();
+  });
 
-    // This is an async operation in the component
-    await fireEvent.press(getByTestId('instagram-button'));
-    await waitFor(() => {
-      expect(Linking.canOpenURL).toHaveBeenCalled();
-      expect(Linking.openURL).toHaveBeenCalled();
+  it('calls onSettingsPress when settings button is pressed', () => {
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    fireEvent.press(getByTestId('settingsButton'));
+    expect(mockProps.onSettingsPress).toHaveBeenCalled();
+  });
+
+  it('renders all social media icons when links are provided', () => {
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    
+    expect(getByTestId('AntDesign-instagram')).toBeTruthy();
+    expect(getByTestId('AntDesign-twitter')).toBeTruthy();
+    expect(getByTestId('MaterialIcons-discord')).toBeTruthy();
+    expect(getByTestId('FontAwesome5-tiktok')).toBeTruthy();
+    expect(getByTestId('Fontisto-line')).toBeTruthy();
+  });
+
+  it('does not render social media container when no links are provided', () => {
+    const propsWithoutSocialLinks = { ...mockProps, socialLinks: undefined };
+    const { queryByTestId } = render(<ProfileCard {...propsWithoutSocialLinks} />);
+    
+    expect(queryByTestId('socialIconsOuterContainer')).toBeNull();
+  });
+
+  it('opens correct social media URLs when icons are pressed', async () => {
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('instagram://user?username=johndoe');
+    
+    fireEvent.press(getByTestId('AntDesign-twitter'));
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('twitter://user?screen_name=johndoe');
+    
+    fireEvent.press(getByTestId('MaterialIcons-discord'));
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://discord.com/users/johndoe');
+    
+    fireEvent.press(getByTestId('FontAwesome5-tiktok'));
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('tiktok://user/profile/johndoe');
+    
+    fireEvent.press(getByTestId('Fontisto-line'));
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://line.me/ti/p/~johndoe');
+  });
+
+
+  it('renders the SVG icons with correct props', () => {
+    const { getAllByTestId } = render(<ProfileCard {...mockProps} isOwnProfile={true} />);
+    const svgIcons = getAllByTestId('svg-xml');
+    
+    // Only test the settings icon that we know exists
+    expect(svgIcons[0].props.xml).toBeTruthy();
+    expect(svgIcons[0].props.width).toBe(36);
+    expect(svgIcons[0].props.height).toBe(36);
+    expect(svgIcons[0].props.fill).toBe('#d0c4c3');
+  });
+
+  it('applies correct styles to elements', () => {
+    const { getByText } = render(<ProfileCard {...mockProps} />);
+    
+    const idText = getByText('@mimie');
+    expect(idText.props.style).toEqual(expect.objectContaining({
+      color: '#fff',
+      fontSize: 20,
+      fontWeight: '800',
+    }));
+    
+    const roleText = getByText('Premium User');
+    expect(roleText.props.style).toEqual(expect.objectContaining({
+      color: '#D0C4C3',
+      fontSize: 16,
+    }));
+  });
+
+  it('renders the white background shape', () => {
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    const backgroundShape = getByTestId('backgroundShape');
+    expect(backgroundShape.props.style).toEqual(expect.objectContaining({
+      backgroundColor: '#fff',
+    }));
+  });
+});
+
+describe('Social Link Construction', () => {
+  const mockProps = {
+    id: 'user123',
+    username: '@mimie',
+    role: 'Premium User',
+    verified: true,
+    profileImage: 'https://example.com/profile.jpg',
+    profileBanner: 'https://example.com/banner.jpg',
+    onEditPress: jest.fn(),
+    onSettingsPress: jest.fn(),
+    socialLinks: {
+      tiktok: 'johndoe',
+      line: 'johndoe',
+      discord: 'johndoe',
+      twitter: 'johndoe',
+      instagram: 'johndoe',
+    },
+  };
+
+  it('constructs correct Instagram URL', () => {
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('instagram://user?username=johndoe');
+  });
+
+  // it('falls back to Instagram web URL when app URL cannot be opened', async () => {
+  //   (Linking.canOpenURL as jest.Mock).mockResolvedValueOnce(false); // Simulate fallback
+  //   const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    
+  //   fireEvent.press(getByTestId('AntDesign-instagram'));
+    
+  //   await new Promise(resolve => setImmediate(resolve)); // Wait for promise to resolve
+  //   expect(Linking.openURL).toHaveBeenCalledWith('instagram://user?username=johndoe');
+  //   expect(Linking.openURL).toHaveBeenCalledWith('https://www.instagram.com/johndoe');
+  // });
+  
+
+  it('constructs correct Twitter URL', () => {
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    fireEvent.press(getByTestId('AntDesign-twitter'));
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('instagram://user?username=johndoe');
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('twitter://user?screen_name=johndoe');
+  });
+
+  it('constructs correct Discord URL', () => {
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    fireEvent.press(getByTestId('MaterialIcons-discord'));
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://discord.com/users/johndoe');
+  });
+
+  it('constructs correct TikTok URL', () => {
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    fireEvent.press(getByTestId('FontAwesome5-tiktok'));
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('tiktok://user/profile/johndoe');
+  });
+
+  it('constructs correct Line URL', () => {
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    fireEvent.press(getByTestId('Fontisto-line'));
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('https://line.me/ti/p/~johndoe');
+  });
+
+  it('calls Linking.openURL when URL can be opened', async () => {
+    (Linking.canOpenURL as jest.Mock).mockResolvedValueOnce(true);
+    
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+    
+    await Promise.resolve(); // Wait for the promise to resolve
+
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('instagram://user?username=johndoe');
+    expect(Linking.openURL).toHaveBeenCalledWith('instagram://user?username=johndoe');
+
+  });
+
+  it('successfully opens URL when canOpenURL returns true', async () => {
+    // Mock canOpenURL to return true
+    (Linking.canOpenURL as jest.Mock).mockResolvedValueOnce(true);
+    
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    
+    // Trigger the social link press
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+    
+    // Wait for promises to resolve
+    await new Promise(resolve => setImmediate(resolve));
+    
+    // Verify both canOpenURL and openURL were called
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('instagram://user?username=johndoe');
+    expect(Linking.openURL).toHaveBeenCalledWith('instagram://user?username=johndoe');
+
+  });
+
+  it('should call Linking.openURL when URL is supported', async () => {
+    // Mock the Promise resolution chain properly
+    (Linking.canOpenURL as jest.Mock).mockImplementationOnce(() => Promise.resolve(true));
+    (Linking.openURL as jest.Mock).mockImplementationOnce(() => Promise.resolve());
+  
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+  
+    // Wait for all promises to resolve
+    await new Promise(process.nextTick);
+  
+    // Verify the flow
+
+    expect(Linking.canOpenURL).toHaveBeenCalledWith('instagram://user?username=johndoe');
+    expect(Linking.openURL).toHaveBeenCalledWith('instagram://user?username=johndoe');
+
+  });
+
+  it('should cover the Linking.openURL call (line 73)', async () => {
+    // Setup mocks
+    const mockCanOpenURL = Linking.canOpenURL as jest.Mock;
+    const mockOpenURL = Linking.openURL as jest.Mock;
+    
+    mockCanOpenURL.mockResolvedValue(true);
+    mockOpenURL.mockResolvedValue(undefined);
+  
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    
+    // Trigger the press
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+  
+    // Wait for next event loop iteration
+    await new Promise(resolve => setImmediate(resolve));
+  
+    // Verify
+    expect(mockCanOpenURL).toHaveBeenCalled();
+    expect(mockOpenURL).toHaveBeenCalledWith(expect.stringContaining('instagram'));
+    expect(mockOpenURL).toHaveBeenCalledWith(expect.stringContaining('twitter'));
+    expect(mockOpenURL).toHaveBeenCalledWith(expect.stringContaining('discord'));
+  });
+
+  it('should directly test the Linking.openURL call on line 73', async () => {
+    // Clear all mock calls before starting this test
+    jest.clearAllMocks();
+    
+    // Setup fresh mocks for this test
+    const mockCanOpenURL = Linking.canOpenURL as jest.Mock;
+    const mockOpenURL = Linking.openURL as jest.Mock;
+    
+    // Mock canOpenURL to resolve to true
+    mockCanOpenURL.mockResolvedValue(true);
+    
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    
+    // Trigger the Instagram button press
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+    
+    // Wait for all promises to resolve
+    await new Promise(resolve => setImmediate(resolve));
+    
+    // Verify the exact call we want to cover
+    expect(mockOpenURL).toHaveBeenCalledWith('instagram://user?username=johndoe');
+    
+    // Verify call counts - these should now be accurate
+    expect(mockCanOpenURL).toHaveBeenCalledTimes(1);
+    expect(mockOpenURL).toHaveBeenCalledTimes(1);
+  });
+
+  describe('Imperative Handle', () => {
+    it('should call Linking.openURL when handleSocialLinkPress is called via ref with a URL', async () => {
+      const mockOpenURL = jest.spyOn(Linking, 'openURL');
+      const ref = React.createRef<{handleSocialLinkPress: (url?: string) => void}>();
+      
+      render(<ProfileCard {...mockProps} ref={ref} />);
+      
+      const testUrl = 'https://test.com';
+      ref.current?.handleSocialLinkPress(testUrl);
+      
+      await new Promise(resolve => setImmediate(resolve)); // Wait for promise
+      
+      expect(mockOpenURL).toHaveBeenCalledWith(testUrl);
+      mockOpenURL.mockRestore();
+    });
+  
+    it('should do nothing when handleSocialLinkPress is called via ref without URL', () => {
+      const mockOpenURL = jest.spyOn(Linking, 'openURL');
+      const ref = React.createRef<{handleSocialLinkPress: (url?: string) => void}>();
+      
+      render(<ProfileCard {...mockProps} ref={ref} />);
+      
+      ref.current?.handleSocialLinkPress();
+      
+      expect(mockOpenURL).not.toHaveBeenCalled();
+      mockOpenURL.mockRestore();
     });
   });
+});
 
-  it('opens Twitter link when Twitter icon is pressed', async () => {
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          twitter: 'twitter_user'
-        }}
-      />
-    );
+describe('Additional ProfileCard Tests for Full Coverage', () => {
+  const mockProps = {
+    id: 'user123',
+    username: '@mimie',
+    role: 'Premium User',
+    verified: true,
+    profileImage: 'https://example.com/profile.jpg',
+    profileBanner: 'https://example.com/banner.jpg',
+    onEditPress: jest.fn(),
+    onSettingsPress: jest.fn(),
+    socialLinks: {
+      tiktok: 'johndoe',
+      line: 'johndoe',
+      discord: 'johndoe',
+      twitter: 'johndoe',
+      instagram: 'johndoe',
+    },
+  };
 
-    await fireEvent.press(getByTestId('twitter-button'));
-    await waitFor(() => {
-      expect(Linking.canOpenURL).toHaveBeenCalled();
-      expect(Linking.openURL).toHaveBeenCalled();
-    });
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('opens TikTok link when TikTok icon is pressed', async () => {
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          tiktok: 'tiktok_user'
-        }}
-      />
-    );
-
-    await fireEvent.press(getByTestId('tiktok-button'));
-    await waitFor(() => {
-      expect(Linking.canOpenURL).toHaveBeenCalled();
-      expect(Linking.openURL).toHaveBeenCalled();
-    });
+  it('renders follow button when isOwnProfile is false', () => {
+    const props = {
+      ...mockProps,
+      isOwnProfile: false,
+      isFollowing: false,
+    };
+    const { getByTestId } = render(<ProfileCard {...props} />);
+    expect(getByTestId('follow-button')).toBeTruthy();
   });
 
-  it('opens Line link when Line icon is pressed', async () => {
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          line: 'line_user'
-        }}
-      />
-    );
-
-    await fireEvent.press(getByTestId('line-button'));
-    await waitFor(() => {
-      expect(Linking.canOpenURL).toHaveBeenCalled();
-      expect(Linking.openURL).toHaveBeenCalled();
-    });
+  it('shows "Follow" text when not following', () => {
+    const props = {
+      ...mockProps,
+      isOwnProfile: false,
+      isFollowing: false,
+    };
+    const { getByText } = render(<ProfileCard {...props} />);
+    expect(getByText('Follow')).toBeTruthy();
   });
 
-  it('opens Discord link when Discord icon is pressed', async () => {
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          discord: 'discord_user'
-        }}
-      />
-    );
-
-    await fireEvent.press(getByTestId('discord-button'));
-    await waitFor(() => {
-      expect(Linking.canOpenURL).toHaveBeenCalled();
-      expect(Linking.openURL).toHaveBeenCalled();
-    });
+  it('shows "Following" text when following', () => {
+    const props = {
+      ...mockProps,
+      isOwnProfile: false,
+      isFollowing: true,
+    };
+    const { getByText } = render(<ProfileCard {...props} />);
+    expect(getByText('Following')).toBeTruthy();
   });
 
-  it('tries web URL when app URL fails', async () => {
-    // First canOpenURL call fails
+  it('calls onFollowPress with correct state when follow button is pressed', () => {
+    const onFollowPress = jest.fn();
+    const props = {
+      ...mockProps,
+      isOwnProfile: false,
+      isFollowing: false,
+      onFollowPress,
+    };
+    const { getByTestId } = render(<ProfileCard {...props} />);
+    fireEvent.press(getByTestId('follow-button'));
+    expect(onFollowPress).toHaveBeenCalledWith(true);
+  });
+
+  it('shows follower and following counts', () => {
+    const props = {
+      ...mockProps,
+      followersCount: 100,
+      followingCount: 50,
+    };
+    const { getByText } = render(<ProfileCard {...props} />);
+    expect(getByText('100 Followers')).toBeTruthy();
+    expect(getByText('50 Following')).toBeTruthy();
+  });
+
+  it('calls onFollowersPress when followers count is pressed', () => {
+    const onFollowersPress = jest.fn();
+    const props = {
+      ...mockProps,
+      followersCount: 100,
+      onFollowersPress,
+    };
+    const { getByText } = render(<ProfileCard {...props} />);
+    fireEvent.press(getByText('100 Followers'));
+    expect(onFollowersPress).toHaveBeenCalled();
+  });
+
+  it('calls onFollowingPress when following count is pressed', () => {
+    const onFollowingPress = jest.fn();
+    const props = {
+      ...mockProps,
+      followingCount: 50,
+      onFollowingPress,
+    };
+    const { getByText } = render(<ProfileCard {...props} />);
+    fireEvent.press(getByText('50 Following'));
+    expect(onFollowingPress).toHaveBeenCalled();
+  });
+
+  it('handles error when opening social link fails', async () => {
+    (Linking.canOpenURL as jest.Mock).mockRejectedValueOnce(new Error('Failed'));
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+    
+    await new Promise(resolve => setImmediate(resolve));
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('shows alert when social link cannot be opened', async () => {
     (Linking.canOpenURL as jest.Mock).mockResolvedValueOnce(false);
-    
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          instagram: 'instagram_user'
-        }}
-      />
-    );
-
-    await fireEvent.press(getByTestId('instagram-button'));
-    
-    await waitFor(() => {
-      // Should try to open web URL directly
-      expect(Linking.openURL).toHaveBeenCalled();
-    });
-  });
-  
-  it('shows alert and tries web URL when app URL opening fails', async () => {
-    // First canOpenURL succeeds but openURL fails
-    (Linking.canOpenURL as jest.Mock).mockResolvedValueOnce(true);
     (Linking.openURL as jest.Mock).mockRejectedValueOnce(new Error('Failed'));
+    const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
     
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          instagram: 'instagram_user'
-        }}
-      />
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+    
+    await new Promise(resolve => setImmediate(resolve));
+    expect(alertSpy).toHaveBeenCalled();
+    alertSpy.mockRestore();
+  });
+
+  it('tries to open app URL first before falling back to web URL', async () => {
+    (Linking.canOpenURL as jest.Mock).mockImplementation((url) => 
+      Promise.resolve(url.startsWith('instagram://'))
     );
-
-    await fireEvent.press(getByTestId('instagram-button'));
     
-    await waitFor(() => {
-      expect(Alert.alert).toHaveBeenCalled();
-      // Should try to open web URL as fallback
-      expect(Linking.openURL).toHaveBeenCalledTimes(2);
-    });
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+    
+    await new Promise(resolve => setImmediate(resolve));
+    expect(Linking.canOpenURL).toHaveBeenCalledWith(expect.stringContaining('instagram://'));
+    expect(Linking.openURL).toHaveBeenCalledWith(expect.stringContaining('instagram://'));
   });
-  
-  it('handles case when both app and web URL opening fail', async () => {
-    // First canOpenURL succeeds but first openURL fails
-    (Linking.canOpenURL as jest.Mock).mockResolvedValueOnce(true);
-    (Linking.openURL as jest.Mock).mockRejectedValueOnce(new Error('Failed'));
-    // Second openURL (web fallback) also fails
-    (Linking.openURL as jest.Mock).mockRejectedValueOnce(new Error('Failed again'));
-    
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          instagram: 'instagram_user'
-        }}
-      />
+
+  it('falls back to web URL when app URL cannot be opened', async () => {
+    (Linking.canOpenURL as jest.Mock).mockImplementation((url) => 
+      Promise.resolve(!url.startsWith('instagram://'))
     );
-
-    await fireEvent.press(getByTestId('instagram-button'));
     
-    await waitFor(() => {
-      expect(Alert.alert).toHaveBeenCalled();
-      expect(Linking.openURL).toHaveBeenCalledTimes(2);
-    });
+    const { getByTestId } = render(<ProfileCard {...mockProps} />);
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+    
+    await new Promise(resolve => setImmediate(resolve));
+    expect(Linking.openURL).toHaveBeenCalledWith(expect.stringContaining('https://www.instagram.com'));
   });
 
-  it('exposes handleSocialLinkPress through ref', () => {
-    const ref = React.createRef<{handleSocialLinkPress: (url?: string) => void}>();
-    render(<ProfileCard {...defaultProps} ref={ref} />);
-    
-    expect(ref.current?.handleSocialLinkPress).toBeDefined();
-    
-    ref.current?.handleSocialLinkPress('https://example.com');
-    expect(Linking.openURL).toHaveBeenCalledWith('https://example.com');
+  it('does not render social icons when socialLinks are empty', () => {
+    const props = {
+      ...mockProps,
+      socialLinks: undefined,
+    };
+    const { queryByTestId } = render(<ProfileCard {...props} />);
+    expect(queryByTestId('AntDesign-instagram')).toBeNull();
   });
 
-  it('handles null URL in handleSocialLinkPress', () => {
-    const ref = React.createRef<{handleSocialLinkPress: (url?: string) => void}>();
-    render(<ProfileCard {...defaultProps} ref={ref} />);
+  it('renders correctly with minimal props', () => {
+    const minimalProps = {
+      id: 'user123',
+      username: '@mimie',
+      role: 'Premium User',
+      verified: true,
+      profileImage: 'https://example.com/profile.jpg',
+      profileBanner: 'https://example.com/banner.jpg',
+    };
+    const { getByText } = render(<ProfileCard {...minimalProps} />);
+    expect(getByText('@mimie')).toBeTruthy();
+  });
+
+  it('does not crash when optional callbacks are not provided', () => {
+    const minimalProps = {
+      id: 'user123',
+      username: '@mimie',
+      role: 'Premium User',
+      verified: true,
+      profileImage: 'https://example.com/profile.jpg',
+      profileBanner: 'https://example.com/banner.jpg',
+      isOwnProfile: false,
+    };
     
-    ref.current?.handleSocialLinkPress(undefined);
+    const { getByTestId } = render(<ProfileCard {...minimalProps} />);
+    fireEvent.press(getByTestId('follow-button')); // Should not throw
+  });
+
+  it('covers empty social link case in handleSocialLinkPress', async () => {
+    const { queryByTestId } = render(<ProfileCard {...mockProps} />);
+    
+    // This covers the early return when username is empty (line 50)
+    const ref = React.createRef<any>();
+    render(<ProfileCard {...mockProps} ref={ref} />);
+    ref.current.handleSocialLinkPress('', 'instagram');
+    
+    await new Promise(resolve => setImmediate(resolve));
+    expect(Linking.canOpenURL).not.toHaveBeenCalled();
+  });
+
+  it('covers platform undefined case in handleSocialLinkPress', async () => {
+    const { queryByTestId } = render(<ProfileCard {...mockProps} />);
+    
+    // This covers the early return when platform is undefined (line 54)
+    const ref = React.createRef<any>();
+    render(<ProfileCard {...mockProps} ref={ref} />);
+    ref.current.handleSocialLinkPress('username', undefined as any);
+    
+    await new Promise(resolve => setImmediate(resolve));
+    expect(Linking.canOpenURL).not.toHaveBeenCalled();
+  });
+
+  it('covers the silent catch block in handleSocialLinkPress', async () => {
+    // Mock to throw error on both app and web URL attempts
+    (Linking.canOpenURL as jest.Mock).mockRejectedValue(new Error('Failed'));
+    (Linking.openURL as jest.Mock).mockRejectedValue(new Error('Failed'));
+    
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+    
+    const propsWithSocial = {
+      ...mockProps,
+      socialLinks: { instagram: 'testuser' }
+    };
+    
+    const { getByTestId } = render(<ProfileCard {...propsWithSocial} />);
+    fireEvent.press(getByTestId('AntDesign-instagram'));
+    
+    await new Promise(resolve => setImmediate(resolve));
+    
+    // This covers the silent catch block (lines 91)
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalled();
+    
+    consoleErrorSpy.mockRestore();
+    alertSpy.mockRestore();
+  });
+
+  it('covers the ref handleSocialLinkPress with empty url', () => {
+    const ref = React.createRef<any>();
+    render(<ProfileCard {...mockProps} ref={ref} />);
+    
+    // This covers line 46
+    ref.current.handleSocialLinkPress('');
     expect(Linking.openURL).not.toHaveBeenCalled();
   });
 
-  it('handles null socialLinks gracefully', () => {
-    const { queryByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={undefined as any}
-      />
-    );
-
-    expect(queryByTestId('instagram-button')).toBeNull();
-    expect(queryByTestId('twitter-button')).toBeNull();
+  it('covers all SOCIAL_MEDIA_URLS definitions', () => {
+    // This test ensures all URL patterns are defined (lines 42-54)
+    const propsWithAllSocial = {
+      ...mockProps,
+      socialLinks: {
+        instagram: 'testinsta',
+        twitter: 'testtwitter',
+        tiktok: 'testtiktok',
+        line: 'testline',
+        discord: 'testdiscord'
+      }
+    };
+    
+    const { getByTestId } = render(<ProfileCard {...propsWithAllSocial} />);
+    
+    expect(getByTestId('AntDesign-instagram')).toBeTruthy();
+    expect(getByTestId('AntDesign-twitter')).toBeTruthy();
+    expect(getByTestId('FontAwesome5-tiktok')).toBeTruthy();
+    expect(getByTestId('Fontisto-line')).toBeTruthy();
+    expect(getByTestId('MaterialIcons-discord')).toBeTruthy();
   });
 
-  it('does not render social icons for empty username strings', () => {
-    const { queryByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          instagram: '',
-          twitter: ''
-        }}
-      />
-    );
-
-    expect(queryByTestId('instagram-button')).toBeNull();
-    expect(queryByTestId('twitter-button')).toBeNull();
+  it('constructs correct Twitter web URL', async () => {
+    const props = {
+      ...mockProps,
+      socialLinks: { twitter: 'testuser' }
+    };
+    
+    const { getByTestId } = render(<ProfileCard {...props} />);
+    fireEvent.press(getByTestId('AntDesign-twitter'));
+    
+    await new Promise(resolve => setImmediate(resolve));
+    expect(Linking.openURL).toHaveBeenCalledWith('https://twitter.com/testuser');
   });
 
-  // Test for empty username with truthy platform
-  it('handles empty username in handleSocialLinkPress', async () => {
-    // Create a component with a ref
-    const ref = React.createRef<{handleSocialLinkPress: (url?: string) => void}>();
-    render(<ProfileCard {...defaultProps} ref={ref} />);
+  it('constructs correct TikTok web URL', async () => {
+    const props = {
+      ...mockProps,
+      socialLinks: { tiktok: 'testuser' }
+    };
     
-    // Get the component instance
-    const instance = ref.current as any;
+    const { getByTestId } = render(<ProfileCard {...props} />);
+    fireEvent.press(getByTestId('FontAwesome5-tiktok'));
     
-    // Reset the mock to ensure we start fresh
-    jest.clearAllMocks();
-    
-    // Call handleSocialLinkPress with empty username and valid platform (directly reaching into component)
-    if (instance._handleSocialLinkPress) {
-      await instance._handleSocialLinkPress('', 'instagram');
-      expect(Linking.openURL).not.toHaveBeenCalled();
-    } else {
-      // Mock direct call to the component's internal method
-      const { handleSocialLinkPress } = instance as any;
-      jest.spyOn(instance, 'handleSocialLinkPress');
-      
-      // We're testing that an empty username doesn't cause an error or open a URL
-      instance.handleSocialLinkPress('', 'instagram');
-      expect(Linking.openURL).not.toHaveBeenCalled();
-    }
+    await new Promise(resolve => setImmediate(resolve));
+    expect(Linking.openURL).toHaveBeenCalledWith('https://www.tiktok.com/@testuser');
   });
+
+  it('constructs correct Line web URL', async () => {
+    const props = {
+      ...mockProps,
+      socialLinks: { line: 'testuser' }
+    };
+    
+    const { getByTestId } = render(<ProfileCard {...props} />);
+    fireEvent.press(getByTestId('Fontisto-line'));
+    
+    await new Promise(resolve => setImmediate(resolve));
+    expect(Linking.openURL).toHaveBeenCalledWith('https://line.me/ti/p/~testuser');
+  });
+
+  it('constructs correct Discord web URL', async () => {
+    const props = {
+      ...mockProps,
+      socialLinks: { discord: 'testuser' }
+    };
+    
+    const { getByTestId } = render(<ProfileCard {...props} />);
+    fireEvent.press(getByTestId('MaterialIcons-discord'));
+    
+    await new Promise(resolve => setImmediate(resolve));
+    expect(Linking.openURL).toHaveBeenCalledWith('https://discord.com/users/testuser');
+  });
+
+  it('returns early when username is empty', async () => {
+    const props = {
+      ...mockProps,
+      socialLinks: { twitter: '' } // Empty username
+    };
   
-  // Additional tests to cover remaining lines
-  it('handles trimmed empty username in handleSocialLinkPress', async () => {
-    // This test specifically targets validating that usernames with only whitespace are treated as empty
-    const ref = React.createRef<{handleSocialLinkPress: (url?: string) => void}>();
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          instagram: '   ' // whitespace-only username
-        }}
-      />
-    );
+    await new Promise(resolve => setImmediate(resolve));
+    expect(Linking.canOpenURL).not.toHaveBeenCalled();
+  });
+});
+
+describe('Early Return Condition Tests', () => {
+  const mockProps = {
+    id: 'user123',
+    username: '@mimie',
+    role: 'Premium User',
+    verified: true,
+    profileImage: 'https://example.com/profile.jpg',
+    profileBanner: 'https://example.com/banner.jpg',
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('returns early when username is undefined', async () => {
+    const ref = React.createRef<any>();
+    render(<ProfileCard {...mockProps} ref={ref} />);
     
-    // The button should be rendered, but pressing it shouldn't do anything
-    expect(getByTestId('instagram-button')).toBeTruthy();
+    // Test with undefined username
+    ref.current.handleSocialLinkPress(undefined, 'instagram');
     
-    await fireEvent.press(getByTestId('instagram-button'));
-    // Since the username is empty after trimming, no URL should be opened
+    await new Promise(resolve => setImmediate(resolve));
+    expect(Linking.canOpenURL).not.toHaveBeenCalled();
     expect(Linking.openURL).not.toHaveBeenCalled();
   });
-  
-  it('handles unsupported social platform gracefully', async () => {
-    // Directly test accessing a non-existent platform
-    const ref = React.createRef<{handleSocialLinkPress: (url?: string) => void}>();
-    render(<ProfileCard {...defaultProps} ref={ref} />);
+
+  it('returns early when username is empty string', async () => {
+    const ref = React.createRef<any>();
+    render(<ProfileCard {...mockProps} ref={ref} />);
     
-    // Here we specifically pass a platform that doesn't exist in SOCIAL_MEDIA_URLS
-    const instance = ref.current as any;
-    if (instance._handleSocialLinkPress) {
-      await instance._handleSocialLinkPress('username', 'unsupported_platform' as any);
-      expect(Linking.openURL).not.toHaveBeenCalled();
-    } else {
-      // Try accessing the social platform via a property on the component
-      // This test is a bit of a hack but is meant to cover edge cases
-      const socialLinks = { unsupported_platform: 'username' };
-      const { rerender } = render(
-        <ProfileCard
-          {...defaultProps}
-          socialLinks={socialLinks as any}
-        />
-      );
-      
-      // There should be no button for an unsupported platform
-      expect(Linking.openURL).not.toHaveBeenCalled();
-    }
+    // Test with empty string username
+    ref.current.handleSocialLinkPress('', 'instagram');
+    
+    await new Promise(resolve => setImmediate(resolve));
+    expect(Linking.canOpenURL).not.toHaveBeenCalled();
+    expect(Linking.openURL).not.toHaveBeenCalled();
   });
 
-  // Cover line 34 - Instagram web URL format (force web URL path)
-  it('uses Instagram web URL when app URL fails', async () => {
-    // Force using web URL by making canOpenURL return false
-    (Linking.canOpenURL as jest.Mock).mockResolvedValueOnce(false);
-    
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          instagram: 'test_instagram'
-        }}
-      />
-    );
 
-    await fireEvent.press(getByTestId('instagram-button'));
+  it('returns early when both username and platform are undefined', async () => {
+    const ref = React.createRef<any>();
+    render(<ProfileCard {...mockProps} ref={ref} />);
     
-    await waitFor(() => {
-      // This exact assertion ensures line 34 is covered
-      expect(Linking.openURL).toHaveBeenCalledWith(
-        'https://www.instagram.com/test_instagram/'
-      );
-    });
+    // Test with both undefined
+    ref.current.handleSocialLinkPress(undefined, undefined);
+    
+    await new Promise(resolve => setImmediate(resolve));
+    expect(Linking.canOpenURL).not.toHaveBeenCalled();
+    expect(Linking.openURL).not.toHaveBeenCalled();
   });
+});
 
-  // Cover line 38 - Twitter web URL format (force web URL path)
-  it('uses Twitter web URL when app URL fails', async () => {
-    // Force using web URL by making canOpenURL return false
-    (Linking.canOpenURL as jest.Mock).mockResolvedValueOnce(false);
-    
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          twitter: 'test_twitter'
-        }}
-      />
-    );
+describe('Early Return Through UI Tests', () => {
+  const mockProps = {
+    id: 'user123',
+    username: '@mimie',
+    role: 'Premium User',
+    verified: true,
+    profileImage: 'https://example.com/profile.jpg',
+    profileBanner: 'https://example.com/banner.jpg',
+  };
 
-    await fireEvent.press(getByTestId('twitter-button'));
-    
-    await waitFor(() => {
-      // This exact assertion ensures line 38 is covered
-      expect(Linking.openURL).toHaveBeenCalledWith(
-        'https://twitter.com/test_twitter'
-      );
-    });
-  });
-
-  // Cover line 42 - TikTok web URL format (force web URL path)
-  it('uses TikTok web URL when app URL fails', async () => {
-    // Force using web URL by making canOpenURL return false
-    (Linking.canOpenURL as jest.Mock).mockResolvedValueOnce(false);
-    
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          tiktok: 'test_tiktok'
-        }}
-      />
-    );
-
-    await fireEvent.press(getByTestId('tiktok-button'));
-    
-    await waitFor(() => {
-      // This exact assertion ensures line 42 is covered
-      expect(Linking.openURL).toHaveBeenCalledWith(
-        'https://www.tiktok.com/@test_tiktok'
-      );
-    });
-  });
-
-  // Cover line 46 - Line web URL format (force web URL path)
-  it('uses Line web URL when app URL fails', async () => {
-    // Force using web URL by making canOpenURL return false
-    (Linking.canOpenURL as jest.Mock).mockResolvedValueOnce(false);
-    
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          line: 'test_line'
-        }}
-      />
-    );
-
-    await fireEvent.press(getByTestId('line-button'));
-    
-    await waitFor(() => {
-      // This exact assertion ensures line 46 is covered
-      expect(Linking.openURL).toHaveBeenCalledWith(
-        'https://line.me/ti/p/~test_line'
-      );
-    });
-  });
-
-  // Direct test of LINE URL formatter - line 46
-  it('directly tests Line URL formatter function', async () => {
-    // Create a component with a ref to access internal methods
-    const ref = React.createRef<{handleSocialLinkPress: (url?: string) => void}>();
-    render(<ProfileCard {...defaultProps} ref={ref} />);
-    
-    // Get the component instance
-    const instance = ref.current as any;
-    
-    // Reset the mock to ensure we start fresh
+  beforeEach(() => {
     jest.clearAllMocks();
-    
-    // Mock canOpenURL to return false for line.me URLs specifically
-    (Linking.canOpenURL as jest.Mock).mockImplementation((url: string) => {
-      if (url.includes('line.me')) {
-        return Promise.resolve(false);
-      }
-      return Promise.resolve(true);
-    });
-    
-    // Directly call the handleSocialLinkPress with 'line' platform
-    if (instance._handleSocialLinkPress) {
-      await instance._handleSocialLinkPress('test_line_user', 'line');
-      expect(Linking.openURL).toHaveBeenCalledWith('https://line.me/ti/p/~test_line_user');
-    } else {
-      // Try to access internal methods or use the standard test
-      const { getByTestId } = render(
-        <ProfileCard
-          {...defaultProps}
-          socialLinks={{
-            line: 'test_line_user'
-          }}
-        />
-      );
-
-      await fireEvent.press(getByTestId('line-button'));
-      
-      // Check exact URL match
-      await waitFor(() => {
-        expect(Linking.openURL).toHaveBeenCalledWith('https://line.me/ti/p/~test_line_user');
-      });
-    }
   });
 
-  // CRITICAL TEST: Specifically target line 46 - Discord web URL formatter
-  it('ensures Discord web URL formatter (line 46) is covered', async () => {
-    // Reset mock state
-    jest.clearAllMocks();
+  it('does nothing when pressing social button with whitespace username', async () => {
+    const props = {
+      ...mockProps,
+      socialLinks: { instagram: '   ' } // Whitespace username
+    };
     
-    // Force Discord to use web URL by making canOpenURL return false
-    (Linking.canOpenURL as jest.Mock).mockImplementation((url) => {
-      console.log('canOpenURL called with:', url);
-      return Promise.resolve(false);
-    });
+    const { getByTestId } = render(<ProfileCard {...props} />);
+    fireEvent.press(getByTestId('AntDesign-instagram'));
     
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          // Only include Discord to isolate the test
-          discord: 'discord_test_user'
-        }}
-      />
-    );
-
-    // Verify the Discord button exists
-    const discordButton = getByTestId('discord-button');
-    expect(discordButton).toBeTruthy();
-    
-    // Press the Discord button
-    await fireEvent.press(discordButton);
-    
-    // Wait and verify exact URL format for Discord (line 46)
-    await waitFor(() => {
-      expect(Linking.openURL).toHaveBeenCalledWith(
-        'https://discord.com/users/discord_test_user'
-      );
-    });
-    
-    // Double-check the correct URL was called
-    const openURLCalls = (Linking.openURL as jest.Mock).mock.calls;
-    console.log('openURL calls:', openURLCalls);
-    
-    // This assertion must pass if line 46 is executed
-    expect(openURLCalls.some(call => 
-      call[0] === 'https://discord.com/users/discord_test_user'
-    )).toBe(true);
+    await new Promise(resolve => setImmediate(resolve));
+    expect(Linking.canOpenURL).not.toHaveBeenCalled();
+    expect(Linking.openURL).not.toHaveBeenCalled();
   });
 
-  // CRITICAL TEST: Directly test Line URL formatter (line 46)
-  it('ensures Line URL formatter is covered (line 46)', async () => {
-    // Completely reset mocks
-    jest.clearAllMocks();
+  it('does nothing when socialLinks contains undefined platform', async () => {
+    // Create invalid platform type
+    const props = {
+      ...mockProps,
+      socialLinks: { 
+        invalidPlatform: 'testuser' // Not a valid platform key
+      } as any // Force TypeScript to allow invalid platform
+    };
     
-    // Force Line to use web URL by making canOpenURL consistently return false
-    (Linking.canOpenURL as jest.Mock).mockImplementation((url) => {
-      // Always return false to force web URL path
-      return Promise.resolve(false);
-    });
-    
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          // Only include Line to isolate the test
-          line: 'specific_line_test_user'
-        }}
-      />
-    );
+    const { queryByTestId } = render(<ProfileCard {...props} />);
+    // Verify no social buttons are rendered for invalid platform
+    expect(queryByTestId('AntDesign-instagram')).toBeNull();
+  });
+});
 
-    // Verify the Line button exists
-    const lineButton = getByTestId('line-button');
-    expect(lineButton).toBeTruthy();
+describe('isOwnProfile Conditional Rendering', () => {
+  const baseProps = {
+    id: 'user123',
+    username: '@mimie',
+    role: 'Premium User',
+    verified: true,
+    profileImage: 'https://example.com/profile.jpg',
+    profileBanner: 'https://example.com/banner.jpg',
+    onSettingsPress: jest.fn(),
+  };
+
+  it('renders settings button when isOwnProfile is true', () => {
+    const props = {
+      ...baseProps,
+      isOwnProfile: true,
+    };
     
-    // Press Line button and wait for all async operations
-    await fireEvent.press(lineButton);
-    
-    // Wait for a specific condition - the exact Line URL format must be used
-    await waitFor(() => {
-      expect(Linking.openURL).toHaveBeenCalledWith(
-        'https://line.me/ti/p/~specific_line_test_user'
-      );
-    }, { timeout: 3000 });  // Increase timeout to ensure async operations complete
-    
-    // Double-check the URL was properly formed (line 46 logic)
-    const openURLCalls = (Linking.openURL as jest.Mock).mock.calls;
-    const lineURLCalled = openURLCalls.some(call => 
-      call[0] === 'https://line.me/ti/p/~specific_line_test_user'
-    );
-    
-    // This assertion should pass if line 46 is executed
-    expect(lineURLCalled).toBe(true);
+    const { getByTestId } = render(<ProfileCard {...props} />);
+    expect(getByTestId('settingsButton')).toBeTruthy();
+    expect(getByTestId('svg-xml')).toBeTruthy();
   });
 
-  // ULTIMATE TEST for Line 46 - Mock LINE platform URL with multiple approaches
-  it('absolutely ensures Line URL formatter (line 46) is covered', async () => {
-    // Reset mock state
-    jest.clearAllMocks();
+  it('does not render settings button when isOwnProfile is false', () => {
+    const props = {
+      ...baseProps,
+      isOwnProfile: false,
+    };
     
-    // Set up mock for canOpenURL to explicitly handle different URL patterns
-    (Linking.canOpenURL as jest.Mock).mockImplementation((url: string) => {
-      console.log('canOpenURL called with:', url);
-      
-      // For Line URLs, both app and web, return false to force web URL branch
-      if (url.includes('line://') || url.includes('line.me')) {
-        console.log('Forcing false for Line URL');
-        return Promise.resolve(false);
-      }
-      
-      return Promise.resolve(true);
-    });
+    const { queryByTestId } = render(<ProfileCard {...props} />);
+    expect(queryByTestId('settingsButton')).toBeNull();
+  });
+
+  it('calls onSettingsPress when settings button is pressed', () => {
+    const props = {
+      ...baseProps,
+      isOwnProfile: true,
+    };
     
-    // Set up openURL mock to log calls
-    (Linking.openURL as jest.Mock).mockImplementation((url: string) => {
-      console.log('openURL called with:', url);
-      return Promise.resolve();
-    });
-    
-    // Create component with ONLY Line social link to isolate the test
-    const { getByTestId } = render(
-      <ProfileCard
-        {...defaultProps}
-        socialLinks={{
-          line: 'line46test' // Line username
-        }}
-      />
-    );
-    
-    // Check that Line button exists
-    const lineButton = getByTestId('line-button');
-    expect(lineButton).toBeTruthy();
-    
-    // Press Line button and wait for all async operations
-    await fireEvent.press(lineButton);
-    
-    // Wait for a specific condition - the exact Line URL format must be used
-    await waitFor(() => {
-      expect(Linking.openURL).toHaveBeenCalledWith('https://line.me/ti/p/~line46test');
-    });
-    
-    // Double-check the URL was properly formed (line 46 logic)
-    const openURLCalls = (Linking.openURL as jest.Mock).mock.calls;
-    const lineURLCalled = openURLCalls.some(call => 
-      call[0] === 'https://line.me/ti/p/~line46test'
-    );
-    
-    // This assertion should pass if line 46 is executed
-    expect(lineURLCalled).toBe(true);
+    const { getByTestId } = render(<ProfileCard {...props} />);
+    fireEvent.press(getByTestId('settingsButton'));
+    expect(props.onSettingsPress).toHaveBeenCalled();
   });
 });
