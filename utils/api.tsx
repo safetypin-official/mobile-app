@@ -1,7 +1,13 @@
 import { getAuthData, clearAuthData, updateAuthData } from './auth';
 import { router } from 'expo-router';
 
+// Add this at the top of your file
+let refreshPromise: Promise<boolean> | null = null;
+
 export type ApiResponse<T = any> = {
+  number: number;
+  last: boolean;
+  content: never[];
   url: string | PromiseLike<string | null> | null;
   success: boolean;
   message: string | null;
@@ -47,36 +53,59 @@ export const authenticatedFetch = async <T = any>(
     // Check specifically for 401 Unauthorized response
     if (response.status === 401 && !retrying && refreshToken) {
       console.log('Token expired, attempting to refresh...');
-      try {
-        // Replace with your actual refresh endpoint
-        const refreshResponse = await fetch('https://safetypin.ppl.cs.ui.ac.id/refresh-token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ refreshToken }),
-        });
+      
+      // If there's already a refresh in progress, wait for it instead of starting a new one
+      if (refreshPromise) {
+        console.log('Another refresh is in progress, waiting for it to complete...');
+        const refreshSucceeded = await refreshPromise;
         
-        const refreshData = await refreshResponse.json();
-
-        console.log('Refresh response:', refreshData);
-        
-        if (!refreshResponse.ok) {
-          throw new Error('Token refresh failed');
+        if (refreshSucceeded) {
+          // If refresh succeeded, retry with new token
+          return authenticatedFetch(url, options, true);
+        } else {
+          // If refresh failed, redirect to login
+          throw new Error('Session expired. Please login again.');
         }
-        
-        // Update stored tokens with new values
-        await updateAuthData({
-          token: refreshData.accessToken,
-          refreshToken: refreshData.refreshToken || refreshToken,
-          // Include any other auth data that needs to be preserved
-        });
-        
-        // Retry the original request with the new token
+      }
+      
+      // Create a new refresh promise
+      refreshPromise = (async () => {
+        try {
+          const refreshResponse = await fetch(`https://safetypin.ppl.cs.ui.ac.id/api/auth/refresh-token?token=${encodeURIComponent(refreshToken)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+          });
+          
+          const refreshData = await refreshResponse.json();
+
+          console.log('Refresh response:', refreshData);
+          
+          if (!refreshResponse.ok || !refreshData.success) {
+            throw new Error('Token refresh failed');
+          }
+          
+          // Update stored tokens with new values
+          await updateAuthData({
+            token: refreshData.data.accessToken,
+            refreshToken: refreshData.data.refreshToken ?? refreshToken,
+          });
+          
+          console.log('Authentication data updated successfully');
+          return true;
+        } finally {
+          // Clear the promise when done
+          refreshPromise = null;
+        }
+      })();
+      
+      // Wait for the refresh to complete
+      const refreshSucceeded = await refreshPromise;
+      
+      if (refreshSucceeded) {
+        // If refresh succeeded, retry with new token
         return authenticatedFetch(url, options, true);
-      } catch (refreshError) {
-        console.log('Token refresh failed, redirecting to login');
-        // If refresh fails, clear auth and redirect to login
-        await clearAuthData();
-        router.replace('/');
+      } else {
+        // If refresh failed, throw error
         throw new Error('Session expired. Please login again.');
       }
     } else if (response.status === 401) {
@@ -87,14 +116,27 @@ export const authenticatedFetch = async <T = any>(
       throw new Error('Session expired or invalid. Please login again.');
     }
     
-    // Parse the JSON response
+    // Check if response is empty (204 No Content or empty body)
+    if (response.status === 204 || response.headers.get('content-length') === '0') {
+      return {
+        success: true,
+        data: null as T,
+        message: null,
+        content: [] as never[],
+        last: true,
+        number: 0,
+        url: null
+      };
+    }
+
+    // Then parse JSON for responses with content
     const data = await response.json();
     
     console.log('API response:', data);
 
     // Handle other non-successful responses
     if (!response.ok) {
-      throw new Error(data.message || `Request failed with status ${response.status}`);
+      throw new Error(data.message ?? `Request failed with status ${response.status}`);
     }
     
     return data;

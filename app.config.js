@@ -14,7 +14,10 @@ export default {
       supportsTablet: true,
       bundleIdentifier: "com.safetypin",
       infoPlist: {
-        ITSAppUsesNonExemptEncryption: false
+        ITSAppUsesNonExemptEncryption: false,
+        UIBackgroundModes: ["location", "fetch", "remote-notification"],
+        NSLocationAlwaysAndWhenInUseUsageDescription: "SafetyPin needs your location for friend tracking and safety features even when the app is closed.",
+        NSLocationWhenInUseUsageDescription: "SafetyPin needs your location to show you nearby safety reports."
       },
       config: {
         googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY
@@ -40,6 +43,14 @@ export default {
             scheme: "safetypin"
           }
         }
+      ],
+      permissions: [
+        "ACCESS_BACKGROUND_LOCATION",
+        "ACCESS_COARSE_LOCATION", 
+        "ACCESS_FINE_LOCATION",
+        "FOREGROUND_SERVICE",
+        "WAKE_LOCK",
+        "RECEIVE_BOOT_COMPLETED"
       ]
     },
     web: {
@@ -62,6 +73,22 @@ export default {
         "@react-native-google-signin/google-signin",
         {
           iosUrlScheme: "com.googleusercontent.apps.77998854438-r4jmipgt2l3r6ge0het3f5v3lqeo8gue"
+        }
+      ],
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "project": "react-native",
+          "organization": "safety-pin"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "SafetyPin needs your location to enable friend tracking and safety alerts even when the app is closed.",
+          "locationAlwaysPermission": "SafetyPin needs background location access to enable friend tracking and safety alerts even when the app is closed.",
+          "locationWhenInUsePermission": "SafetyPin needs your location to show you nearby safety reports and enable friend tracking.",
         }
       ]
     ],

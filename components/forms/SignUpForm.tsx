@@ -177,12 +177,12 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn, onGoogleAuth
             <Button onPress={handleSignUp} testID="signup-button">Sign Up</Button>
           </View>
 
-          <Text style={styles.loginText}>
-            Already have an account?{" "}
+          <View style={styles.loginContainer}>
+            <Text style={styles.loginText}>Already have an account? </Text>
             <TouchableOpacity onPress={onLogIn} testID="login-link">
               <Text style={styles.loginLink}>Log in.</Text>
             </TouchableOpacity>
-          </Text>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -227,9 +227,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   loginText: {
-    marginTop: 30,
     color: "white",
-    textAlign: "center",
   },
   loginLink: {
     color: "#e2c28c",
@@ -249,6 +247,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 20,
     marginBottom: 24
+  },
+  loginContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30,
   },
 });
 
