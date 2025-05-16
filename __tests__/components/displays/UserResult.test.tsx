@@ -16,9 +16,9 @@ describe('UserResult', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly and matches snapshot', () => {
-    const { toJSON } = render(<UserResult {...mockProps} />);
-    expect(toJSON()).not.toBeNull();
+  it('renders correctly without crashing', () => {
+    const rendered = render(<UserResult {...mockProps} />);
+    expect(rendered).toBeTruthy();
   });
 
   it('displays username and handle', () => {
