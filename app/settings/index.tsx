@@ -4,16 +4,16 @@ import SettingsSection from '@/components/settings/SettingsSection';
 import Button from '@/components/buttons/Button';
 
 export const accountItems = [
-  { title: 'Change Password', onPress: () => {} },
-  { title: 'Delete Account', onPress: () => {} },
+  { id: 1, title: 'Change Password', onPress: () => {} },
+  { id: 2, title: 'Delete Account', onPress: () => {} },
 ];
 
 export const helpItems = [
-  { title: 'Submit Feedback', onPress: () => {} },
-  { title: 'FAQ and Documentation', onPress: () => {} },
-  { title: 'About SafetyPin App', onPress: () => {} },
-  { title: 'Terms and Conditions', onPress: () => {} },
-  { title: 'Privacy Policy', onPress: () => {} },
+  { id: 1, title: 'Submit Feedback', onPress: () => {} },
+  { id: 2, title: 'FAQ and Documentation', onPress: () => {} },
+  { id: 3, title: 'About SafetyPin App', onPress: () => {} },
+  { id: 4, title: 'Terms and Conditions', onPress: () => {} },
+  { id: 5, title: 'Privacy Policy', onPress: () => {} },
 ];
 
 const SettingsScreen: React.FC = () => {
