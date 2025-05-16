@@ -327,8 +327,6 @@ const PostPage = () => {
                         placeholder="Enter title" 
                         labelColor='#904a47' 
                         onChangeText={handleTitleChange}
-                        value={title}
-                        maxLength={70}
                         testID="input-title"
                     />
                 </View>
@@ -352,8 +350,6 @@ const PostPage = () => {
                         multiline 
                         labelColor='#904a47' 
                         onChangeText={handleDescriptionChange}
-                        value={description}
-                        maxLength={200}
                         testID="input-description"
                     />
                 </View>
