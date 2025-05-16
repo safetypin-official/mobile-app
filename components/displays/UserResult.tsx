@@ -18,13 +18,13 @@ const UserResult: React.FC<{
   return (
     <TouchableOpacity onPress={onPress} testID="user-result">
         <View style={styles.userInfo}>
-            <Image source={{ uri: avatarUri }} style={styles.avatar} />
+            <Image source={{ uri: avatarUri }} style={styles.avatar} testID="user-avatar" />
             <View style={styles.userDetails}>
                 <Text style={styles.username}>{username}</Text>
                 <Text style={styles.handle}>{handle}</Text>
             </View>
         </View>
-        <View style={styles.horizontalLine} />
+        <View style={styles.horizontalLine} testID="horizontal-line" />
     </TouchableOpacity>
   );
 };
