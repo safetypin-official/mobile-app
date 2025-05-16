@@ -2,7 +2,7 @@ import { router, Stack, usePathname } from "expo-router";
 import { View, AppState, AppStateStatus } from "react-native";
 import NavContainer from "@/components/displays/NavContainer";
 import { useState, useEffect } from "react";
-import { getAuthData } from "@/utils/auth";
+import { getAuthData, verifyJwtToken } from "@/utils/auth";
 import * as Sentry from '@sentry/react-native';
 
 Sentry.init({

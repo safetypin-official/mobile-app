@@ -2,11 +2,11 @@ import 'dotenv/config';
 
 export default {
   expo: {
-    name: "safety-pin",
+    name: "Safety Pin",
     slug: "safety-pin",
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/images/icon.png",
+    icon: "./assets/images/sp_icon.png",
     scheme: "safetypin",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
@@ -63,7 +63,7 @@ export default {
       [
         "expo-splash-screen",
         {
-          image: "./assets/images/splash-icon.png",
+          image: "./assets/images/sp_icon.png",
           imageWidth: 200,
           resizeMode: "contain",
           backgroundColor: "#ffffff"

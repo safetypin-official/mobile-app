@@ -53,6 +53,15 @@ const PostPage = () => {
     const [imageUri, setImageUri] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState<boolean>(false);
 
+    // Add these handler functions for setting text with limits
+    const handleTitleChange = (text: string) => {
+        setTitle(text);
+    };
+
+    const handleDescriptionChange = (text: string) => {
+        setDescription(text);
+    };
+
     // Function to fetch address using Google Maps Geocoding API
     const fetchAddress = async (latitude: number, longitude: number) => {
         setIsLoadingAddress(true);
@@ -254,7 +263,11 @@ const PostPage = () => {
             })
             .catch((error) => {
                 console.error('Error creating post:', error);
-                Alert.alert("Error", "Failed to create post. Please try again.");
+                Alert.alert(
+                    "Error", 
+                    `Failed to create post: ${error.message}`, 
+                    [{ text: "OK" }]
+                );
             });
     };
 
@@ -282,7 +295,7 @@ const PostPage = () => {
                 }} 
                 testID="scroll-container">
                 <View style={styles.inputSection} testID="location-section">
-                    <Text style={styles.label}>Location</Text>
+                    <Text style={styles.label}>Location <Text style={styles.required}>*</Text></Text>
                     
                     {/* New address display */}
                     <View style={styles.addressContainer} testID="address-container">
@@ -306,17 +319,22 @@ const PostPage = () => {
                 </View>
 
                 <View style={styles.inputSection}>
+                    <View style={styles.labelRow}>
+                        <Text style={styles.label}>Title <Text style={styles.required}>*</Text></Text>
+                        <Text style={styles.charCount}>{title.length}/70</Text>
+                    </View>
                     <InputField 
-                        label="Title" 
                         placeholder="Enter title" 
                         labelColor='#904a47' 
-                        onChangeText={setTitle}
+                        onChangeText={handleTitleChange}
+                        value={title}
+                        maxLength={70}
                         testID="input-title"
                     />
                 </View>
 
                 <View style={styles.inputSection}>
-                    <Text style={styles.label}>Tags</Text>
+                    <Text style={styles.label}>Tags <Text style={styles.required}>*</Text></Text>
                     <TagSelector 
                         selectedTag={selectedTag} 
                         onTagChange={setSelectedTag} 
@@ -325,12 +343,17 @@ const PostPage = () => {
                 </View>
 
                 <View style={styles.inputSection}>
+                    <View style={styles.labelRow}>
+                        <Text style={styles.label}>Description <Text style={styles.required}>*</Text></Text>
+                        <Text style={styles.charCount}>{description.length}/200</Text>
+                    </View>
                     <InputField 
-                        label="Description" 
                         placeholder="Enter description" 
                         multiline 
                         labelColor='#904a47' 
-                        onChangeText={setDescription}
+                        onChangeText={handleDescriptionChange}
+                        value={description}
+                        maxLength={200}
                         testID="input-description"
                     />
                 </View>
@@ -399,6 +422,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
         color: "#904a47",
+    },
+    required: {
+        color: '#d9534f',
+    },
+    labelRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     addressContainer: {
         backgroundColor: '#f9f1f1',
@@ -469,6 +500,13 @@ const styles = StyleSheet.create({
         height: 30,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    charCount: {
+        color: "#904a47",
+        fontSize: 12,
+        textAlign: "right",
+        marginTop: 4,
+        opacity: 0.7,
     },
 });
 

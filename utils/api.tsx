@@ -64,6 +64,9 @@ export const authenticatedFetch = async <T = any>(
           return authenticatedFetch(url, options, true);
         } else {
           // If refresh failed, redirect to login
+          console.log("Token refresh failed, clearing auth data and redirecting to login");
+          await clearAuthData();
+          
           throw new Error('Session expired. Please login again.');
         }
       }
@@ -92,6 +95,9 @@ export const authenticatedFetch = async <T = any>(
           
           console.log('Authentication data updated successfully');
           return true;
+        } catch (error: any) {
+          console.error('Error refreshing token:', error.message);
+          return false;
         } finally {
           // Clear the promise when done
           refreshPromise = null;
