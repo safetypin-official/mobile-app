@@ -97,6 +97,8 @@ export const authenticatedFetch = async <T = any>(
           return true;
         } catch (error: any) {
           console.error('Error refreshing token:', error.message);
+          await clearAuthData();
+          router.replace('/');
           return false;
         } finally {
           // Clear the promise when done

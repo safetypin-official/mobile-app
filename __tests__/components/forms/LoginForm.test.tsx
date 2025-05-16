@@ -15,7 +15,6 @@ describe("LoginForm Component", () => {
       onSignUp: jest.fn(),
       onLogIn: jest.fn(),
       onGoogleAuth: jest.fn(),
-      onAppleAuth: jest.fn(),
       setEmail: jest.fn(),
       setPassword: jest.fn(),
       ...overrides,
@@ -27,7 +26,7 @@ describe("LoginForm Component", () => {
   };
 
   it("renders with default testID when not provided", () => {
-    const { getByTestId, getByPlaceholderText } = setup();
+    const { getByTestId } = setup();
 
     expect(getByTestId("login-form")).toBeTruthy();
   });
@@ -66,12 +65,5 @@ describe("LoginForm Component", () => {
 
     fireEvent.press(getByTestId("google-auth"));
     expect(props.onGoogleAuth).toHaveBeenCalledTimes(1);
-  });
-
-  it("calls onAppleAuth when Apple social button is clicked", () => {
-    const { getByTestId, props } = setup();
-
-    fireEvent.press(getByTestId("apple-auth"));
-    expect(props.onAppleAuth).toHaveBeenCalledTimes(1);
   });
 });

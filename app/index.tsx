@@ -65,7 +65,6 @@ const LoginScreen = () => {
         onSignUp={() => router.push('/signUp')}
         onLogIn={handleLogin}
         onGoogleAuth={handleGoogleAuth}
-        onAppleAuth={handleAppleAuth}
         setEmail={setEmail}
         setPassword={setPassword}
       />

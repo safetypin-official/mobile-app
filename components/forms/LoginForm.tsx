@@ -3,14 +3,13 @@ import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from "react-na
 import InputField from "@/components/inputs/InputField";
 import Button from "@/components/buttons/Button";
 import { SocialButton } from "@/components/buttons/SocialButton";
-import { googleIcon, appleIcon } from "@/assets/icons";
+import { googleIcon } from "@/assets/icons";
 
 interface LoginFormProps {
   onForgotPassword: () => void;
   onSignUp: () => void;
   onLogIn: () => void;
   onGoogleAuth: () => void;
-  onAppleAuth: () => void;
   testID?: string;
   setEmail: (email: string) => void;
   setPassword: (password: string) => void;
@@ -21,7 +20,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
   onSignUp, 
   onLogIn, 
   onGoogleAuth, 
-  onAppleAuth, 
   testID = "login-form", 
   setEmail,
   setPassword 
@@ -52,7 +50,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
           <View style={styles.socialButtonsContainer}>
             <SocialButton iconXml={googleIcon} onPress={onGoogleAuth} testID="google-auth"/>
-            <SocialButton iconXml={appleIcon} onPress={onAppleAuth} testID="apple-auth"/>
           </View>
 
           <Button onPress={onLogIn} testID="login-button">
@@ -100,7 +97,7 @@ const styles = StyleSheet.create({
   },
   socialButtonsContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     marginTop: 20,
     marginBottom: 24
   },

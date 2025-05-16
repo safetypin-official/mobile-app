@@ -11,7 +11,7 @@ import InputField from "@/components/inputs/InputField";
 import Button from "@/components/buttons/Button";
 import { SocialButton } from "@/components/buttons/SocialButton";
 import validator from "validator";
-import { googleIcon, appleIcon } from "@/assets/icons";
+import { googleIcon } from "@/assets/icons";
 
 interface SignUpFormProps {
   onSignUp: (userData: {
@@ -22,11 +22,10 @@ interface SignUpFormProps {
   }) => void;
   onLogIn: () => void;
   onGoogleAuth: () => void;
-  onAppleAuth: () => void;
   testID: string;
 }
 
-const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn, onGoogleAuth, onAppleAuth, testID }) => {
+const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn, onGoogleAuth, testID }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
@@ -172,7 +171,6 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, onLogIn, onGoogleAuth
 
           <View style={styles.socialButtonsContainer}>
             <SocialButton iconXml={googleIcon} onPress={onGoogleAuth} testID="google-auth"/>
-            <SocialButton iconXml={appleIcon} onPress={onAppleAuth} testID="apple-auth"/>
           </View>
             <Button onPress={handleSignUp} testID="signup-button">Sign Up</Button>
           </View>
@@ -244,7 +242,7 @@ const styles = StyleSheet.create({
   },
   socialButtonsContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     marginTop: 20,
     marginBottom: 24
   },
