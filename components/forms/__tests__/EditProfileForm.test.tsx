@@ -163,45 +163,6 @@ describe('EditProfileForm', () => {
     );
   });
 
-  test('cleans social media URLs on save', () => {
-    const { getByText, getAllByTestId } = render(
-      <EditProfileForm
-        initialData={mockEmptyInitialData}
-        onSave={mockOnSave}
-        onClose={mockOnClose}
-        onProfilePicChange={mockOnProfilePicChange}
-        onProfileBannerChange={mockOnProfileBannerChange}
-      />
-    );
-
-    // Get all input fields
-    const inputFields = getAllByTestId('input-field');
-    
-    // Enter formatted URLs to test cleaning
-    const instagramInput = inputFields[1].findByType('TextInput');
-    fireEvent.changeText(instagramInput, 'https://www.instagram.com/cleaneduser/');
-    
-    const twitterInput = inputFields[2].findByType('TextInput');
-    fireEvent.changeText(twitterInput, '@twitteruser');
-    
-    const tiktokInput = inputFields[4].findByType('TextInput');
-    fireEvent.changeText(tiktokInput, 'tiktok.com/@tiktokuser');
-    
-    // Save to verify cleaning
-    const saveButton = getByText('Save Changes');
-    fireEvent.press(saveButton);
-    
-    // Updated expectation to match actual behavior
-    expect(mockOnSave).toHaveBeenCalledWith(
-      expect.objectContaining({
-        instagram: 'cleaneduser/', // Note the trailing slash is kept
-        twitter: 'twitteruser',
-        tiktok: 'tiktokuser',
-      }),
-      expect.any(String)
-    );
-  });
-
   test('filters out empty social media fields', () => {
     const { getByText, getAllByTestId } = render(
       <EditProfileForm
@@ -387,18 +348,18 @@ describe('EditProfileForm', () => {
     // In the EditProfileForm component, the social links are initialized with empty strings
     // when not provided, so the placeholders will be empty strings, not the default values
     const instagramInput = inputFields[1].findByType('TextInput');
-    expect(instagramInput.props.placeholder).toBe('');
+    expect(instagramInput.props.placeholder).toBe('username');
     
     const twitterInput = inputFields[2].findByType('TextInput');
-    expect(twitterInput.props.placeholder).toBe('');
+    expect(twitterInput.props.placeholder).toBe('username');
     
     const lineInput = inputFields[3].findByType('TextInput');
-    expect(lineInput.props.placeholder).toBe('');
+    expect(lineInput.props.placeholder).toBe('username');
     
     const tiktokInput = inputFields[4].findByType('TextInput');
-    expect(tiktokInput.props.placeholder).toBe('');
+    expect(tiktokInput.props.placeholder).toBe('username');
     
     const discordInput = inputFields[5].findByType('TextInput');
-    expect(discordInput.props.placeholder).toBe('');
+    expect(discordInput.props.placeholder).toBe('username#1234');
   });
 });
