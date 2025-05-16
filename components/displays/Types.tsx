@@ -51,3 +51,25 @@ export type FollowNotification = {
   followedAt: string;
   daysAgo: number;
 }
+
+export type CommentReply = {
+  id: string;
+  caption: string;
+  postedBy: {
+    userId: string;
+    name: string;
+    profilePicture?: string;
+  };
+  postedById: string;
+  createdAt: string;
+};
+
+export type ReplyPagination = {
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+  currentPage: number;
+  content: CommentReply[];
+};

@@ -1,73 +1,297 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, Linking, Alert } from 'react-native';
 import { SvgXml } from "react-native-svg";
 import { settings, pencil } from '@/assets/icons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Fontisto from '@expo/vector-icons/Fontisto';
 
 interface ProfileCardProps {
-  name: string;
+  id: string;
   username: string;
+  role: string;
+  verified: boolean;
   profileImage: string;
   profileBanner: string;
-  onEditPress: () => void;
-  onSettingsPress: () => void;
+  onEditPress?: () => void;
+  onSettingsPress?: () => void;
+  onFollowPress?: (isFollowing: boolean) => void;
+  isFollowing?: boolean;
+  isOwnProfile?: boolean;
+  followersCount?: number;
+  followingCount?: number;
+  onFollowersPress?: () => void;
+  onFollowingPress?: () => void;
+  onFollowersCountChange?: (newCount: number) => void;
+  socialLinks?: {
+    tiktok?: string;
+    line?: string;
+    discord?: string;
+    twitter?: string;
+    instagram?: string;
+  };
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({
-  name,
-  username,
-  profileImage,
-  profileBanner,
-  onEditPress,
-  onSettingsPress,
-}) => {
-  return (
-    <ImageBackground
-      source={{ uri: profileBanner }}
-      style={styles.container}
-      imageStyle={styles.backgroundImage}
-      testID="backgroundImage"
-    >
-      <View style={styles.overlay} />
-
-      <View style={styles.content}>
-        <TouchableOpacity onPress={onSettingsPress} style={styles.settingsIcon} testID='settingsButton'>
-          <SvgXml xml={settings} width={36} height={36} fill='#d0c4c3' />
-        </TouchableOpacity>
-
-        <Image
-          style={styles.profileImage}
-          source={{ uri: profileImage }} 
-          testID="profileImage"
-        />
-
-        <View style={styles.infoRow}>
-          <View style={styles.infoContainer}>
-            <Text style={styles.name}>{name}</Text>
-            <Text style={styles.username}>@{username}</Text>
-          </View>
-          <TouchableOpacity style={styles.editButton} onPress={onEditPress}>
-            <SvgXml xml={pencil} width={17} height={17} style={styles.iconGap} />
-            <Text style={styles.editText}>Edit Profile</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </ImageBackground>
-  );
+const SOCIAL_MEDIA_URLS = {
+  instagram: {
+    web: (username: string) => `https://www.instagram.com/${username}/`,
+    app: (username: string) => `instagram://user?username=${username}`
+  },
+  twitter: {
+    web: (username: string) => `https://twitter.com/${username}`,
+    app: (username: string) => `twitter://user?screen_name=${username}`
+  },
+  tiktok: {
+    web: (username: string) => `https://www.tiktok.com/@${username}`,
+    app: (username: string) => `tiktok://user/profile/${username}`
+  },
+  line: {
+    web: (username: string) => `https://line.me/ti/p/~${username}`,
+    app: (username: string) => `https://line.me/ti/p/~${username}`
+  },
+  discord: {
+    web: (username: string) => `https://discord.com/users/${username}`,
+    app: (username: string) => `https://discord.com/users/${username}`
+  }
 };
 
+const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => void}, ProfileCardProps>(
+  (props, ref) => {
+    const { 
+      id,
+      username,
+      role,
+      verified,
+      profileImage,
+      profileBanner,
+      onEditPress,
+      onSettingsPress,
+      onFollowPress,
+      onFollowersPress,
+      onFollowingPress,
+      followersCount = 0,
+      followingCount = 0,
+      isFollowing = true,
+      isOwnProfile = true,
+      onFollowersCountChange,
+      socialLinks = {},
+    } = props;
+
+    const handleFollowPress = () => {
+      const newFollowingState = !isFollowing;
+      
+      if (onFollowPress) {
+        onFollowPress(newFollowingState);
+        console.log(`User Followed ${id}, Count Change: ${onFollowersCountChange}`);
+      }
+    };
+
+    const handleSocialLinkPress = async (username?: string, platform?: keyof typeof SOCIAL_MEDIA_URLS) => {
+      if (!username?.trim() || !platform) {
+        return;
+      }
+    
+      try {
+        // Try app scheme first
+        const appUrl = SOCIAL_MEDIA_URLS[platform].app(username.trim());
+        const canOpenApp = await Linking.canOpenURL(appUrl);
+        
+        if (canOpenApp) {
+          await Linking.openURL(appUrl);
+        } else {
+          // Fall back to web URL
+          const webUrl = SOCIAL_MEDIA_URLS[platform].web(username.trim());
+          await Linking.openURL(webUrl);
+        }
+      } catch (error) {
+        console.error(`Error opening ${platform}:`, error);
+        
+        // Provide feedback to user
+        Alert.alert(
+          "Couldn't Open Link", 
+          `Unable to open ${platform}. Please check if you have the app installed or try again later.`
+        );
+        
+        // Try opening in browser as last resort
+        try {
+          const webUrl = SOCIAL_MEDIA_URLS[platform].web(username.trim());
+          await Linking.openURL(webUrl);
+        } catch {
+          // Silent fail for the last attempt
+        }
+      }
+    };
+
+    React.useImperativeHandle(ref, () => ({
+      handleSocialLinkPress: (url?: string) => {
+        if (url) {
+          Linking.openURL(url);
+        }
+      }
+    }));
+
+    const hasSocialLinks = Object.values(socialLinks).some(link => link);
+
+    return (
+      <View style={styles.outerContainer}>
+        <View style={styles.backgroundShape} testID="backgroundShape" />
+        <ImageBackground
+          source={{ uri: profileBanner }}
+          style={styles.container}
+          imageStyle={styles.backgroundImage}
+          testID="backgroundImage"
+        >
+          <View style={styles.overlay} />
+          <View style={styles.content}>
+            {isOwnProfile && (
+              <TouchableOpacity onPress={onSettingsPress} style={styles.settingsIcon} testID='settingsButton'>
+                <SvgXml xml={settings} width={36} height={36} fill='#d0c4c3' testID='svg-xml' />
+              </TouchableOpacity>
+            )}
+
+            <Image
+              style={styles.profileImage}
+              source={{ uri: profileImage }} 
+              testID="profileImage"
+            />
+
+            <View style={styles.infoRow}>
+              <View style={styles.infoContainer}>
+                <Text style={styles.name}>{username}</Text>
+                <View style={styles.roleContainer}>
+                  <Text style={styles.role}>{role}</Text>
+                  {verified && (
+                    <MaterialIcons name="verified" size={16} color="#4285F4" style={styles.verifiedIcon} testID='MaterialIcons-verified'/>
+                  )}
+                </View>
+                <View style={styles.followStatsContainer}>
+                  <TouchableOpacity onPress={onFollowersPress}>
+                    <Text style={styles.followStatText}>
+                      <Text style={styles.followStatNumber}>{followersCount}</Text> Followers
+                    </Text>
+                  </TouchableOpacity>
+                  <Text style={[styles.followStatText, styles.followStatSeparator]}>•</Text>
+                  <TouchableOpacity onPress={onFollowingPress}>
+                    <Text style={styles.followStatText}>
+                      <Text style={styles.followStatNumber}>{followingCount}</Text> Following
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              {isOwnProfile ? (
+                <TouchableOpacity style={styles.editButton} onPress={onEditPress}>
+                  <SvgXml xml={pencil} width={17} height={17} style={styles.iconGap}/>
+                  <Text style={styles.editText}>Edit Profile</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity 
+                  style={[
+                    styles.followButton, 
+                    isFollowing && styles.unfollowButton
+                  ]} 
+                  onPress={handleFollowPress}
+                  testID="follow-button"
+                >
+                  <Text style={[
+                    styles.followText,
+                    isFollowing && styles.unfollowText
+                  ]}>
+                    {isFollowing ? 'Following' : 'Follow'}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </ImageBackground>
+
+        {hasSocialLinks && (
+          <View style={styles.socialIconsOuterContainer}>
+            <View style={styles.socialIconsContainer}>
+              {socialLinks.instagram && (
+                <TouchableOpacity 
+                  onPress={() => handleSocialLinkPress(socialLinks.instagram, 'instagram')}
+                  style={styles.socialIcon}
+                  testID="instagram-button"
+                >
+                  <AntDesign name="instagram" size={20} color="#4d4544" testID='AntDesign-instagram'/>
+                </TouchableOpacity>
+              )}
+
+              {socialLinks.twitter && (
+                <TouchableOpacity 
+                  onPress={() => handleSocialLinkPress(socialLinks.twitter, 'twitter')}
+                  style={styles.socialIcon}
+                  testID="twitter-button"
+                >
+                  <AntDesign name="twitter" size={20} color="#4d4544" testID='AntDesign-twitter'/>
+                </TouchableOpacity>
+              )}
+
+              {socialLinks.discord && (
+                <TouchableOpacity 
+                  onPress={() => handleSocialLinkPress(socialLinks.discord, 'discord')}
+                  style={styles.socialIcon}
+                  testID="discord-button"
+                >
+                  <MaterialIcons name="discord" size={20} color="#4d4544" testID='MaterialIcons-discord'/>
+                </TouchableOpacity>
+              )}
+
+              {socialLinks.tiktok && (
+                <TouchableOpacity 
+                  onPress={() => handleSocialLinkPress(socialLinks.tiktok, 'tiktok')}
+                  style={styles.socialIcon}
+                  testID="tiktok-button"
+                >
+                  <FontAwesome5 name="tiktok" size={20} color="#4d4544" testID='FontAwesome5-tiktok'/>
+                </TouchableOpacity>
+              )}
+
+              {socialLinks.line && (
+                <TouchableOpacity 
+                  onPress={() => handleSocialLinkPress(socialLinks.line, 'line')}
+                  style={styles.socialIcon}
+                  testID="line-button"
+                >
+                  <Fontisto name="line" size={20} color="#4d4544" testID='Fontisto-line'/>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        )}
+      </View>
+    );
+  }
+);
+
 const styles = StyleSheet.create({
+  outerContainer: {
+    width: '100%',
+  },
   container: {
     width: '100%',
     minHeight: 250,
     justifyContent: 'center',
+    borderRadius: 0,
+    overflow: 'hidden',
+  },
+  backgroundShape: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 270,
+    backgroundColor: '#fff',
+    zIndex: -1,
   },
   backgroundImage: {
-    borderRadius: 30,
+    borderRadius: 0,
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.63)',
-    borderRadius: 30,
+    borderRadius: 0,
   },
   content: {
     padding: 15,
@@ -104,11 +328,18 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     fontFamily: 'Inter',
   },
-  username: {
+  roleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  role: {
     fontSize: 16,
     color: '#D0C4C3',
     fontFamily: 'Inter',
     marginTop: 4,
+  },
+  verifiedIcon: {
+    marginLeft: 4,
   },
   editButton: {
     flexDirection: 'row',
@@ -124,8 +355,60 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontFamily: 'Inter',
   },
+  followButton: {
+    backgroundColor: '#9F3F3D',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  unfollowButton: {
+    backgroundColor: '#e0e0e0',
+  },
+  followText: {
+    fontSize: 12,
+    color: '#fff',
+    fontWeight: '600',
+    fontFamily: 'Inter',
+  },
   iconGap: {
     marginRight: 8,
+  },
+  socialIconsOuterContainer: {
+    backgroundColor: '#fff',
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    paddingVertical: 8,
+  },
+  socialIconsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 10,
+  },
+  socialIcon: {
+    padding: 8,
+  },
+  followStatsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  followStatText: {
+    fontSize: 14,
+    color: '#D0C4C3',
+    fontFamily: 'Inter',
+  },
+  followStatNumber: {
+    fontWeight: '600',
+    color: '#fff',
+  },
+  followStatSeparator: {
+    marginHorizontal: 8,
+  },
+  unfollowText: {
+    color: '#4d4544', // Dark text for unfollow state
   },
 });
 

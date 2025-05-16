@@ -10,6 +10,7 @@ import {
 import Button from "@/components/buttons/Button";
 import DatePickerInput from "@/components/inputs/DatePickerInput"; // New date picker component
 import { TAGS as TAG_OBJECTS } from "@/assets/TagData"; // Adjust path if needed
+import { authenticatedGet } from "@/utils/api"; // Add this import
 
 interface FilterModalProps {
   visible: boolean;
@@ -70,10 +71,10 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
   const fetchTags = async () => {
     try {
-      const response = await fetch('https://safetypin.ppl.cs.ui.ac.id/posts/category');
-      const data = await response.json();
-      if (data.success) {
-        setTags(["All", ...data.data.map((tag: any) => tag.name)]);
+      const response = await authenticatedGet('https://safetypin.ppl.cs.ui.ac.id/posts/category');
+      if (response.success) {
+        // The API returns strings directly in the data array, no need to access 'name'
+        setTags(["All", ...response.data]);
       }
     } catch (err) {
       console.error("Error fetching tags:", err);
@@ -118,9 +119,9 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
           <Text style={styles.sectionTitle}>Tag</Text>
           <ScrollView style={styles.scrollView}>
-            {(tags.length ? tags : TAGS).map((tag) => (
+            {(tags.length ? tags : TAGS).map((tag, index) => (
               <TouchableOpacity
-                key={tag}
+                key={`tag-${index}-${tag}`}
                 onPress={() => toggleTag(tag)}
                 style={styles.tagItem}
               >

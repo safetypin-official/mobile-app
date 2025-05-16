@@ -4,7 +4,7 @@ import SettingsItem, { SettingsItemProps } from '@/components/settings/SettingsI
 
 interface SettingsSectionProps {
   title: string;
-  items: SettingsItemProps[];
+  items: (SettingsItemProps & { id: string | number })[];
 }
 
 const SettingsSection: React.FC<SettingsSectionProps> = ({ title, items }) => {
@@ -13,8 +13,8 @@ const SettingsSection: React.FC<SettingsSectionProps> = ({ title, items }) => {
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>{title}</Text>
       </View>
-      {items.map((item, index) => (
-        <SettingsItem key={index} {...item} />
+      {items.map((item) => (
+        <SettingsItem key={item.id} {...item} />
       ))}
     </View>
   );

@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import { 
-    View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Image, Alert
+    View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, ActivityIndicator
 } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
 import Entypo from '@expo/vector-icons/Entypo';
 import Button from '@/components/buttons/Button';
 import InputField from '@/components/inputs/InputField';
 import TagSelector from '@/components/inputs/TagSelector';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
+import { authenticatedPost } from '@/utils/api';
+import Config from "react-native-config";
+import * as Sentry from '@sentry/react-native';
+
+const API_KEY = Config.GOOGLE_MAPS_API_KEY;
 
 export const getFileExtension = (uri: string): string => {
     const fileName = uri.split('/');
@@ -25,28 +30,87 @@ export const getFileExtension = (uri: string): string => {
 };
 
 const PostPage = () => {
-    const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+    // Get parameters from the URL or navigation state
+    const params = useLocalSearchParams();
+    
+    // Initialize location state with passed parameters if available
+    const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(
+            params.latitude && params.longitude 
+                ? { 
+                    latitude: typeof params.latitude === 'string' ? parseFloat(params.latitude) : Number(params.latitude), 
+                    longitude: typeof params.longitude === 'string' ? parseFloat(params.longitude) : Number(params.longitude) 
+                  }
+                : null
+        );
+    
+    // New state for storing the address from reverse geocoding
+    const [address, setAddress] = useState<string>('Fetching address...');
+    const [isLoadingAddress, setIsLoadingAddress] = useState<boolean>(false);
+    
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [selectedTag, setSelectedTag] = useState<string | null>(null);
     const [imageUri, setImageUri] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState<boolean>(false);
 
-    useEffect(() => {
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                console.log('Permission to access location was denied');
-                return;
-            }
+    // Add these handler functions for setting text with limits
+    const handleTitleChange = (text: string) => {
+        setTitle(text);
+    };
 
-            let loc = await Location.getCurrentPositionAsync({});
-            setLocation({
-                latitude: loc.coords.latitude,
-                longitude: loc.coords.longitude,
-            });
-        })();
-    }, []);
+    const handleDescriptionChange = (text: string) => {
+        setDescription(text);
+    };
+
+    // Function to fetch address using Google Maps Geocoding API
+    const fetchAddress = async (latitude: number, longitude: number) => {
+        setIsLoadingAddress(true);
+        try {
+            const geocodingUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${API_KEY}`;
+            
+            const response = await fetch(geocodingUrl);
+            const data = await response.json();
+            
+            if (data.status === 'OK' && data.results && data.results.length > 0) {
+                // Use the first result which is typically the most specific
+                setAddress(data.results[0].formatted_address);
+            } else {
+                setAddress('Address not found');
+                console.log('Geocoding API response:', data);
+            }
+        } catch (error) {
+            console.error('Error fetching address:', error);
+            setAddress('Failed to fetch address');
+        } finally {
+            setIsLoadingAddress(false);
+        }
+    };
+
+    useEffect(() => {
+        // Only fetch current location if no location was passed
+        if (!location) {
+            (async () => {
+                let { status } = await Location.requestForegroundPermissionsAsync();
+                if (status !== 'granted') {
+                    console.log('Permission to access location was denied');
+                    return;
+                }
+
+                let loc = await Location.getCurrentPositionAsync({});
+                const newLocation = {
+                    latitude: loc.coords.latitude,
+                    longitude: loc.coords.longitude,
+                };
+                setLocation(newLocation);
+                
+                // Fetch address once we have the location
+                fetchAddress(newLocation.latitude, newLocation.longitude);
+            })();
+        } else {
+            // If we already have a location (e.g., from params), fetch the address
+            fetchAddress(location.latitude, location.longitude);
+        }
+    }, [location?.latitude, location?.longitude]);
 
     const handleClose = () => {
         router.replace('/map');
@@ -68,26 +132,16 @@ const PostPage = () => {
         });
     };
 
-    // Function to get presigned URL from backend
+    // Function to get presigned URL from backend - Now with authentication
     const getPresignedUrl = async (fileType: string): Promise<string | null> => {
         try {
-            const response = await fetch('https://safetypin.ppl.cs.ui.ac.id//post/s3/presigned-url', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    fileType: fileType
-                }),
+            const response = await authenticatedPost('https://safetypin.ppl.cs.ui.ac.id/post/s3/presigned-url', {
+                fileType: fileType
             });
 
-            if (!response.ok) {
-                throw new Error(`Failed to get presigned URL: ${response.status} ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            console.log('Received presigned URL:', data.url);
-            return data.url;
+            console.log('Presigned URL response:', response.url);
+            
+            return response.url;
         } catch (error) {
             console.error('Error getting presigned URL:', error);
             return null;
@@ -140,6 +194,21 @@ const PostPage = () => {
         }
     };
 
+    const handleSubmitMonitoring = async () => {
+        Sentry.startSpan({ name: 'report_incident' }, async (span) => {
+            try {
+              // Your logic here (e.g., API call)
+              await handleSubmit();
+          
+              // Optional: add attributes to the span
+              span.setAttribute('status', 'success');
+            } catch (error) {
+              span.setAttribute('status', 'error');
+              Sentry.captureException(error);
+            }
+          });
+    }
+
     const handleSubmit = async () => {
         if (!selectedTag) {
             Alert.alert("Missing Information", "Please select at least one category");
@@ -169,34 +238,23 @@ const PostPage = () => {
         submitPost(uploadedImageUrl);
     };
     
+    // Update the submitPost function too
     const submitPost = (imageUrl: string | null) => {
-        // Create the post data with the category as a string
+        // Create the post data with the category as a string and add the address
         const postData = {
-            title: title,
-            caption: description,
-            latitude: location?.latitude ?? 0,
-            longitude: location?.longitude ?? 0,
-            category: selectedTag, // Now passing the category directly as a string
+            Title: title,
+            Caption: description,
+            Latitude: location?.latitude ?? 0,
+            Longitude: location?.longitude ?? 0,
+            Address: address, // Include the address in the post data
+            Category: selectedTag,
             imageUrl: imageUrl
         };
         
         console.log('Submitting post data:', postData);
         
-        // Submit the post directly
-        fetch('https://safetypin.ppl.cs.ui.ac.id//post', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(postData),
-        })
-            .then(response => {
-                console.log('Server response:', response);
-                if (!response.ok) {
-                    throw new Error(`Server responded with ${response.status}`);
-                }
-                return response.json();
-            })
+        // Use authenticatedPost for the post creation
+        authenticatedPost('https://safetypin.ppl.cs.ui.ac.id/posts', postData)
             .then(data => {
                 console.log('Post created successfully:', data);
                 Alert.alert("Success", "Your report has been posted successfully", [
@@ -205,7 +263,11 @@ const PostPage = () => {
             })
             .catch((error) => {
                 console.error('Error creating post:', error);
-                Alert.alert("Error", "Failed to create post. Please try again.");
+                Alert.alert(
+                    "Error", 
+                    `Failed to create post: ${error.message}`, 
+                    [{ text: "OK" }]
+                );
             });
     };
 
@@ -219,31 +281,58 @@ const PostPage = () => {
                     <Text style={styles.header}>New Report</Text>
                 </View>
                 <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 8, maxWidth: 80 }}>
-                    <Button onPress={handleSubmit} testID="submit-button">
+                    <Button onPress={handleSubmitMonitoring} testID="submit-button">
                         {isUploading ? "Uploading..." : "Post"}
                     </Button>
                 </View>
             </View>
 
-            <ScrollView style={styles.scroll} contentContainerStyle={{ flexGrow: 1 }} testID="scroll-container">
+            <ScrollView 
+                style={styles.scroll} 
+                contentContainerStyle={{ 
+                    flexGrow: 1,
+                    paddingBottom: 100 // Add significant bottom padding
+                }} 
+                testID="scroll-container">
                 <View style={styles.inputSection} testID="location-section">
-                    <Text style={styles.label}>Location</Text>
-                    <Text style={styles.paragraph} testID="latitude-text">Latitude: {location?.latitude ?? 'Fetching...'}</Text>
-                    <Text style={styles.paragraph} testID="longitude-text">Longitude: {location?.longitude ?? 'Fetching...'}</Text>
+                    <Text style={styles.label}>Location <Text style={styles.required}>*</Text></Text>
+                    
+                    {/* New address display */}
+                    <View style={styles.addressContainer} testID="address-container">
+                        {isLoadingAddress ? (
+                            <View style={styles.loadingContainer}>
+                                <ActivityIndicator size="small" color="#904a47" />
+                                <Text style={styles.loadingText}>Fetching address...</Text>
+                            </View>
+                        ) : (
+                            <Text style={styles.addressText} testID="address-text">{address}</Text>
+                        )}
+                    </View>
+                    
+                    {/* Still show coordinates for reference */}
+                    <Text style={styles.coordsText} testID="latitude-text">
+                        Latitude: {location?.latitude ?? 'Fetching...'}
+                    </Text>
+                    <Text style={styles.coordsText} testID="longitude-text">
+                        Longitude: {location?.longitude ?? 'Fetching...'}
+                    </Text>
                 </View>
 
                 <View style={styles.inputSection}>
+                    <View style={styles.labelRow}>
+                        <Text style={styles.label}>Title <Text style={styles.required}>*</Text></Text>
+                        <Text style={styles.charCount}>{title.length}/70</Text>
+                    </View>
                     <InputField 
-                        label="Title" 
                         placeholder="Enter title" 
                         labelColor='#904a47' 
-                        onChangeText={setTitle}
+                        onChangeText={handleTitleChange}
                         testID="input-title"
                     />
                 </View>
 
                 <View style={styles.inputSection}>
-                    <Text style={styles.label}>Tags</Text>
+                    <Text style={styles.label}>Tags <Text style={styles.required}>*</Text></Text>
                     <TagSelector 
                         selectedTag={selectedTag} 
                         onTagChange={setSelectedTag} 
@@ -252,12 +341,15 @@ const PostPage = () => {
                 </View>
 
                 <View style={styles.inputSection}>
+                    <View style={styles.labelRow}>
+                        <Text style={styles.label}>Description <Text style={styles.required}>*</Text></Text>
+                        <Text style={styles.charCount}>{description.length}/200</Text>
+                    </View>
                     <InputField 
-                        label="Description" 
                         placeholder="Enter description" 
                         multiline 
                         labelColor='#904a47' 
-                        onChangeText={setDescription}
+                        onChangeText={handleDescriptionChange}
                         testID="input-description"
                     />
                 </View>
@@ -327,6 +419,42 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: "#904a47",
     },
+    required: {
+        color: '#d9534f',
+    },
+    labelRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    addressContainer: {
+        backgroundColor: '#f9f1f1',
+        padding: 12,
+        borderRadius: 6,
+        marginBottom: 8,
+        borderWidth: 1,
+        borderColor: '#e6d0d0',
+    },
+    addressText: {
+        color: '#3b080a',
+        fontSize: 14,
+        lineHeight: 20,
+    },
+    coordsText: {
+        color: "#904a47",
+        fontSize: 12,
+        opacity: 0.8,
+        marginTop: 2,
+    },
+    loadingContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    loadingText: {
+        color: '#904a47',
+        marginLeft: 8,
+        fontSize: 14,
+    },
     paragraph: {
         color: "#904a47",
     },
@@ -368,6 +496,13 @@ const styles = StyleSheet.create({
         height: 30,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    charCount: {
+        color: "#904a47",
+        fontSize: 12,
+        textAlign: "right",
+        marginTop: 4,
+        opacity: 0.7,
     },
 });
 
