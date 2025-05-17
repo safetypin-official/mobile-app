@@ -7,7 +7,6 @@ import { authenticatedGet } from '@/utils/api';
 
 import UserInfo from '@/components/displays/post/UserInfo';
 import ReportContent, { TagKey } from '@/components/displays/post/ReportContent';
-import { router } from 'expo-router';
 
 const PAGE_SIZE = 10;
 

@@ -454,6 +454,7 @@ const ProfileScreen = () => {
     <TouchableOpacity
       activeOpacity={0.8}
       onPress={() => {
+        // Navigate to the appropriate post
         if (item.postId) {
           router.push(`/post/${item.postId}`);
         }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, Linking } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, Linking, Alert } from 'react-native';
 import { SvgXml } from "react-native-svg";
 import { settings, pencil } from '@/assets/icons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -8,13 +8,22 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Fontisto from '@expo/vector-icons/Fontisto';
 
 interface ProfileCardProps {
+  id: string;
   username: string;
   role: string;
   verified: boolean;
   profileImage: string;
   profileBanner: string;
-  onEditPress: () => void;
-  onSettingsPress: () => void;
+  onEditPress?: () => void;
+  onSettingsPress?: () => void;
+  onFollowPress?: (isFollowing: boolean) => void;
+  isFollowing?: boolean;
+  isOwnProfile?: boolean;
+  followersCount?: number;
+  followingCount?: number;
+  onFollowersPress?: () => void;
+  onFollowingPress?: () => void;
+  onFollowersCountChange?: (newCount: number) => void;
   socialLinks?: {
     tiktok?: string;
     line?: string;
@@ -24,17 +33,33 @@ interface ProfileCardProps {
   };
 }
 
-const SOCIAL_MEDIA_BASE_URLS = {
-  instagram: 'https://www.instagram.com/',
-  twitter: 'https://twitter.com/',
-  discord: 'https://discord.com/users/',
-  tiktok: 'https://www.tiktok.com/@',
-  line: 'https://line.me/ti/p/~'
+const SOCIAL_MEDIA_URLS = {
+  instagram: {
+    web: (username: string) => `https://www.instagram.com/${username}/`,
+    app: (username: string) => `instagram://user?username=${username}`
+  },
+  twitter: {
+    web: (username: string) => `https://twitter.com/${username}`,
+    app: (username: string) => `twitter://user?screen_name=${username}`
+  },
+  tiktok: {
+    web: (username: string) => `https://www.tiktok.com/@${username}`,
+    app: (username: string) => `tiktok://user/profile/${username}`
+  },
+  line: {
+    web: (username: string) => `https://line.me/ti/p/~${username}`,
+    app: (username: string) => `https://line.me/ti/p/~${username}`
+  },
+  discord: {
+    web: (username: string) => `https://discord.com/users/${username}`,
+    app: (username: string) => `https://discord.com/users/${username}`
+  }
 };
 
 const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => void}, ProfileCardProps>(
   (props, ref) => {
     const { 
+      id,
       username,
       role,
       verified,
@@ -42,44 +67,58 @@ const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => v
       profileBanner,
       onEditPress,
       onSettingsPress,
+      onFollowPress,
+      onFollowersPress,
+      onFollowingPress,
+      followersCount = 0,
+      followingCount = 0,
+      isFollowing = true,
+      isOwnProfile = true,
+      onFollowersCountChange,
       socialLinks = {},
     } = props;
 
-    const constructSocialLink = (platform: keyof typeof SOCIAL_MEDIA_BASE_URLS, username: string): string => {
-      const baseUrl = SOCIAL_MEDIA_BASE_URLS[platform];
-      return `${baseUrl}${username}`;
+    const handleFollowPress = () => {
+      const newFollowingState = !isFollowing;
+      
+      if (onFollowPress) {
+        onFollowPress(newFollowingState);
+      }
     };
 
-    const handleSocialLinkPress = async (username?: string, platform?: keyof typeof SOCIAL_MEDIA_BASE_URLS) => {
+    const handleSocialLinkPress = async (username?: string, platform?: keyof typeof SOCIAL_MEDIA_URLS) => {
       if (!username?.trim() || !platform) {
         return;
       }
     
       try {
-        const url = constructSocialLink(platform, username.trim());
+        // Try app scheme first
+        const appUrl = SOCIAL_MEDIA_URLS[platform].app(username.trim());
+        const canOpenApp = await Linking.canOpenURL(appUrl);
         
-        if (!isValidUrl(url)) {
-          console.warn(`Invalid URL constructed: ${url}`);
-          return;
-        }
-    
-        const canOpen = await Linking.canOpenURL(url);
-        if (canOpen) {
-          await Linking.openURL(url);
+        if (canOpenApp) {
+          await Linking.openURL(appUrl);
         } else {
-          console.warn(`Cannot open URL: ${url}`);
+          // Fall back to web URL
+          const webUrl = SOCIAL_MEDIA_URLS[platform].web(username.trim());
+          await Linking.openURL(webUrl);
         }
       } catch (error) {
-        console.error('Error handling social link:', error);
-      }
-    };
-
-    const isValidUrl = (url: string): boolean => {
-      try {
-        new URL(url);
-        return true;
-      } catch {
-        return false;
+        console.error(`Error opening ${platform}:`, error);
+        
+        // Provide feedback to user
+        Alert.alert(
+          "Couldn't Open Link", 
+          `Unable to open ${platform}. Please check if you have the app installed or try again later.`
+        );
+        
+        // Try opening in browser as last resort
+        try {
+          const webUrl = SOCIAL_MEDIA_URLS[platform].web(username.trim());
+          await Linking.openURL(webUrl);
+        } catch {
+          // Silent fail for the last attempt
+        }
       }
     };
 
@@ -104,9 +143,11 @@ const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => v
         >
           <View style={styles.overlay} />
           <View style={styles.content}>
-            <TouchableOpacity onPress={onSettingsPress} style={styles.settingsIcon} testID='settingsButton'>
-              <SvgXml xml={settings} width={36} height={36} fill='#d0c4c3' testID='svg-xml' />
-            </TouchableOpacity>
+            {isOwnProfile && (
+              <TouchableOpacity onPress={onSettingsPress} style={styles.settingsIcon} testID='settingsButton'>
+                <SvgXml xml={settings} width={36} height={36} fill='#d0c4c3' testID='svg-xml' />
+              </TouchableOpacity>
+            )}
 
             <Image
               style={styles.profileImage}
@@ -123,11 +164,42 @@ const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => v
                     <MaterialIcons name="verified" size={16} color="#4285F4" style={styles.verifiedIcon} testID='MaterialIcons-verified'/>
                   )}
                 </View>
+                <View style={styles.followStatsContainer}>
+                  <TouchableOpacity onPress={onFollowersPress}>
+                    <Text style={styles.followStatText}>
+                      <Text style={styles.followStatNumber}>{followersCount}</Text> Followers
+                    </Text>
+                  </TouchableOpacity>
+                  <Text style={[styles.followStatText, styles.followStatSeparator]}>•</Text>
+                  <TouchableOpacity onPress={onFollowingPress}>
+                    <Text style={styles.followStatText}>
+                      <Text style={styles.followStatNumber}>{followingCount}</Text> Following
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-              <TouchableOpacity style={styles.editButton} onPress={onEditPress}>
-                <SvgXml xml={pencil} width={17} height={17} style={styles.iconGap} testID='svg-xml'/>
-                <Text style={styles.editText}>Edit Profile</Text>
-              </TouchableOpacity>
+              {isOwnProfile ? (
+                <TouchableOpacity style={styles.editButton} onPress={onEditPress}>
+                  <SvgXml xml={pencil} width={17} height={17} style={styles.iconGap}/>
+                  <Text style={styles.editText}>Edit Profile</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity 
+                  style={[
+                    styles.followButton, 
+                    isFollowing && styles.unfollowButton
+                  ]} 
+                  onPress={handleFollowPress}
+                  testID="follow-button"
+                >
+                  <Text style={[
+                    styles.followText,
+                    isFollowing && styles.unfollowText
+                  ]}>
+                    {isFollowing ? 'Following' : 'Follow'}
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </ImageBackground>
@@ -282,6 +354,23 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontFamily: 'Inter',
   },
+  followButton: {
+    backgroundColor: '#9F3F3D',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  unfollowButton: {
+    backgroundColor: '#e0e0e0',
+  },
+  followText: {
+    fontSize: 12,
+    color: '#fff',
+    fontWeight: '600',
+    fontFamily: 'Inter',
+  },
   iconGap: {
     marginRight: 8,
   },
@@ -299,6 +388,26 @@ const styles = StyleSheet.create({
   },
   socialIcon: {
     padding: 8,
+  },
+  followStatsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  followStatText: {
+    fontSize: 14,
+    color: '#D0C4C3',
+    fontFamily: 'Inter',
+  },
+  followStatNumber: {
+    fontWeight: '600',
+    color: '#fff',
+  },
+  followStatSeparator: {
+    marginHorizontal: 8,
+  },
+  unfollowText: {
+    color: '#4d4544', // Dark text for unfollow state
   },
 });
 

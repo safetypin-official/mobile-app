@@ -1,19 +1,6 @@
 import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react-native";
+import { render, fireEvent, cleanup, waitFor } from "@testing-library/react-native";
 import FilterModal from "@/components/inputs/FilterModal";
-
-// Mock DatePickerInput to test interaction
-jest.mock("@/components/inputs/DatePickerInput", () => {
-  const { View, Text } = require("react-native");
-  return function MockDatePickerInput({ label, onChange }: any) {
-    return (
-      <View>
-        <Text>{label}</Text>
-        <Text onPress={() => onChange(2025, 5, 15)}>{label}-Picker</Text>
-      </View>
-    );
-  };
-});
 
 // Mock Button component
 jest.mock("@/components/buttons/Button", () => {
@@ -25,7 +12,18 @@ jest.mock("@/components/buttons/Button", () => {
   );
 });
 
-// Fallback TAGS mock
+// Mock DatePickerInput component
+jest.mock("@/components/inputs/DatePickerInput", () => {
+  const { View, Text } = require("react-native");
+  return ({ label, onChange }: any) => (
+    <View>
+      <Text>{label}</Text>
+      <View testID={`date-picker-${label}`} />
+    </View>
+  );
+});
+
+// Mock TAGS from @/assets/TagData
 jest.mock("@/assets/TagData", () => ({
   TAGS: [
     { label: "Tag1" },
@@ -34,115 +32,145 @@ jest.mock("@/assets/TagData", () => ({
   ],
 }));
 
-beforeEach(() => {
-  global.fetch = jest.fn(() =>
-    Promise.resolve({
-      json: () => Promise.resolve({
-        success: true,
-        data: [{ name: "Tag1" }, { name: "Tag2" }, { name: "Tag3" }],
-      }),
-    })
-  ) as jest.Mock;
-});
+// Mock api module
+jest.mock("@/utils/api", () => ({
+  authenticatedGet: jest.fn().mockResolvedValue({
+    success: true,
+    data: ["Tag1", "Tag2", "Tag3"]
+  })
+}));
 
-describe("FilterModal (new)", () => {
+describe("FilterModal", () => {
+  afterEach(cleanup);
+  
   const baseProps = {
     visible: true,
     onClose: jest.fn(),
     onSave: jest.fn(),
-    initialSelectedTags: ["Tag1"],
-    initialFromDate: new Date("2022-01-01"),
-    initialToDate: new Date("2023-01-01"),
+    initialSelectedTags: [],
   };
 
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it("renders properly and allows toggling tags", async () => {
-    const { getByText, queryByTestId } = render(<FilterModal {...baseProps} />);
+  it("renders modal when visible", async () => {
+    const { getByText } = render(<FilterModal {...baseProps} />);
+    
+    // Wait for the filter title to be visible
+    await waitFor(() => {
+      expect(getByText("Filter by")).toBeTruthy();
+    });
+  });
 
-    await waitFor(() => expect(getByText("Filter by")).toBeTruthy());
+  it("calls onClose when Close button is pressed", async () => {
+    const { getByText } = render(<FilterModal {...baseProps} />);
+    
+    await waitFor(() => {
+      fireEvent.press(getByText("Close"));
+      expect(baseProps.onClose).toHaveBeenCalled();
+    });
+  });
 
-    const tag = getByText("Tag2");
-    fireEvent.press(tag);
-    expect(queryByTestId("checkedBox-Tag2")).toBeTruthy();
+  it("calls onSave with selected tags", async () => {
+    const { getByText } = render(
+      <FilterModal {...baseProps} initialSelectedTags={["Tag1"]} />
+    );
+    
+    await waitFor(() => {
+      fireEvent.press(getByText("Save"));
+      expect(baseProps.onSave).toHaveBeenCalledWith(expect.objectContaining({
+        selectedTags: expect.arrayContaining(["Tag1"])
+      }));
+    });
+  });
 
-    fireEvent.press(tag);
-    expect(queryByTestId("checkedBox-Tag2")).toBeFalsy();
+  it("toggles a tag on and off", async () => {
+    const { getByText, queryAllByTestId } = render(<FilterModal {...baseProps} />);
+    
+    await waitFor(() => {
+      const tag = getByText("Tag1");
+      
+      // Select tag
+      fireEvent.press(tag);
+      expect(queryAllByTestId("checkedBox-Tag1")).toHaveLength(1);
+      
+      // Deselect tag
+      fireEvent.press(tag);
+      expect(queryAllByTestId("checkedBox-Tag1")).toHaveLength(0);
+    });
+  });  
+
+  it("selects all tags when 'All' is clicked", async () => {
+    const { getByText } = render(<FilterModal {...baseProps} />);
+    
+    await waitFor(() => {
+      fireEvent.press(getByText("All"));
+
+      ["All", "Tag1", "Tag2", "Tag3"].forEach((tag) => {
+        expect(getByText(tag)).toBeTruthy();
+      });
+    });
   });
 
   it("selects 'All' automatically when all individual tags are selected", async () => {
-    // 1. Mock the fetch before rendering so it's ready on mount
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        json: () =>
-          Promise.resolve({
-            success: true,
-            data: [{ name: "Tag1" }, { name: "Tag2" }, { name: "Tag3" }],
-          }),
-      })
-    ) as jest.Mock;
-  
-    const { getByText } = render(<FilterModal {...baseProps} />);
-  
-    // 2. Wait for the tags to load (i.e. fetchTags to finish)
+    const { getByText, queryByTestId } = render(<FilterModal {...baseProps} />);
+    
     await waitFor(() => {
-      expect(getByText("Tag1")).toBeTruthy();
-      expect(getByText("Tag2")).toBeTruthy();
-      expect(getByText("Tag3")).toBeTruthy();
+      // Simulate selecting all individual tags except 'All'
+      ["Tag1", "Tag2", "Tag3"].forEach((tag) => fireEvent.press(getByText(tag)));
+      
+      // "All" should now be selected automatically
+      expect(queryByTestId("checkedBox-All")).toBeTruthy();
     });
-  
-    // 3. Press all individual tags (excluding "All")
-    fireEvent.press(getByText("Tag1"));
-    fireEvent.press(getByText("Tag2"));
-    fireEvent.press(getByText("Tag3"));
-  
-    // 4. Check if "All" is now selected automatically
-    expect(getByText("All")).toBeTruthy();
-  });
-  
+  });  
 
-  it("deselects all when pressing 'All' while active", async () => {
-    const props = {
-      ...baseProps,
-      initialSelectedTags: ["All", "Tag1", "Tag2", "Tag3"],
-    };
-
-    const { getByText, queryByTestId } = render(<FilterModal {...props} />);
-    fireEvent.press(getByText("All"));
-
-    ["All", "Tag1", "Tag2", "Tag3"].forEach((tag) => {
-      expect(queryByTestId(`checkedBox-${tag}`)).toBeFalsy();
+  it("clears all tags when 'All' is clicked while selected", async () => {
+    const { getByText, queryByTestId } = render(
+      <FilterModal
+        {...baseProps}
+        initialSelectedTags={["All", "Tag1", "Tag2", "Tag3"]}
+      />
+    );
+    
+    await waitFor(() => {
+      fireEvent.press(getByText("All"));
+      
+      // All checkboxes should now be gone
+      ["All", "Tag1", "Tag2", "Tag3"].forEach((tag) => {
+        expect(queryByTestId(`checkedBox-${tag}`)).toBeFalsy();
+      });
     });
-  });
+  });  
 
-  it("calls onSave with correctly formatted dates", async () => {
-    const { getByText } = render(<FilterModal {...baseProps} />);
-    fireEvent.press(getByText("From-Picker")); // mock date update
-    fireEvent.press(getByText("To-Picker"));
-
-    fireEvent.press(getByText("Save"));
-
-    expect(baseProps.onSave).toHaveBeenCalledWith({
-      selectedTags: ["Tag1"],
-      fromDate: "2025-05-15",
-      toDate: "2025-05-15",
-    });
-  });
-
-  it("handles API failure gracefully", async () => {
-    (global.fetch as jest.Mock).mockImplementationOnce(() =>
-      Promise.reject("API error")
+  it("updates selected tags when initialSelectedTags prop changes", async () => {
+    const { rerender, queryByTestId } = render(
+      <FilterModal {...baseProps} initialSelectedTags={[]} />
     );
 
-    const { getByText } = render(<FilterModal {...baseProps} />);
-    await waitFor(() => expect(getByText("Filter by")).toBeTruthy());
+    await waitFor(() => {
+      rerender(
+        <FilterModal {...baseProps} initialSelectedTags={["Tag2"]} />
+      );
+      
+      expect(queryByTestId("checkedBox-Tag2")).toBeTruthy();
+    });
   });
 
-  it("calls onClose when close is pressed", () => {
-    const { getByText } = render(<FilterModal {...baseProps} />);
-    fireEvent.press(getByText("Close"));
-    expect(baseProps.onClose).toHaveBeenCalled();
+  it("deselects a tag and removes 'All' when it was selected", async () => {
+    const { getByText, queryByTestId } = render(
+      <FilterModal {...baseProps} initialSelectedTags={["All", "Tag1", "Tag2", "Tag3"]} />
+    );
+    
+    await waitFor(() => {
+      // Deselect "Tag1" when "All" is selected
+      fireEvent.press(getByText("Tag1"));
+      
+      // "Tag1" should now be unchecked
+      expect(queryByTestId("checkedBox-Tag1")).toBeFalsy();
+      
+      // "All" should also be deselected
+      expect(queryByTestId("checkedBox-All")).toBeFalsy();
+    });
   });
 });

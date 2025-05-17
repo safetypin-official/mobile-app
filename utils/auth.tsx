@@ -354,3 +354,36 @@ export const verifyOTP = async (email: string, otp: string) => {
     handleAuthError(error);
   }
 };
+
+/**
+ * Verifies if a JWT token is valid with the backend
+ * @returns Promise with boolean indicating if token is valid
+ */
+export const verifyJwtToken = async (): Promise<boolean> => {
+  try {
+    // Get the auth token from storage
+    const { token } = await getAuthData();
+    
+    if (!token) {
+      console.log('No token found to verify');
+      return false;
+    }
+    
+    const response = await fetch(
+      "https://safetypin.ppl.cs.ui.ac.id/api/auth/verify-jwt", 
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      }
+    );
+    
+    const data = await response.json();
+    return data.success === true;
+  } catch (error) {
+    console.error('Failed to verify JWT token:', error);
+    return false;
+  }
+};

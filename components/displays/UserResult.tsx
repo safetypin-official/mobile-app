@@ -24,7 +24,7 @@ const UserResult: React.FC<{
                 <Text style={styles.handle}>{handle}</Text>
             </View>
         </View>
-        <View style={styles.horizontalLine} testID="horizontal-line"/>
+        <View style={styles.horizontalLine} testID="horizontal-line" />
     </TouchableOpacity>
   );
 };

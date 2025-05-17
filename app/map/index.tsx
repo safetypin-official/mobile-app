@@ -1,9 +1,11 @@
-import { StyleSheet, View, Dimensions, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Dimensions, Text, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, MapPressEvent, LongPressEvent, Marker, Callout } from 'react-native-maps';
 import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
-import NearbyReport from '@/components/displays/NearbyReport';
+import NearbyReport, { Post } from '@/components/displays/NearbyReport';
 import Pin from '@/components/displays/Pin';
+import { router } from 'expo-router';
+import { authenticatedGet } from '@/utils/api'; // Add this import
 
 const { width, height } = Dimensions.get('window');
 
@@ -12,19 +14,6 @@ type LocationType = {
   longitude: number;
   latitudeDelta: number;
   longitudeDelta: number;
-};
-
-// Updated Post type definition to match NearbyReport
-type Post = {
-  id: string;
-  caption: string;
-  createdAt: string;
-  postedBy?: string | null;
-  title: string;
-  category: string; // Changed from Category object to string
-  latitude: number;
-  longitude: number;
-  imageUrl?: string | null;
 };
 
 // Default location
@@ -46,6 +35,7 @@ export default function ExploreScreen() {
   const [showReport, setShowReport] = useState<boolean>(false);
   
   const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
+  const [locationLoaded, setLocationLoaded] = useState<boolean>(false);
 
   // Fetch user location
   useEffect(() => {
@@ -53,6 +43,7 @@ export default function ExploreScreen() {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         setErrorMsg('Permission to access location was denied');
+        setLocationLoaded(true); // Mark as loaded, will use DEFAULT_LOCATION
         return;
       }
 
@@ -67,6 +58,8 @@ export default function ExploreScreen() {
       } catch (error) {
         console.error('Error getting location:', error);
         setErrorMsg('Unable to get current location');
+      } finally {
+        setLocationLoaded(true); // Mark location as loaded regardless of success/failure
       }
     })();
   }, []);
@@ -76,13 +69,9 @@ export default function ExploreScreen() {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const response = await fetch('https://safetypin.ppl.cs.ui.ac.id//post/all');
         
-        if (!response.ok) {
-          throw new Error(`HTTP error: ${response.status}`);
-        }
-        
-        const responseData = await response.json();
+        // Use authenticatedGet instead of direct fetch
+        const responseData = await authenticatedGet('https://safetypin.ppl.cs.ui.ac.id/posts/all?page=0&size=100');
         console.log('Fetched posts response:', responseData);
         
         if (responseData.success && responseData.data?.content) {
@@ -131,6 +120,13 @@ export default function ExploreScreen() {
       latitude: event.nativeEvent.coordinate.latitude,
       longitude: event.nativeEvent.coordinate.longitude
     });
+    router.push({
+      pathname: '/createPost',
+      params: {
+        latitude: event.nativeEvent.coordinate.latitude,
+        longitude: event.nativeEvent.coordinate.longitude,
+      },
+    });
   };
 
   // Format date to a more readable format
@@ -156,12 +152,13 @@ export default function ExploreScreen() {
       <MapView
         provider={PROVIDER_GOOGLE}
         style={styles.map}
-        initialRegion={location}
+        region={location}
         showsUserLocation
         showsMyLocationButton
         onPress={handleMapPress}
         onLongPress={onLongPress}
       >
+        {/* Existing post markers */}
         {posts.map((post) => (
           <Marker
             key={post.id}
@@ -373,5 +370,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
     fontWeight: '600',
-  }
+  },
 });

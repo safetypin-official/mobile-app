@@ -21,7 +21,7 @@ export type Post = {
   caption: string;
   createdAt: string;
   postedBy: {
-    id: string;
+    userId: string;
     name: string;
     profilePicture?: string;
   } | null;
@@ -31,6 +31,7 @@ export type Post = {
   longitude: number;
   upvoteCount: number;
   downvoteCount: number;
+  commentCount: number;
 };
 
 export type FetchResult = {
@@ -215,7 +216,7 @@ const PostsTabs: React.FC<PostsTabsProps> = ({
             <Text style={[styles.tabText, activeTab === tab.key && styles.activeTabText]}>
               {tab.label}
             </Text>
-            {activeTab === tab.key && <View style={styles.activeTabIndicator} />}
+            {activeTab === tab.key && <View testID="active-tab-indicator" style={styles.activeTabIndicator} />}
           </TouchableOpacity>
         ))}
       </View>

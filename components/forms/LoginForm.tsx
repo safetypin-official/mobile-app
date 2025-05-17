@@ -57,12 +57,12 @@ const LoginForm: React.FC<LoginFormProps> = ({
           </Button>
         </View>
 
-        <Text style={styles.signupText}>
-          Don't have an account?{" "}
+        <View style={styles.signupContainer}>
+          <Text style={styles.signupText}>Don't have an account? </Text>
           <TouchableOpacity onPress={onSignUp} testID="signup-link">
             <Text style={styles.signupLink}>Sign Up.</Text>
           </TouchableOpacity>
-        </Text>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -110,11 +110,14 @@ const styles = StyleSheet.create({
     color: "white",
     textDecorationLine: "underline",
   },
-  
-  signupText: {
+  signupContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 30,
+  },
+  signupText: {
     color: "white",
-    textAlign: "center",
   },
   signupLink: {
     color: "#e2c28c",

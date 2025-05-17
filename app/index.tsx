@@ -3,6 +3,7 @@ import { View, Alert } from "react-native";
 import LoginForm from "@/components/forms/LoginForm";
 import { router } from 'expo-router';
 import { onGoogleAuth, isValidEmail, loginWithEmail } from "@/utils/auth";
+import * as Sentry from '@sentry/react-native';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -42,6 +43,17 @@ const LoginScreen = () => {
     } catch (error) {
       // The alerts are already handled in the onGoogleAuth function
       console.error("Google auth failed in component:", error);
+    }
+  };
+
+  const handleAppleAuth = async () => {
+    try {
+      Sentry.captureException(new Error('First error'));
+
+      router.push('/map');
+    } catch (error) {
+      // The alerts are already handled in the onAppleIDAuth function
+      console.error("Apple auth failed in component:", error);
     }
   };
 
