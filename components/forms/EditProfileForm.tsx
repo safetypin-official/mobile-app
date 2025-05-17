@@ -42,11 +42,11 @@ const EditProfileForm = forwardRef(({
   testID,
 }: EditProfileFormProps, ref) => {
   const [socialLinks, setSocialLinks] = useState<SocialMediaLink>({
-    instagram: initialData.instagram || "",
-    twitter: initialData.twitter || "",
-    line: initialData.line || "",
-    tiktok: initialData.tiktok || "",
-    discord: initialData.discord || "",
+    instagram: initialData.instagram ?? "",
+    twitter: initialData.twitter ?? "",
+    line: initialData.line ?? "",
+    tiktok: initialData.tiktok ?? "",
+    discord: initialData.discord ?? "",
   });
 
   const handleInputChange = (field: keyof SocialMediaLink, value: string) => {
