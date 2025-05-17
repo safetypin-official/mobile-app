@@ -1,6 +1,6 @@
 import SignUpForm from "@/components/forms/SignUpForm";
 import { router } from "expo-router";
-import { onGoogleAuth, onAppleIDAuth, registerEmailPassword } from "@/utils/auth"; // Import auth functions
+import { onGoogleAuth, registerEmailPassword } from "@/utils/auth"; // Import auth functions
 
 export default function SignUpScreen() {
   const handleLogIn = () => {
@@ -50,25 +50,11 @@ export default function SignUpScreen() {
     }
   };
 
-  const handleAppleAuth = async () => {
-    try {
-      const result = await onAppleIDAuth();
-      console.log(result);
-      console.log("Apple auth successful");
-
-      router.push('/map');
-    } catch (error) {
-      console.error("Apple auth failed:", error);
-      // Error alerts are handled within onAppleIDAuth
-    }
-  };
-
   return (
     <SignUpForm
       onSignUp={handleSignUp}
       onLogIn={handleLogIn}
       onGoogleAuth={handleGoogleAuth}
-      onAppleAuth={handleAppleAuth}
       testID="signup-form"
     />
   );

@@ -3,7 +3,7 @@ import { render, fireEvent, waitFor } from "@testing-library/react-native";
 import { Alert } from "react-native";
 import { router } from "expo-router";
 import LoginScreen from "@/app/index";
-import { onGoogleAuth, onAppleIDAuth, isValidEmail, loginWithEmail } from "@/utils/auth";
+import { onGoogleAuth, isValidEmail, loginWithEmail } from "@/utils/auth";
 
 // Mock the dependencies
 jest.mock("expo-router", () => ({
@@ -14,7 +14,6 @@ jest.mock("expo-router", () => ({
 
 jest.mock("@/utils/auth", () => ({
   onGoogleAuth: jest.fn(),
-  onAppleIDAuth: jest.fn(),
   isValidEmail: jest.fn(),
   loginWithEmail: jest.fn(),
 }));
@@ -24,7 +23,7 @@ jest.mock("@/components/forms/LoginForm", () => {
   const React = require("react");
   const { View, TouchableOpacity, Text, TextInput } = require("react-native");
   
-  return function MockLoginForm(props: { testID: any; setEmail: any; setPassword: any; onLogIn: any; onGoogleAuth: any; onAppleAuth: any; onForgotPassword: any; onSignUp: any; }) {
+  return function MockLoginForm(props: { testID: any; setEmail: any; setPassword: any; onLogIn: any; onGoogleAuth: any; onForgotPassword: any; onSignUp: any; }) {
     return (
       <View testID={props.testID}>
         <TextInput
@@ -49,12 +48,6 @@ jest.mock("@/components/forms/LoginForm", () => {
           onPress={props.onGoogleAuth}
         >
           <Text>Google</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          testID="apple-auth" 
-          onPress={props.onAppleAuth}
-        >
-          <Text>Apple</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           testID="forgot-password-link" 
@@ -225,36 +218,6 @@ describe("LoginScreen", () => {
     await waitFor(() => {
       expect(onGoogleAuth).toHaveBeenCalledTimes(1);
       expect(console.error).toHaveBeenCalledWith("Google auth failed in component:", mockError);
-    });
-  });
-
-  it("handles successful Apple authentication", async () => {
-    const mockAppleResult = { success: true };
-    (onAppleIDAuth as jest.Mock).mockResolvedValue(mockAppleResult);
-    
-    const { getByTestId } = render(<LoginScreen />);
-    
-    // Attempt Apple authentication
-    fireEvent.press(getByTestId("apple-auth"));
-    
-    await waitFor(() => {
-      expect(onAppleIDAuth).toHaveBeenCalledTimes(1);
-      expect(console.log).toHaveBeenCalledWith("Apple auth successful:", mockAppleResult);
-    });
-  });
-
-  it("handles Apple authentication errors", async () => {
-    const mockError = new Error("Apple auth failed");
-    (onAppleIDAuth as jest.Mock).mockRejectedValue(mockError);
-    
-    const { getByTestId } = render(<LoginScreen />);
-    
-    // Attempt Apple authentication
-    fireEvent.press(getByTestId("apple-auth"));
-    
-    await waitFor(() => {
-      expect(onAppleIDAuth).toHaveBeenCalledTimes(1);
-      expect(console.error).toHaveBeenCalledWith("Apple auth failed in component:", mockError);
     });
   });
 
