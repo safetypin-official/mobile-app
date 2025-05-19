@@ -1,56 +1,82 @@
-import React, { useState } from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React from 'react';
+import { Modal, View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-import { TAGS } from '@/assets/TagData';
-import { AntDesign } from '@expo/vector-icons';
-import Button from '@/components/buttons/Button';
+import { TAG_KEYS } from '@/components/displays/post/ReportTags';
+import { getTagInfo } from '@/components/displays/Types';
 
 interface TagSelectorModalProps {
   visible: boolean;
   onClose: () => void;
   onSelectTag: (tag: string) => void;
   selectedTag: string;
-  testID?: string;
+  availableTags?: string[];
 }
 
-const TagSelectorModal: React.FC<TagSelectorModalProps> = ({ visible, onClose, onSelectTag, selectedTag, testID = "tag-selector-modal"}) => {
-  const [tempSelected, setTempSelected] = useState(selectedTag);
+const TagSelectorModal: React.FC<TagSelectorModalProps> = ({
+  visible,
+  onClose,
+  onSelectTag,
+  selectedTag,
+  availableTags = TAG_KEYS,
+}) => {
+  // Handle selecting a tag
+  const handleSelectTag = (tag: string) => {
+    onSelectTag(tag);
+    onClose();
+  };
 
   return (
-    <Modal visible={visible} animationType="fade" transparent testID={testID}>
-      <View style={styles.overlay}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.header}>Select a Tag</Text>
-
-          {/* Scrollable content */}
-          <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={true}>
-            {TAGS.map((item) => {
-              const isSelected = item.value === tempSelected;
+    <Modal
+      visible={visible}
+      transparent={true}
+      animationType="slide"
+      onRequestClose={onClose}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Select Category</Text>
+            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+              <Text style={styles.closeButtonText}>✕</Text>
+            </TouchableOpacity>
+          </View>
+          
+          <FlatList
+            data={availableTags}
+            keyExtractor={(item) => item}
+            renderItem={({ item }) => {
+              const isSelected = selectedTag === item;
+              const tagInfo = getTagInfo(item);
+              
               return (
                 <TouchableOpacity
-                  key={item.value}
-                  style={[styles.item, isSelected && styles.selectedItem]}
-                  onPress={() => setTempSelected(item.value)}
+                  style={[
+                    styles.tagItem,
+                    isSelected && {backgroundColor: tagInfo.color}
+                  ]}
+                  onPress={() => handleSelectTag(item)}
                 >
-                  <SvgXml xml={item.icon} width={24} height={24} />
-                  <Text style={styles.label}>{item.label}</Text>
-                  {isSelected && <AntDesign name="checkcircle" size={20} color="#904a47" style={styles.checkmark} />}
+                  {isSelected && (
+                    <SvgXml xml={tagInfo.icon} width={20} height={20} style={styles.tagIcon} />
+                  )}
+                  <Text 
+                    style={[
+                      styles.tagText,
+                      isSelected && styles.selectedTagText
+                    ]}
+                  >
+                    {item}
+                  </Text>
+                  {isSelected && (
+                    <View style={styles.checkmarkContainer}>
+                      <Text style={styles.checkmark}>✓</Text>
+                    </View>
+                  )}
                 </TouchableOpacity>
               );
-            })}
-          </ScrollView>
-
-          {/* Button Container */}
-          <View style={styles.buttonContainer}>
-            <Button
-              onPress={() => {
-                onSelectTag(tempSelected);
-                onClose();
-              }}
-            >
-              Confirm
-            </Button>
-          </View>
+            }}
+            contentContainerStyle={styles.tagsList}
+          />
         </View>
       </View>
     </Modal>
@@ -58,54 +84,83 @@ const TagSelectorModal: React.FC<TagSelectorModalProps> = ({ visible, onClose, o
 };
 
 const styles = StyleSheet.create({
-  overlay: {
+  modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    minHeight: '50%',
+    maxHeight: '80%',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+    position: 'relative',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  closeButton: {
+    position: 'absolute',
+    right: 16,
+    top: 14,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#f0f0f0',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  modalContainer: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    alignSelf: 'center',
-    width: '80%',
-    maxHeight: '80%',
+  closeButtonText: {
+    fontSize: 16,
+    color: '#555',
   },
-  scrollContainer: {
-    maxHeight: 300,
-    width: '100%',
+  tagsList: {
+    padding: 16,
   },
-  header: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#904a47',
-  },
-  item: {
+  tagItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
-    width: '100%',
-    borderRadius: 8,
+    padding: 14,
+    borderRadius: 10,
+    marginBottom: 8,
+    backgroundColor: '#f5f5f5',
   },
-  selectedItem: {
-    backgroundColor: '#f2e2e1',
+  tagIcon: {
+    marginRight: 10,
   },
-  label: {
+  tagText: {
     fontSize: 16,
-    color: '#904a47',
+    color: '#444',
     flex: 1,
-    marginLeft: 10,
+  },
+  selectedTagText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  checkmarkContainer: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   checkmark: {
-    marginLeft: 'auto',
-  },
-  buttonContainer: {
-    marginTop: 10,
-    width: '100%',
-  },
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  }
 });
 
 export default TagSelectorModal;
