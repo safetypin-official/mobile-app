@@ -46,16 +46,11 @@ const ReportContent: React.FC<ReportContentProps> = ({
   const router = useRouter();
   const [likes, setLikes] = useState(initialLikeCount);
   const [dislikes, setDislikes] = useState(initialDislikeCount);
-  
   const [likeColor, setLikeColor] = useState(currentVote === 'UPVOTE' ? "#5E9F3D" : "#7F7574");
   const [dislikeColor, setDislikeColor] = useState(currentVote === 'DOWNVOTE' ? "#904A47" : "#7F7574");
-  const [isBookmarked, setIsBookmarked] = useState(false);
   const [imageModalVisible, setImageModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleBookmarkClick = () => {
-    setIsBookmarked(!isBookmarked);
-  };
 
   const handleLikeClick = async () => {
     if (isLoading) return;
@@ -222,9 +217,6 @@ const ReportContent: React.FC<ReportContentProps> = ({
           )}
         </View>
         <View style={styles.shareActions}>
-          <TouchableOpacity style={styles.actionButton} onPress={handleBookmarkClick} testID="bookmark-button">
-            <FontAwesome name={isBookmarked ? "bookmark" : "bookmark-o"} size={20} color="#7F7574" />
-          </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton} onPress={handleShareClick} testID="share-button">
             <MaterialCommunityIcons name="share-variant-outline" size={20} color="#7F7574" />
           </TouchableOpacity>

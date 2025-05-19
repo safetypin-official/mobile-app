@@ -124,7 +124,7 @@ const UserInfo: React.FC<{
     } else if (postedBy?.userId) {
       console.log("User ID:", postedBy.userId);
       // Default navigation to user profile
-      router.push(`/profile?userId=${postedBy.userId}`);
+      // router.push(`/profile?userId=${postedBy.userId}`);
     }
   };
 
