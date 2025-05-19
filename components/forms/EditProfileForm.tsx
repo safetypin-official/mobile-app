@@ -32,6 +32,7 @@ interface EditProfileFormProps {
   onProfilePicChange: () => void;
   onProfileBannerChange: () => void;
   testID?: string;
+  isUploading?: boolean; // Add this prop
 }
 
 const EditProfileForm = forwardRef(({
@@ -41,6 +42,7 @@ const EditProfileForm = forwardRef(({
   onProfilePicChange,
   onProfileBannerChange,
   testID,
+  isUploading,
 }: EditProfileFormProps, ref) => {
   const [socialLinks, setSocialLinks] = useState<SocialMediaLink>({
     instagram: initialData.instagram,
@@ -62,7 +64,7 @@ const EditProfileForm = forwardRef(({
   const handleSave = () => {
     const dataToSave = Object.fromEntries(
       Object.entries(socialLinks)
-        .filter(([_, value]) => value.trim() !== '')
+        .filter(([_, value]) => (value ?? '').trim() !== '')
         .map(([key, value]) => {
           // Clean the input by removing any URL parts
           const cleanValue = value
@@ -99,8 +101,11 @@ const EditProfileForm = forwardRef(({
         <TouchableOpacity
           style={[styles.headerButton, styles.saveButton]}
           onPress={handleSave}
+          disabled={isUploading}
         >
-          <Text style={[styles.headerButtonText, styles.saveButtonText]}>Save</Text>
+          <Text style={[styles.headerButtonText, styles.saveButtonText]}>
+            {isUploading ? "Uploading..." : "Save Changes"}
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -108,7 +113,6 @@ const EditProfileForm = forwardRef(({
       <TouchableOpacity 
           onPress={onProfileBannerChange}
           style={styles.bannerContainer}
-          testID="profile-banner-button"
         >
           {initialData.profileBanner ? (
             <View style={styles.bannerWrapper}>
@@ -128,7 +132,6 @@ const EditProfileForm = forwardRef(({
         <TouchableOpacity 
           onPress={onProfilePicChange}
           style={styles.profilePicContainer}
-          testID="profile-pic-button"
         >
           {initialData.profilePic ? (
             <Image

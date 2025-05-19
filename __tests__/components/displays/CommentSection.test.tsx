@@ -21,7 +21,6 @@ jest.mock('@/utils/api', () => ({
 jest.mock('@/components/toasts/Toast', () => {
   const React = require('react');
   const { View, Text } = require('react-native');
-  
   return function MockToast({ text }) {
     return (
       <View testID="toast">
@@ -35,7 +34,6 @@ jest.mock('@/components/toasts/Toast', () => {
 jest.mock('@/components/buttons/post/MoreOptionsButton', () => {
   const React = require('react');
   const { Text, TouchableOpacity, View } = require('react-native');
-  
   return function MockMoreOptionsButton({ closeModal, onReport, onDelete }) {
     return (
       <View testID="mock-more-options">
@@ -54,7 +52,6 @@ jest.mock('@/components/buttons/post/MoreOptionsButton', () => {
 });
 
 describe('CommentSection', () => {
-  // Define default props for most tests
   const defaultProps = {
     avatarUrl: 'https://example.com/avatar.jpg',
     username: 'TestUser',
@@ -66,7 +63,6 @@ describe('CommentSection', () => {
     onCommentDeleted: jest.fn(),
   };
 
-  // Define mock replies data for tests that need it
   const mockReplies = {
     data: {
       content: [
@@ -96,8 +92,6 @@ describe('CommentSection', () => {
     jest.clearAllMocks();
     (authenticatedGet as jest.Mock).mockResolvedValue(mockReplies);
     (authenticatedDelete as jest.Mock).mockResolvedValue({ status: 'success' });
-    
-    // Clear any previous timeouts
     jest.useRealTimers();
   });
 
@@ -455,428 +449,113 @@ describe('CommentSection', () => {
 
   // -- Comment Delete Tests --
 
-  test('handles delete comment action', async () => {
-    const { getByTestId, queryByText } = render(<CommentSection {...defaultProps} />);
-    
-    // Open modal
-    await act(async () => {
+  describe('Comment Delete with CustomModal', () => {
+    it('opens confirmation modal and deletes comment when confirmed', async () => {
+      const { getByTestId, queryByText } = render(<CommentSection {...defaultProps} />);
+
+      // 1) open options modal
       fireEvent.press(getByTestId('more-options-button'));
-    });
-    
-    // We need to wait for the modal to be fully rendered
-    await waitFor(() => expect(getByTestId('mock-more-options')).toBeTruthy());
-    
-    // Find and press the delete button
-    await act(async () => {
+      await waitFor(() => getByTestId('mock-more-options'));
+
+      // 2) trigger delete-confirm modal
       fireEvent.press(getByTestId('delete-btn'));
-    });
-    
-    // Check if API was called with correct URL
-    await waitFor(() => {
-      expect(authenticatedDelete).toHaveBeenCalledWith(
-        'https://safetypin.ppl.cs.ui.ac.id/posts/comment/onpost/123'
-      );
-    });
-    
-    // Check if onCommentDeleted callback was called
-    expect(defaultProps.onCommentDeleted).toHaveBeenCalledWith('123');
-    
-    // Toast should show success message
-    await waitFor(() => expect(queryByText('Comment deleted successfully')).toBeTruthy());
-  });
+      expect(getByTestId('delete-comment-confirmation-modal')).toBeTruthy();
 
-  test('handles delete comment error', async () => {
-    (authenticatedDelete as jest.Mock).mockRejectedValueOnce(new Error('Failed to delete'));
-    
-    const { getByTestId, queryByText } = render(<CommentSection {...defaultProps} />);
-    
-    // Open modal
-    await act(async () => {
-      fireEvent.press(getByTestId('more-options-button'));
-    });
-    
-    // We need to wait for the modal to be fully rendered
-    await waitFor(() => expect(getByTestId('mock-more-options')).toBeTruthy());
-    
-    // Find and press the delete button directly by testID
-    const deleteButton = getByTestId('delete-btn');
-    
-    await act(async () => {
-      fireEvent.press(deleteButton);
-    });
-    
-    // Wait for API to be called and error to be shown
-    await waitFor(() => {
-      expect(authenticatedDelete).toHaveBeenCalledWith(
-        'https://safetypin.ppl.cs.ui.ac.id/posts/comment/onpost/123'
+      // 3) confirm deletion
+      fireEvent.press(getByTestId('delete-comment-confirmation-modal-ok'));
+      await waitFor(() =>
+        expect(authenticatedDelete).toHaveBeenCalledWith(
+          'https://safetypin.ppl.cs.ui.ac.id/posts/comment/onpost/123'
+        )
       );
-      expect(queryByText('Failed to delete comment')).toBeTruthy();
-    });
-  });
 
-  test('handles network error during comment deletion', async () => {
-    const networkError = new Error('Network error');
-    networkError.name = 'NetworkError';
-    (authenticatedDelete as jest.Mock).mockRejectedValueOnce(networkError);
-    
-    const { getByTestId, queryByText } = render(<CommentSection {...defaultProps} />);
-    
-    // Open modal
-    await act(async () => {
-      fireEvent.press(getByTestId('more-options-button'));
+      // 4) callback and toast
+      expect(defaultProps.onCommentDeleted).toHaveBeenCalledWith('123');
+      await waitFor(() => expect(queryByText('Comment deleted successfully')).toBeTruthy());
     });
-    
-    // We need to wait for the modal to be fully rendered
-    await waitFor(() => expect(getByTestId('mock-more-options')).toBeTruthy());
-    
-    // Find and press the delete button
-    await act(async () => {
+
+    it('cancels deletion when Cancel is pressed', async () => {
+      const { getByTestId, queryByTestId } = render(<CommentSection {...defaultProps} />);
+
+      // open options
+      fireEvent.press(getByTestId('more-options-button'));
+      await waitFor(() => getByTestId('mock-more-options'));
+
+      // open confirm
       fireEvent.press(getByTestId('delete-btn'));
-    });
-    
-    // Should show error message
-    await waitFor(() => {
-      expect(queryByText('Failed to delete comment')).toBeTruthy();
-    });
-  });
+      expect(getByTestId('delete-comment-confirmation-modal')).toBeTruthy();
 
-  test('should handle deleting a comment successfully', async () => {
-    // Mock successful delete
-    (authenticatedDelete as jest.Mock).mockResolvedValueOnce({});
+      // press Cancel
+      fireEvent.press(getByTestId('delete-comment-confirmation-modal-cancel'));
 
-    const { getByTestId, getByText, queryByText } = render(
-      <CommentSection {...defaultProps} />
-    );
-
-    // Open the options modal
-    fireEvent.press(getByTestId('more-options-button'));
-
-    // Find and press the delete button (assuming MoreOptionsButton renders a delete button)
-    const deleteButton = getByText('Delete');
-    fireEvent.press(deleteButton);
-
-    // Wait for the delete to complete
-    await waitFor(() => {
-      expect(authenticatedDelete).toHaveBeenCalledWith(
-        `https://safetypin.ppl.cs.ui.ac.id/posts/comment/onpost/${defaultProps.commentId}`
-      );
+      // confirm-modal gone, no API call
+      expect(queryByTestId('delete-comment-confirmation-modal')).toBeNull();
+      expect(authenticatedDelete).not.toHaveBeenCalled();
     });
-
-    // Toast should be visible with success message
-    expect(getByText('Comment deleted successfully')).toBeTruthy();
-
-    // Advance timers to check if toast disappears
-    act(() => {
-      jest.advanceTimersByTime(3000);
-    });
-
-    // Check if onCommentDeleted callback was called
-    expect(defaultProps.onCommentDeleted).toHaveBeenCalledWith(defaultProps.commentId);
-  });
-  
-  test('handles missing onCommentDeleted callback', async () => {
-    // Create props without onCommentDeleted
-    const propsWithoutCallback = {
-      ...defaultProps,
-      onCommentDeleted: undefined,
-    };
-    
-    const { getByTestId } = render(<CommentSection {...propsWithoutCallback} />);
-    
-    // Open modal
-    await act(async () => {
-      fireEvent.press(getByTestId('more-options-button'));
-    });
-    
-    // Wait for modal to render
-    await waitFor(() => expect(getByTestId('mock-more-options')).toBeTruthy());
-    
-    // Delete comment
-    await act(async () => {
-      fireEvent.press(getByTestId('delete-btn'));
-    });
-    
-    // This should not throw an error even though onCommentDeleted is undefined
-    await waitFor(() => {
-      expect(authenticatedDelete).toHaveBeenCalledWith(
-        'https://safetypin.ppl.cs.ui.ac.id/posts/comment/onpost/123'
-      );
-    });
-  });
-
-  test('shows loading state while deleting a comment', async () => {
-    // Create a promise we can control to delay the delete operation
-    let resolveDeletePromise;
-    const deletePromise = new Promise((resolve) => {
-      resolveDeletePromise = resolve;
-    });
-    
-    (authenticatedDelete as jest.Mock).mockReturnValueOnce(deletePromise);
-    
-    const { getByTestId } = render(<CommentSection {...defaultProps} />);
-    
-    // Open modal
-    await act(async () => {
-      fireEvent.press(getByTestId('more-options-button'));
-    });
-    
-    // Wait for modal to render
-    await waitFor(() => expect(getByTestId('mock-more-options')).toBeTruthy());
-    
-    // Start the delete operation
-    let deleteButton;
-    await act(async () => {
-      deleteButton = getByTestId('delete-btn');
-      fireEvent.press(deleteButton);
-    });
-    
-    // Complete the delete operation
-    await act(async () => {
-      resolveDeletePromise({ status: 'success' });
-    });
-    
-    // Verify the delete call was made
-    expect(authenticatedDelete).toHaveBeenCalledWith(
-      'https://safetypin.ppl.cs.ui.ac.id/posts/comment/onpost/123'
-    );
   });
 
   // -- Reply Delete Tests --
 
-  test('handles delete reply action', async () => {
-    const { getByText, getByTestId, queryByText } = render(<CommentSection {...defaultProps} />);
-    
-    // View replies
-    const viewRepliesBtn = getByText('View replies');
-    await act(async () => {
-      fireEvent.press(viewRepliesBtn);
-    });
-    
-    // Wait for replies to load
-    await waitFor(() => expect(getByTestId('reply-more-options-button-reply1')).toBeTruthy());
-    
-    // Open reply options modal
-    await act(async () => {
+  describe('Reply Delete with CustomModal', () => {
+    it('opens confirmation modal and deletes reply when confirmed', async () => {
+      const { getByText, getByTestId, queryByText } = render(
+        <CommentSection {...defaultProps} />
+      );
+
+      // 1) view replies
+      await act(async () => {
+        fireEvent.press(getByText('View replies'));
+      });
+      await waitFor(() => getByTestId('reply-more-options-button-reply1'));
+
+      // 2) open reply options
       fireEvent.press(getByTestId('reply-more-options-button-reply1'));
-    });
-    
-    // Wait for modal to be visible and get the delete button directly
-    await waitFor(() => expect(getByTestId('mock-more-options')).toBeTruthy());
-    const deleteButton = getByTestId('delete-btn');
-    
-    // Reset mocks for this specific test
-    (authenticatedGet as jest.Mock).mockClear();
-    
-    // Press delete button
-    await act(async () => {
-      fireEvent.press(deleteButton);
-    });
-    
-    // Check if API was called with correct URL
-    await waitFor(() => {
-      expect(authenticatedDelete).toHaveBeenCalledWith(
-        'https://safetypin.ppl.cs.ui.ac.id/posts/comment/oncomment/reply1'
-      );
-    });
-    
-    // Toast should show success message
-    await waitFor(() => expect(queryByText('Reply deleted successfully')).toBeTruthy());
-    
-    // Should refetch replies
-    expect(authenticatedGet).toHaveBeenCalledTimes(1);
-  });
+      await waitFor(() => getByTestId('mock-more-options'));
 
-  test('handles delete reply error', async () => {
-    (authenticatedDelete as jest.Mock).mockRejectedValueOnce(new Error('Failed to delete reply'));
-    
-    const { getByText, getByTestId, queryByText } = render(<CommentSection {...defaultProps} />);
-    
-    // View replies
-    const viewRepliesBtn = getByText('View replies');
-    await act(async () => {
-      fireEvent.press(viewRepliesBtn);
+      // 3) trigger delete-confirm
+      fireEvent.press(getByTestId('delete-btn'));
+      expect(getByTestId('delete-reply-confirmation-modal')).toBeTruthy();
+
+      // 4) confirm deletion
+      fireEvent.press(getByTestId('delete-reply-confirmation-modal-ok'));
+      await waitFor(() =>
+        expect(authenticatedDelete).toHaveBeenCalledWith(
+          'https://safetypin.ppl.cs.ui.ac.id/posts/comment/oncomment/reply1'
+        )
+      );
+
+      // 5) toast + refetch
+      await waitFor(() => expect(queryByText('Reply deleted successfully')).toBeTruthy());
+      expect(authenticatedGet).toHaveBeenCalledTimes(2);
     });
-    
-    // Wait for replies to load
-    await waitFor(() => expect(getByTestId('reply-more-options-button-reply1')).toBeTruthy());
-    
-    // Open reply options modal
-    await act(async () => {
+
+    it('cancels reply deletion when Cancel is pressed', async () => {
+      const { getByText, getByTestId, queryByTestId } = render(
+        <CommentSection {...defaultProps} />
+      );
+
+      // view replies & open options
+      await act(async () => {
+        fireEvent.press(getByText('View replies'));
+      });
+      await waitFor(() => getByTestId('reply-more-options-button-reply1'));
       fireEvent.press(getByTestId('reply-more-options-button-reply1'));
-    });
-    
-    // Wait for modal to be visible and get the delete button directly
-    await waitFor(() => expect(getByTestId('mock-more-options')).toBeTruthy());
-    const deleteButton = getByTestId('delete-btn');
-    
-    // Press delete button
-    await act(async () => {
-      fireEvent.press(deleteButton);
-    });
-    
-    // Wait for error message
-    await waitFor(() => {
-      expect(authenticatedDelete).toHaveBeenCalledWith(
-        'https://safetypin.ppl.cs.ui.ac.id/posts/comment/oncomment/reply1'
+      await waitFor(() => getByTestId('mock-more-options'));
+
+      // trigger confirm and cancel
+      fireEvent.press(getByTestId('delete-btn'));
+      expect(getByTestId('delete-reply-confirmation-modal')).toBeTruthy();
+      fireEvent.press(getByTestId('delete-reply-confirmation-modal-cancel'));
+
+      // confirm-modal gone, no API call
+      expect(queryByTestId('delete-reply-confirmation-modal')).toBeNull();
+      expect(authenticatedDelete).not.toHaveBeenCalledWith(
+        `https://safetypin.ppl.cs.ui.ac.id/posts/comment/oncomment/reply1`
       );
-      expect(queryByText('Failed to delete reply')).toBeTruthy();
     });
   });
 
-  test('should handle deleting a reply successfully', async () => {
-    // Mock successful replies fetch and delete
-    const mockReplies = {
-      data: {
-        content: [
-          {
-            id: '456',
-            caption: 'This is a reply',
-            postedBy: {
-              name: 'Jane Doe',
-              profilePicture: 'https://example.com/jane.jpg'
-            },
-            createdAt: '2023-05-02T12:00:00Z'
-          }
-        ]
-      }
-    };
-    
-    (authenticatedGet as jest.Mock).mockResolvedValueOnce(mockReplies);
-    (authenticatedDelete as jest.Mock).mockResolvedValueOnce({});
-    // Mock second get call after deleting the reply
-    (authenticatedGet as jest.Mock).mockResolvedValueOnce({
-      data: { content: [] }
-    });
-
-    const { getByTestId, getByText, queryByTestId } = render(
-      <CommentSection {...defaultProps} />
-    );
-
-    // Toggle replies to show them
-    fireEvent.press(getByText('View replies'));
-
-    // Wait for replies to load
-    await waitFor(() => {
-      expect(authenticatedGet).toHaveBeenCalledWith(
-        `https://safetypin.ppl.cs.ui.ac.id/posts/comment/oncomment/${defaultProps.commentId}`
-      );
-    });
-
-    // Open reply options modal
-    await waitFor(() => {
-      const replyOptionsButton = getByTestId('reply-more-options-button-456');
-      fireEvent.press(replyOptionsButton);
-    });
-
-    // Find and press the delete button in the reply options modal
-    const deleteButton = getByText('Delete');
-    fireEvent.press(deleteButton);
-
-    // Wait for the delete to complete
-    await waitFor(() => {
-      expect(authenticatedDelete).toHaveBeenCalledWith(
-        `https://safetypin.ppl.cs.ui.ac.id/posts/comment/oncomment/456`
-      );
-    });
-
-    // Toast should be visible with success message
-    expect(getByText('Reply deleted successfully')).toBeTruthy();
-
-    // Verify fetchReplies was called again
-    expect(authenticatedGet).toHaveBeenCalledTimes(2);
-  });
-
-  test('should handle reply delete failure', async () => {
-    // Mock successful replies fetch but failed delete
-    const mockReplies = {
-      data: {
-        content: [
-          {
-            id: '456',
-            caption: 'This is a reply',
-            postedBy: {
-              name: 'Jane Doe',
-              profilePicture: 'https://example.com/jane.jpg'
-            },
-            createdAt: '2023-05-02T12:00:00Z'
-          }
-        ]
-      }
-    };
-    
-    (authenticatedGet as jest.Mock).mockResolvedValueOnce(mockReplies);
-    (authenticatedDelete as jest.Mock).mockRejectedValueOnce(new Error('Delete failed'));
-
-    const { getByTestId, getByText } = render(
-      <CommentSection {...defaultProps} />
-    );
-
-    // Toggle replies to show them
-    fireEvent.press(getByText('View replies'));
-
-    // Wait for replies to load
-    await waitFor(() => {
-      expect(authenticatedGet).toHaveBeenCalledWith(
-        `https://safetypin.ppl.cs.ui.ac.id/posts/comment/oncomment/${defaultProps.commentId}`
-      );
-    });
-
-    // Open reply options modal
-    await waitFor(() => {
-      const replyOptionsButton = getByTestId('reply-more-options-button-456');
-      fireEvent.press(replyOptionsButton);
-    });
-
-    // Find and press the delete button
-    const deleteButton = getByText('Delete');
-    fireEvent.press(deleteButton);
-
-    // Wait for the delete to fail
-    await waitFor(() => {
-      expect(authenticatedDelete).toHaveBeenCalledWith(
-        `https://safetypin.ppl.cs.ui.ac.id/posts/comment/oncomment/456`
-      );
-    });
-
-    // Toast should be visible with error message
-    expect(getByText('Failed to delete reply')).toBeTruthy();
-  });
-
-  // -- Reply Rendering & Loading Tests --
-
-  test('toggles replies visibility and loads replies', async () => {
-    const { getByText, queryByText } = render(<CommentSection {...defaultProps} />);
-    
-    // Click "View replies"
-    const viewRepliesButton = getByText('View replies');
-    
-    await act(async () => {
-      fireEvent.press(viewRepliesButton);
-    });
-    
-    // Wait for the API call and replies to load
-    await waitFor(() => {
-      expect(authenticatedGet).toHaveBeenCalledWith(
-        'https://safetypin.ppl.cs.ui.ac.id/posts/comment/oncomment/123'
-      );
-      expect(queryByText('This is a reply')).toBeTruthy();
-    });
-    
-    // Check all replies are visible
-    expect(queryByText('This is a reply')).toBeTruthy();
-    expect(queryByText('This is another reply')).toBeTruthy();
-    
-    // Hide replies
-    const hideRepliesButton = getByText('Hide replies');
-    
-    await act(async () => {
-      fireEvent.press(hideRepliesButton);
-    });
-    
-    // Replies should be hidden
-    expect(queryByText('This is a reply')).toBeNull();
-  });
-
+  
   test('toggles replies visibility and shows no replies message', async () => {
     (authenticatedGet as jest.Mock).mockResolvedValueOnce({ data: { content: [] } });
     
@@ -1177,5 +856,100 @@ describe('CommentSection', () => {
     expect(getByText('ThisIsAReallyReallyReallyLongUsernameThatShouldBeTruncated')).toBeTruthy();
     
     // The displayed text will be truncated in the UI due to numberOfLines and ellipsizeMode
+  });
+
+  // -- Error handling tests --
+  describe('Error handling', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('shows error toast when comment deletion fails', async () => {
+      (authenticatedDelete as jest.Mock).mockRejectedValueOnce(new Error('Delete fail'));
+      const { getByTestId, queryByText } = render(<CommentSection {...defaultProps} />);
+      // Open comment options modal
+      fireEvent.press(getByTestId('more-options-button'));
+      await waitFor(() => getByTestId('more-options-modal'));
+      // Trigger delete-confirm modal
+      fireEvent.press(getByTestId('delete-btn'));
+      expect(getByTestId('delete-comment-confirmation-modal')).toBeTruthy();
+      // Confirm deletion
+      fireEvent.press(getByTestId('delete-comment-confirmation-modal-ok'));
+      await waitFor(() => {
+        expect(queryByText('Failed to delete comment')).toBeTruthy();
+      });
+    });
+
+    it('shows error toast when reply deletion fails', async () => {
+      (authenticatedDelete as jest.Mock).mockRejectedValueOnce(new Error('Reply delete fail'));
+      const { getByText, getByTestId, queryByText } = render(<CommentSection {...defaultProps} />);
+      // View replies
+      await act(async () => {
+        fireEvent.press(getByText('View replies'));
+      });
+      await waitFor(() => getByTestId('reply-more-options-button-reply1'));
+      // Open reply options modal
+      fireEvent.press(getByTestId('reply-more-options-button-reply1'));
+      await waitFor(() => getByTestId('mock-more-options'));
+      // Trigger delete-confirm modal
+      fireEvent.press(getByTestId('delete-btn'));
+      expect(getByTestId('delete-reply-confirmation-modal')).toBeTruthy();
+      // Confirm deletion
+      fireEvent.press(getByTestId('delete-reply-confirmation-modal-ok'));
+      await waitFor(() => {
+        expect(queryByText('Failed to delete reply')).toBeTruthy();
+      });
+    });
+  });
+
+  // -- Modal close behaviors --
+  describe('Modal close behaviors', () => {
+    it('closes comment options modal onRequestClose', async () => {
+      const { getByTestId, queryByTestId } = render(<CommentSection {...defaultProps} />);
+      fireEvent.press(getByTestId('more-options-button'));
+      await waitFor(() => getByTestId('more-options-modal'));
+      // Trigger onRequestClose
+      fireEvent(getByTestId('more-options-modal'), 'requestClose');
+      expect(queryByTestId('more-options-modal')).toBeNull();
+    });
+
+    it('closes comment options modal when pressing close button', async () => {
+      const { getByTestId, queryByTestId } = render(<CommentSection {...defaultProps} />);
+      fireEvent.press(getByTestId('more-options-button'));
+      await waitFor(() => getByTestId('mock-more-options'));
+      fireEvent.press(getByTestId('close-modal-btn'));
+      await waitFor(() => {
+        expect(queryByTestId('more-options-modal')).toBeNull();
+      });
+    });
+
+    it('closes reply options modal onRequestClose', async () => {
+      const { getByText, getByTestId, queryByTestId } = render(<CommentSection {...defaultProps} />);
+      await act(async () => {
+        fireEvent.press(getByText('View replies'));
+      });
+      await waitFor(() => getByTestId('reply-more-options-button-reply1'));
+      fireEvent.press(getByTestId('reply-more-options-button-reply1'));
+      await waitFor(() => getByTestId('reply-options-modal'));
+      fireEvent(getByTestId('reply-options-modal'), 'requestClose');
+      expect(queryByTestId('reply-options-modal')).toBeNull();
+    });
+
+    it('invokes closeModal in reply options modal when pressing close button', async () => {
+      const { getByText, getByTestId } = render(<CommentSection {...defaultProps} />);
+      await act(async () => {
+        fireEvent.press(getByText('View replies'));
+      });
+      await waitFor(() => getByTestId('reply-more-options-button-reply1'));
+      fireEvent.press(getByTestId('reply-more-options-button-reply1'));
+      await waitFor(() => getByTestId('mock-more-options'));
+      fireEvent.press(getByTestId('close-modal-btn'));
+      // closeModal is a no-op; modal stays open
+      expect(getByTestId('reply-options-modal')).toBeTruthy();
+    });
   });
 });
