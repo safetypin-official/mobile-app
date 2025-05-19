@@ -6,6 +6,7 @@ import {
 import * as ImagePicker from 'react-native-image-picker';
 import Entypo from '@expo/vector-icons/Entypo';
 import Button from '@/components/buttons/Button';
+import PricingModal from '@/components/displays/PremiumModal';
 import InputField from '@/components/inputs/InputField';
 import TagSelector from '@/components/inputs/TagSelector';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -44,6 +45,7 @@ const PostPage = () => {
         );
     
     // New state for storing the address from reverse geocoding
+    const [premiumModalVisible, setPremiumModalVisible] = useState(false);  
     const [address, setAddress] = useState<string>('Fetching address...');
     const [isLoadingAddress, setIsLoadingAddress] = useState<boolean>(false);
     
@@ -263,11 +265,16 @@ const PostPage = () => {
             })
             .catch((error) => {
                 console.error('Error creating post:', error);
-                Alert.alert(
-                    "Error", 
-                    `Failed to create post: ${error.message}`, 
-                    [{ text: "OK" }]
-                );
+                if (error.message === "You have reached your daily post limit of 3 posts.") {
+                    setPremiumModalVisible(true);
+                }
+                else {
+                    Alert.alert(
+                        "Error", 
+                        `Failed to create post: ${error.message}`, 
+                        [{ text: "OK" }]
+                    );
+                }
             });
     };
 
@@ -387,6 +394,15 @@ const PostPage = () => {
                     )}
                 </View>
             </ScrollView>
+
+            {/* Premium upsell modal */}
+            <PricingModal
+                visible={premiumModalVisible}
+                onClose={() => setPremiumModalVisible(false)}
+                onUpgradeNow={() => {
+                    setPremiumModalVisible(false);
+                }}
+            />
         </SafeAreaView>
     );
 };
