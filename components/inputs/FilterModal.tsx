@@ -72,7 +72,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const fetchTags = async () => {
     try {
       const response = await authenticatedGet('https://safetypin.ppl.cs.ui.ac.id/posts/category');
-      if (response && response.success) {
+      if (response?.success) {
         setAvailableTags(response.data);
       } else {
         // If API returns success: false or malformed response
