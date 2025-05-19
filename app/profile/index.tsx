@@ -544,7 +544,7 @@ const ProfileScreen = () => {
     }
   };
 
-  const handleSaveProfile = async (updatedSocialLinks: any) => {
+  const handleSaveProfile = async (updatedSocialLinks: any, name: string) => {
     try {
       setIsLoading(true);
       setIsUploading(true);
@@ -567,6 +567,7 @@ const ProfileScreen = () => {
       }
 
       const updatedProfileData = {
+        name: name,  // Add the name field
         instagram: updatedSocialLinks.instagram || null,
         twitter: updatedSocialLinks.twitter || null,
         line: updatedSocialLinks.line || null,
@@ -584,6 +585,7 @@ const ProfileScreen = () => {
       if (response.success) {
         setProfileData(prev => ({
           ...prev,
+          username: name,  // Update the username with the new name
           profileImage: profilePictureUrl,
           profileBanner: profileBannerUrl,
           socialLinks: {
@@ -711,6 +713,7 @@ const ProfileScreen = () => {
           <EditProfileForm
             initialData={{
               ...profileData,
+              name: profileData.username, // Pass the current username as name
               ...profileData.socialLinks,
               profilePic: newProfilePic ?? profileData.profileImage,
               profileBanner: newProfileBanner ?? profileData.profileBanner
