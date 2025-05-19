@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Image, Modal, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, ActivityIndicator } from "react-native";
 import MoreOptionsButton from "@/components/buttons/post/MoreOptionsButton";
+import CustomModal from "@/components/displays/CustomModal";
 import Toast from "@/components/toasts/Toast";
 import { authenticatedGet, authenticatedDelete } from "@/utils/api";
 import { ReplyPagination, CommentReply } from "@/components/displays/Types";
@@ -28,6 +29,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     onReply,
     onCommentDeleted,
 }) => {
+  const [commentConfirmDeleteVisible, setCommentConfirmDeleteVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("Report Submitted");
@@ -37,6 +39,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   const [repliesError, setRepliesError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [activeReplyModal, setActiveReplyModal] = useState<string | null>(null);
+  const [replyConfirmDeleteId, setReplyConfirmDeleteId] = useState<string | null>(null);
 
   const handleReport = () => {
     setToastMessage("Report Submitted");
@@ -44,6 +47,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     setTimeout(() => setToastVisible(false), 3000);
     setModalVisible(false);
   };
+
+  const triggerDeleteComment = () => {
+     setModalVisible(false);
+     setCommentConfirmDeleteVisible(true);
+   };
 
   const handleDeleteComment = async () => {
     try {
@@ -78,6 +86,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     }
   };
 
+  const triggerDeleteReply = (replyId: string) => {
+     setActiveReplyModal(null);
+     setReplyConfirmDeleteId(replyId);
+   };
+
   const handleDeleteReply = async (replyId: string) => {
     try {
       setIsDeleting(true);
@@ -101,6 +114,19 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       setTimeout(() => setToastVisible(false), 3000);
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const confirmDeleteComment = async () => {
+    setCommentConfirmDeleteVisible(false);
+    await handleDeleteComment();
+  };
+  
+  const confirmDeleteReply = async () => {
+    if (replyConfirmDeleteId) {
+      const id = replyConfirmDeleteId;
+      setReplyConfirmDeleteId(null);
+      await handleDeleteReply(id);
     }
   };
 
@@ -287,7 +313,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
                     closeModal={() => (null)} 
                     onSendMessage={() => {console.log("Send Message")}} 
                     onReport={handleReport} 
-                    onDelete={() => handleDeleteReply(activeReplyModal)} 
+                    onDelete={() => triggerDeleteReply(activeReplyModal)}
                   />
                 </View>
               </TouchableWithoutFeedback>
@@ -296,7 +322,24 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         </Modal>
       )}
 
-      <Modal transparent animationType="fade" visible={modalVisible} onRequestClose={() => setModalVisible(false)} testID="more-options-modal">
+      {/* Reply‐delete confirmation */}
+      <CustomModal
+        visible={!!replyConfirmDeleteId}
+        testID="delete-reply-confirmation-modal"
+        title="Delete Reply"
+        message="Are you sure you want to delete this reply?"
+        cancelText="Cancel"
+        okText="Delete"
+        onCancel={() => setReplyConfirmDeleteId(null)}
+        onOk={confirmDeleteReply}
+      />
+
+      <Modal transparent
+        animationType="fade"
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+        testID="more-options-modal"
+      >
         <TouchableWithoutFeedback 
           onPress={() => setModalVisible(false)} 
           testID="modal-overlay"
@@ -305,12 +348,29 @@ const CommentSection: React.FC<CommentSectionProps> = ({
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback>
               <View style={styles.modalContent}>
-                <MoreOptionsButton closeModal={() => setModalVisible(false)} onSendMessage={() => {console.log("Send Message")}} onReport={handleReport} onDelete={handleDeleteComment} />
+                <MoreOptionsButton
+                  closeModal={() => setModalVisible(false)}
+                  onSendMessage={() => {console.log("Send Message")}}
+                  onReport={handleReport}
+                  onDelete={triggerDeleteComment}
+                />
               </View>
             </TouchableWithoutFeedback>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
+
+      {/* Comment‐delete confirmation */}
+      <CustomModal
+        visible={commentConfirmDeleteVisible}
+        testID="delete-comment-confirmation-modal"
+        title="Delete Comment"
+        message="Are you sure you want to delete this comment?"
+        cancelText="Cancel"
+        okText="Delete"
+        onCancel={() => setCommentConfirmDeleteVisible(false)}
+        onOk={confirmDeleteComment}
+      />
 
       <Modal transparent animationType="fade" visible={toastVisible}>
         <TouchableWithoutFeedback onPress={() => setToastVisible(false)} testID="toast-message">

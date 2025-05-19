@@ -1,36 +1,42 @@
 import React, { useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, TouchableWithoutFeedback, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Modal,
+  TouchableWithoutFeedback,
+} from "react-native";
 import MoreOptionsButton from "@/components/buttons/post/MoreOptionsButton";
 import Toast from "../../toasts/Toast";
 import Pin from "@/components/displays/Pin";
+import CustomModal from "@/components/displays/CustomModal";
 import { authenticatedDelete } from "@/utils/api";
 import { router } from "expo-router";
-
-// Updated user interface to match new API response
 export interface PostedByUser {
   userId: string;
   name: string;
   profilePicture?: string;
 }
 
-// Update the props interface to include the new postedBy structure
-const UserInfo: React.FC<{ 
-  postedBy?: PostedByUser | null; 
-  avatarUrl?: string; // Fallback avatar URL
-  username?: string; // Fallback username
-  handle?: string; // Fallback handle
-  date: string; 
-  location: string; 
-  moreOptionsIconUrl: string; 
+const UserInfo: React.FC<{
+  postedBy?: PostedByUser | null;
+  avatarUrl?: string;
+  username?: string;
+  handle?: string;
+  date: string;
+  location: string;
+  moreOptionsIconUrl: string;
   longitude: number;
   latitude: number;
   categoryType?: string;
   postId: string;
   onPostDeleted?: () => void;
-  onUserPress?: () => void; // Add an optional prop for user press action
+  onUserPress?: () => void;
 }> = ({
   postedBy,
-  avatarUrl = "https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/f806fe330fa9f5d6235dca1cb075682ea60ceeeafa74088633aa747789bbf602?placeholderIfAbsent=true",
+  avatarUrl = "https://cdn.builder.io/api/v1/image/assets/e66a0a8af3e84d7ea30c7aa6672d5e75/f806fe330fa9e...",
   username,
   handle,
   date,
@@ -44,11 +50,11 @@ const UserInfo: React.FC<{
   onUserPress,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [confirmDeleteVisible, setConfirmDeleteVisible] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("Report Submitted");
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Determine the user display name and avatar from postedBy or fallbacks
   const displayName = postedBy?.name ?? username ?? "Anonymous";
   const displayHandle = handle ?? `@${displayName.toLowerCase().replace(/\s/g, "")}`;
   const displayAvatar = postedBy?.profilePicture ?? avatarUrl;
@@ -60,71 +66,41 @@ const UserInfo: React.FC<{
     setTimeout(() => setToastVisible(false), 3000);
   };
 
-  const setToastVisibleToFalse = () => {
-    setToastVisible(false);
-  }
+  // Called when user taps “Delete” in MoreOptions
+  const handleDelete = () => {
+    setModalVisible(false);
+    setConfirmDeleteVisible(true);
+  };
 
-  const handleDelete = async () => {
+  // Actually perform the deletion after user confirms
+  const confirmDelete = async () => {
+    setIsDeleting(true);
+    setConfirmDeleteVisible(false);
     try {
-      console.log("Deleting post:", isDeleting);
-      setIsDeleting(true);
-      setModalVisible(false);
-      
-      // Confirm deletion
-      Alert.alert(
-        "Delete Post",
-        "Are you sure you want to delete this post?",
-        [
-          { text: "Cancel", style: "cancel", onPress: () => setIsDeleting(false) },
-          { 
-            text: "Delete", 
-            style: "destructive",
-            onPress: () => {
-              const performDelete = async () => {
-                try {
-                  await authenticatedDelete(`https://safetypin.ppl.cs.ui.ac.id/posts/${postId}`);
-                  
-                  // Show success toast - using consistent pattern with CommentSection
-                  setToastMessage("Post deleted successfully");
-                  setToastVisible(true);
-                  setTimeout(setToastVisibleToFalse, 3000);
-                  
-                  // Call the callback to refresh the posts list
-                  if (onPostDeleted) {
-                    onPostDeleted();
-                  }
-                  
-                } catch (error) {
-                  console.error("Error deleting post:", error);
-                  // Show error toast - matching CommentSection pattern
-                  setToastMessage("Failed to delete post");
-                  setToastVisible(true);
-                  setTimeout(setToastVisibleToFalse, 3000);
-                } finally {
-                  setIsDeleting(false);
-                }
-              };
-              
-              performDelete();
-            }
-          }
-        ]
-      );
+      await authenticatedDelete(`https://safetypin.ppl.cs.ui.ac.id/posts/${postId}`);
+      setToastMessage("Post deleted successfully");
+      setToastVisible(true);
+      setTimeout(() => setToastVisible(false), 3000);
+      onPostDeleted?.();
     } catch (error) {
-      console.error("Error preparing deletion:", error);
+      console.error("Error deleting post:", error);
+      setToastMessage("Failed to delete post");
+      setToastVisible(true);
+      setTimeout(() => setToastVisible(false), 3000);
+    } finally {
       setIsDeleting(false);
     }
   };
 
-  // Default handler for user press that navigates to profile
   const handleUserPress = () => {
+    if (postedBy?.userId) {
+      console.log("User ID:", postedBy.userId);       // ← add this line
+    }
+
     if (onUserPress) {
-      // Use provided custom handler if available
       onUserPress();
     } else if (postedBy?.userId) {
-      console.log("User ID:", postedBy.userId);
-      // Default navigation to user profile
-      // router.push(`/profile?userId=${postedBy.userId}`);
+      router.push(`/profile?userId=${postedBy.userId}`);
     }
   };
 
@@ -135,24 +111,16 @@ const UserInfo: React.FC<{
         <View style={styles.userDetails}>
           <View style={styles.userHeader}>
             <View style={styles.userNameGroup}>
-              <Text 
-                style={styles.username}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
+              <Text style={styles.username} numberOfLines={1} ellipsizeMode="tail">
                 {displayName}
               </Text>
-              <Text 
-                style={styles.handle}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
+              <Text style={styles.handle} numberOfLines={1} ellipsizeMode="tail">
                 {displayHandle}
               </Text>
               <Text style={styles.dateInfo}> • {date}</Text>
             </View>
-            <TouchableOpacity 
-              onPress={() => setModalVisible(true)} 
+            <TouchableOpacity
+              onPress={() => setModalVisible(true)}
               style={styles.moreOptionsButton}
               testID="more-options-button"
             >
@@ -161,36 +129,52 @@ const UserInfo: React.FC<{
           </View>
           <View style={styles.locationContainer}>
             <View style={styles.pinWrapper}>
-              <Pin 
-                type={categoryType} 
-                onPress={() => {}} 
-                width={16} 
-                height={16}
-              />
+              <Pin type={categoryType} onPress={() => {}} width={16} height={16} />
             </View>
-            <Text 
-              style={styles.locationText}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
+            <Text style={styles.locationText} numberOfLines={1} ellipsizeMode="tail">
               {location}
             </Text>
           </View>
         </View>
       </TouchableOpacity>
 
-      <Modal transparent animationType="fade" visible={modalVisible} onRequestClose={() => setModalVisible(false)} testID="more-options-modal">
+      {/* More Options */}
+      <Modal
+        transparent
+        animationType="fade"
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+        testID="more-options-modal"
+      >
         <TouchableWithoutFeedback onPress={() => setModalVisible(false)} testID="modal-overlay">
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback>
               <View style={styles.modalContent}>
-                <MoreOptionsButton closeModal={() => setModalVisible(false)} onSendMessage={() => console.log("Send Message")} onReport={handleReport} onDelete={handleDelete}/>
+                <MoreOptionsButton
+                  closeModal={() => setModalVisible(false)}
+                  onSendMessage={() => console.log("Send Message")}
+                  onReport={handleReport}
+                  onDelete={handleDelete}
+                />
               </View>
             </TouchableWithoutFeedback>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
 
+      {/* Delete Confirmation via CustomModal */}
+      <CustomModal
+        visible={confirmDeleteVisible}
+        testID="delete-confirmation-modal"
+        title="Delete Post"
+        message="Are you sure you want to delete this post?"
+        cancelText="Cancel"
+        okText="Delete"
+        onOk={confirmDelete}
+        onCancel={() => setConfirmDeleteVisible(false)}
+      />
+
+      {/* Toast */}
       <Modal transparent animationType="fade" visible={toastVisible}>
         <TouchableWithoutFeedback onPress={() => setToastVisible(false)}>
           <View style={styles.toastOverlay}>
