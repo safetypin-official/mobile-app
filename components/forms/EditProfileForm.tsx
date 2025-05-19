@@ -25,8 +25,9 @@ interface EditProfileFormProps {
     verified: boolean;
     profilePic?: string;
     profileBanner?: string;
+    name?: string;
   } & SocialMediaLink;
-  onSave: (data: SocialMediaLink) => void;
+  onSave: (data: SocialMediaLink, name: string) => void;
   onClose: () => void;
   onProfilePicChange: () => void;
   onProfileBannerChange: () => void;
@@ -42,12 +43,14 @@ const EditProfileForm = forwardRef(({
   testID,
 }: EditProfileFormProps, ref) => {
   const [socialLinks, setSocialLinks] = useState<SocialMediaLink>({
-    instagram: initialData.instagram ?? "",
-    twitter: initialData.twitter ?? "",
-    line: initialData.line ?? "",
-    tiktok: initialData.tiktok ?? "",
-    discord: initialData.discord ?? "",
+    instagram: initialData.instagram,
+    twitter: initialData.twitter,
+    line: initialData.line,
+    tiktok: initialData.tiktok,
+    discord: initialData.discord,
   });
+
+  const [name, setName] = useState(initialData.name ?? "Your Name");
 
   const handleInputChange = (field: keyof SocialMediaLink, value: string) => {
     setSocialLinks((prev) => ({
@@ -77,7 +80,7 @@ const EditProfileForm = forwardRef(({
         })
     ) as SocialMediaLink;
     
-    onSave(dataToSave);
+    onSave(dataToSave, name);
   };
 
   return (
@@ -142,6 +145,15 @@ const EditProfileForm = forwardRef(({
         <View style={styles.container}>
 
           <View style={styles.form}>
+            <View>
+              <InputField
+                label="Name"
+                placeholder={name}
+                onChangeText={setName}
+                labelColor="#3B080A"
+              />
+            </View>
+
             <View>
               <InputField
                 label="Instagram"
@@ -325,6 +337,22 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
     borderRadius: 0,
+  },
+  inputGroup: {
+    marginBottom: 15,
+  },
+  inputLabel: {
+    fontSize: 14,
+    color: "#3B080A",
+    marginBottom: 5,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    borderRadius: 5,
+    padding: 10,
+    fontSize: 14,
+    color: "#3B080A",
   },
 });
 
