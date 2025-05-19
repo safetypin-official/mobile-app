@@ -37,11 +37,9 @@ const MoreOptionsButton: React.FC<MoreOptionsButtonProps> = ({ onSendMessage, on
         }}
         testID="delete-post"
       >
-        <AntDesign name="delete" size={16} color="#904a47" borderRadius={100} />
+        <AntDesign name="exclamationcircleo" size={16} color="#904a47" borderRadius={100} />
         <Text style={styles.report}>Delete</Text>
       </TouchableOpacity>
-
-      <View style={styles.instanceChild1} />
 
       <TouchableOpacity
         style={styles.exclamationCircleParent}
