@@ -3,14 +3,14 @@ import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
 interface ToastProps {
-  text?: string;
+  text: string; // Removed ? to make it required
   icon?: JSX.Element;
 }
 
 const screenWidth = Dimensions.get("window").width;
 
 const Toast: React.FC<ToastProps> = ({
-  text = "Post Reported",
+  text, // Removed default value
   icon = <AntDesign name="exclamationcircleo" size={16} color="#904a47" />,
 }) => {
   return (
