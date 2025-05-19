@@ -15,20 +15,7 @@ interface MoreOptionsButtonProps {
 const MoreOptionsButton: React.FC<MoreOptionsButtonProps> = ({ onSendMessage, onReport, onDelete, closeModal }) => {
   return (
     <View style={styles.frameParent}>
-      <TouchableOpacity
-        style={styles.chatDotsParent}
-        onPress={() => {
-          onSendMessage();
-          closeModal();
-        }}
-        testID="send-message"
-      >
-        <Ionicons name="chatbubble-ellipses-outline" size={16} color="black" />
-        <Text style={styles.sendMessage}>Send Message</Text>
-      </TouchableOpacity>
-
       <View style={styles.instanceChild} />
-
       <TouchableOpacity
         style={styles.exclamationCircleParent}
         onPress={() => {
@@ -39,18 +26,6 @@ const MoreOptionsButton: React.FC<MoreOptionsButtonProps> = ({ onSendMessage, on
       >
         <AntDesign name="exclamationcircleo" size={16} color="#904a47" borderRadius={100} />
         <Text style={styles.report}>Delete</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.exclamationCircleParent}
-        onPress={() => {
-          onReport();
-          closeModal();
-        }}
-        testID="report-post"
-      >
-        <AntDesign name="exclamationcircleo" size={16} color="#904a47" borderRadius={100} />
-        <Text style={styles.report}>Report</Text>
       </TouchableOpacity>
     </View>
   );
