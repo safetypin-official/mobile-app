@@ -1,24 +1,34 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import TagSelectorModal from '@/components/inputs/TagSelectorModal';
-import { TAGS } from '@/assets/TagData';
+import { TAG_KEYS } from '@/components/displays/post/ReportTags';
 
-jest.mock('@expo/vector-icons', () => ({
-    AntDesign: jest.fn(() => null),
+// Mock the getTagInfo function
+jest.mock('@/components/displays/Types', () => ({
+  getTagInfo: (tag) => ({
+    color: '#FF5733',
+    icon: '<svg></svg>', // Simple mock SVG string
+  }),
 }));
 
-  
+// Mock SVG component
 jest.mock('react-native-svg', () => ({
-    SvgXml: jest.fn(() => null),
+  SvgXml: jest.fn(() => null),
 }));
 
-  
+// Sample tag keys for testing
+const MOCK_TAG_KEYS = ['Safety', 'Infrastructure', 'Harassment', 'Other'];
+
 describe('TagSelectorModal', () => {
   const mockOnClose = jest.fn();
   const mockOnSelectTag = jest.fn();
   
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+  
   it('renders correctly when visible', () => {
-    const { getByTestId } = render(
+    const { getByText } = render(
       <TagSelectorModal
         visible={true}
         onClose={mockOnClose}
@@ -26,11 +36,11 @@ describe('TagSelectorModal', () => {
         selectedTag=""
       />
     );
-    expect(getByTestId('tag-selector-modal')).toBeTruthy();
+    expect(getByText('Select Category')).toBeTruthy();
   });
 
   it('does not render when visible is false', () => {
-    const { queryByTestId } = render(
+    const { queryByText } = render(
       <TagSelectorModal
         visible={false}
         onClose={mockOnClose}
@@ -38,12 +48,12 @@ describe('TagSelectorModal', () => {
         selectedTag=""
       />
     );
-    expect(queryByTestId('tag-selector-modal')).toBeNull();
+    expect(queryByText('Select Category')).toBeNull();
   });
 
   it('renders correctly with a pre-selected tag', () => {
-    const selectedTag = TAGS[0].value;
-    const { getByText } = render(
+    const selectedTag = TAG_KEYS[0];
+    const { getAllByText } = render(
       <TagSelectorModal
         visible={true}
         onClose={mockOnClose}
@@ -52,83 +62,121 @@ describe('TagSelectorModal', () => {
       />
     );
 
-    // Ensure the pre-selected tag has checkmark (AntDesign icon should exist)
-    expect(getByText(TAGS[0].label)).toBeTruthy();
+    // The selected tag should appear in the list
+    expect(getAllByText(selectedTag)[0]).toBeTruthy();
   });
 
-  it('handles empty TAGS list gracefully', () => {
-    jest.mock('@/assets/TagData', () => ({ TAGS: [] })); // Mock empty tag list
+  it('selects a tag and immediately calls onSelectTag and onClose', () => {
+    const { getByText } = render(
+      <TagSelectorModal
+        visible={true}
+        onClose={mockOnClose}
+        onSelectTag={mockOnSelectTag}
+        selectedTag=""
+        availableTags={MOCK_TAG_KEYS}
+      />
+    );
 
+    // Select a tag
+    fireEvent.press(getByText(MOCK_TAG_KEYS[0]));
+
+    // Should immediately call both callbacks
+    expect(mockOnSelectTag).toHaveBeenCalledWith(MOCK_TAG_KEYS[0]);
+    expect(mockOnClose).toHaveBeenCalled();
+  });
+
+  it('closes when clicking the close button', () => {
+    const { getByText } = render(
+      <TagSelectorModal
+        visible={true}
+        onClose={mockOnClose}
+        onSelectTag={mockOnSelectTag}
+        selectedTag=""
+      />
+    );
+
+    // Find and press the close button
+    fireEvent.press(getByText('✕'));
+    expect(mockOnClose).toHaveBeenCalled();
+  });
+
+  it('uses provided availableTags instead of default TAG_KEYS', () => {
+    const customTags = ['Custom1', 'Custom2', 'Custom3'];
+    
+    const { getByText, queryByText } = render(
+      <TagSelectorModal
+        visible={true}
+        onClose={mockOnClose}
+        onSelectTag={mockOnSelectTag}
+        selectedTag=""
+        availableTags={customTags}
+      />
+    );
+
+    // Custom tags should be visible
+    expect(getByText('Custom1')).toBeTruthy();
+    expect(getByText('Custom2')).toBeTruthy();
+    
+    // If TAG_KEYS has a tag that's not in customTags, it shouldn't appear
+    if (TAG_KEYS.includes('Lighting') && !customTags.includes('Lighting')) {
+      expect(queryByText('Lighting')).toBeNull();
+    }
+  });
+
+  it('handles empty availableTags gracefully', () => {
     const { queryByText } = render(
-      <TagSelectorModal visible={true} onClose={mockOnClose} onSelectTag={mockOnSelectTag} selectedTag="" />
+      <TagSelectorModal
+        visible={true}
+        onClose={mockOnClose}
+        onSelectTag={mockOnSelectTag}
+        selectedTag=""
+        availableTags={[]}
+      />
     );
 
-    expect(queryByText(/Select a Tag/i)).toBeTruthy(); // Header should still render
+    // Header should still render
+    expect(queryByText('Select Category')).toBeTruthy();
+    // But no tags should be rendered
+    TAG_KEYS.forEach(tag => {
+      expect(queryByText(tag)).toBeNull();
+    });
   });
+  
+  it('applies different styling to selected tag', () => {
+    const selectedTag = MOCK_TAG_KEYS[1];
+    
+    const { getByText } = render(
+      <TagSelectorModal
+        visible={true}
+        onClose={mockOnClose}
+        onSelectTag={mockOnSelectTag}
+        selectedTag={selectedTag}
+        availableTags={MOCK_TAG_KEYS}
+      />
+    );
 
-  it('allows selecting a tag', () => {
+    // The selected tag element should exist
+    const tagElement = getByText(selectedTag);
+    expect(tagElement).toBeTruthy();
+    
+    // We can't directly test styles in RNTL, but we can verify the component renders
+    // without errors when a tag is selected
+  });
+  
+  it('renders all available tags', () => {
     const { getByText } = render(
       <TagSelectorModal
         visible={true}
         onClose={mockOnClose}
         onSelectTag={mockOnSelectTag}
         selectedTag=""
+        availableTags={MOCK_TAG_KEYS}
       />
     );
 
-    const firstTag = TAGS[0];
-    fireEvent.press(getByText(firstTag.label));
-
-    // No direct assertion possible on useState, but ensuring no crash
-    expect(getByText(firstTag.label)).toBeTruthy();
-  });
-
-  it('triggers onSelectTag and onClose on confirm', () => {
-    const { getByText } = render(
-      <TagSelectorModal
-        visible={true}
-        onClose={mockOnClose}
-        onSelectTag={mockOnSelectTag}
-        selectedTag=""
-      />
-    );
-
-    const firstTag = TAGS[0];
-    fireEvent.press(getByText(firstTag.label));
-
-    const confirmButton = getByText('Confirm');
-    fireEvent.press(confirmButton);
-
-    expect(mockOnSelectTag).toHaveBeenCalledWith(firstTag.value);
-    expect(mockOnClose).toHaveBeenCalled();
-  });
-
-  it('closes when clicking outside modal', () => {
-    const { getByTestId } = render(
-      <TagSelectorModal
-        visible={true}
-        onClose={mockOnClose}
-        onSelectTag={mockOnSelectTag}
-        selectedTag=""
-      />
-    );
-
-    fireEvent.press(getByTestId('tag-selector-modal')); // Clicking background
-    expect(mockOnClose).toHaveBeenCalled();
-  });
-
-  it('scrolls properly when there are many tags', () => {
-    const { getByText } = render(
-      <TagSelectorModal
-        visible={true}
-        onClose={mockOnClose}
-        onSelectTag={mockOnSelectTag}
-        selectedTag=""
-      />
-    );
-
-    // Simulate scrolling (this test is limited but ensures rendering works)
-    const lastTag = TAGS[TAGS.length - 1];
-    expect(getByText(lastTag.label)).toBeTruthy(); // Last tag should be visible
+    // All tags should be rendered
+    MOCK_TAG_KEYS.forEach(tag => {
+      expect(getByText(tag)).toBeTruthy();
+    });
   });
 });

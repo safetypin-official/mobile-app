@@ -1,31 +1,26 @@
+// MultiTagSelectorModal.tsx
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { Modal, View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { TAG_KEYS } from '@/components/displays/post/ReportTags';
 import { getTagInfo } from '@/components/displays/Types';
 import { tagModalStyles } from '@/assets/ModalStyles';
 
-interface TagSelectorModalProps {
+interface MultiTagSelectorModalProps {
   visible: boolean;
   onClose: () => void;
   onSelectTag: (tag: string) => void;
-  selectedTag: string;
+  selectedTags: string[];
   availableTags?: string[];
 }
 
-const TagSelectorModal: React.FC<TagSelectorModalProps> = ({
+const MultiTagSelectorModal: React.FC<MultiTagSelectorModalProps> = ({
   visible,
   onClose,
   onSelectTag,
-  selectedTag,
+  selectedTags,
   availableTags = TAG_KEYS,
 }) => {
-  // Handle selecting a tag
-  const handleSelectTag = (tag: string) => {
-    onSelectTag(tag);
-    onClose();
-  };
-
   return (
     <Modal
       visible={visible}
@@ -36,7 +31,7 @@ const TagSelectorModal: React.FC<TagSelectorModalProps> = ({
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <View style={styles.header}>
-            <Text style={styles.title}>Select Category</Text>
+            <Text style={styles.title}>Select Categories</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <Text style={styles.closeButtonText}>✕</Text>
             </TouchableOpacity>
@@ -46,7 +41,7 @@ const TagSelectorModal: React.FC<TagSelectorModalProps> = ({
             data={availableTags}
             keyExtractor={(item) => item}
             renderItem={({ item }) => {
-              const isSelected = selectedTag === item;
+              const isSelected = selectedTags.includes(item);
               const tagInfo = getTagInfo(item);
               
               return (
@@ -55,7 +50,7 @@ const TagSelectorModal: React.FC<TagSelectorModalProps> = ({
                     styles.tagItem,
                     isSelected && {backgroundColor: tagInfo.color}
                   ]}
-                  onPress={() => handleSelectTag(item)}
+                  onPress={() => onSelectTag(item)}
                 >
                   {isSelected && (
                     <SvgXml xml={tagInfo.icon} width={20} height={20} style={styles.tagIcon} />
@@ -78,12 +73,66 @@ const TagSelectorModal: React.FC<TagSelectorModalProps> = ({
             }}
             contentContainerStyle={styles.tagsList}
           />
+          
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.resetButton}
+              onPress={() => {
+                // Reset all selections by calling onSelectTag for each selected tag
+                selectedTags.forEach(tag => onSelectTag(tag));
+              }}
+            >
+              <Text style={styles.resetButtonText}>Reset</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={styles.doneButton}
+              onPress={onClose}
+            >
+              <Text style={styles.doneButtonText}>Done</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>
   );
 };
 
-const styles = tagModalStyles;
+// Combine shared styles with component-specific styles
+const styles = StyleSheet.create({
+  ...tagModalStyles,
+  // Define only the unique styles for MultiTagSelectorModal
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
+  },
+  resetButton: {
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0',
+    width: '48%',
+    alignItems: 'center',
+  },
+  resetButtonText: {
+    color: '#333',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  doneButton: {
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: '#904a47',
+    width: '48%',
+    alignItems: 'center',
+  },
+  doneButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
 
-export default TagSelectorModal;
+export default MultiTagSelectorModal;

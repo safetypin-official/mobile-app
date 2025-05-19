@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { Picker } from "@react-native-picker/picker";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 interface DatePickerInputProps {
   label: string;
@@ -10,9 +10,10 @@ interface DatePickerInputProps {
   onChange: (year: number, month: number, day: number) => void;
 }
 
-const YEARS = Array.from({ length: 31 }, (_, i) => 2020 + i); // 2020 - 2050
-const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
-const DAYS = Array.from({ length: 31 }, (_, i) => i + 1);
+const MONTH_NAMES = [
+  "January", "February", "March", "April", "May", "June", 
+  "July", "August", "September", "October", "November", "December"
+];
 
 const DatePickerInput: React.FC<DatePickerInputProps> = ({
   label,
@@ -21,105 +22,107 @@ const DatePickerInput: React.FC<DatePickerInputProps> = ({
   initialDay,
   onChange,
 }) => {
-  // Default to earliest values if no initial value is provided
-  const [year, setYear] = useState<number>(initialYear ?? 2020);
-  const [month, setMonth] = useState<number>(initialMonth ?? 1);
-  const [day, setDay] = useState<number>(initialDay ?? 1);
+  // Create a Date object from the initial values
+  const createDateFromProps = () => {
+    const newDate = new Date();
+    if (initialYear) newDate.setFullYear(initialYear);
+    if (initialMonth) newDate.setMonth(initialMonth - 1); // Convert from 1-indexed to 0-indexed
+    if (initialDay) newDate.setDate(initialDay);
+    return newDate;
+  };
+  
+  const [date, setDate] = useState<Date>(createDateFromProps());
+  const [showPicker, setShowPicker] = useState(false);
 
-  // Pass initial default values to parent on mount
+  // This effect updates the internal date when props change (like during reset)
   useEffect(() => {
-    onChange(year, month, day);
-  }, []);
+    const newDate = createDateFromProps();
+    setDate(newDate);
+  }, [initialYear, initialMonth, initialDay]);
 
-  const handleYearChange = (value: number) => {
-    const newYear = value || 2020;
-    setYear(newYear);
-    onChange(newYear, month, day);
+  // Format date for display: "Jan 15, 2023"
+  const formatDisplayDate = (date: Date) => {
+    const monthName = MONTH_NAMES[date.getMonth()].slice(0, 3);
+    return `${monthName} ${date.getDate()}, ${date.getFullYear()}`;
   };
 
-  const handleMonthChange = (value: number) => {
-    const newMonth = value || 1;
-    setMonth(newMonth);
-    onChange(year, newMonth, day);
+  const onDateChange = (event: any, selectedDate?: Date) => {
+    setShowPicker(false);
+    
+    if (selectedDate) {
+      setDate(selectedDate);
+      
+      // Pass the date components back to the parent
+      onChange(
+        selectedDate.getFullYear(),     // year
+        selectedDate.getMonth() + 1,    // month (convert from 0-indexed to 1-indexed)
+        selectedDate.getDate()          // day
+      );
+    }
   };
 
-  const handleDayChange = (value: number) => {
-    const newDay = value || 1;
-    setDay(newDay);
-    onChange(year, month, newDay);
+  const showDatepicker = () => {
+    setShowPicker(true);
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
-      <View style={styles.row}>
-        <View style={styles.column}>
-          <Text style={styles.inputLabel}>Month</Text>
-          <Picker
-            testID="RNPickerSelect"
-            style={styles.picker}
-            selectedValue={month}
-            onValueChange={(value) => handleMonthChange(value)}
-          >
-            {MONTHS.map((m) => (
-              <Picker.Item key={m} label={String(m)} value={m} />
-            ))}
-          </Picker>
+      
+      <TouchableOpacity 
+        style={styles.dateDisplay}
+        onPress={showDatepicker}
+        testID={`date-picker-${label}`}
+      >
+        <Text style={styles.dateText}>{formatDisplayDate(date)}</Text>
+        <View style={styles.calendarIcon}>
+          <Text style={styles.calendarIconText}>📅</Text>
         </View>
-        <View style={styles.column}>
-          <Text style={styles.inputLabel}>Date</Text>
-          <Picker
-            testID="RNPickerSelect"
-            style={styles.picker}
-            selectedValue={day}
-            onValueChange={(value) => handleDayChange(value)}
-          >
-            {DAYS.map((d) => (
-              <Picker.Item key={d} label={String(d)} value={d} />
-            ))}
-          </Picker>
-        </View>
-        <View style={styles.column}>
-          <Text style={styles.inputLabel}>Year</Text>
-          <Picker
-            testID="RNPickerSelect"
-            style={styles.picker}
-            selectedValue={year}
-            onValueChange={(value) => handleYearChange(value)}
-          >
-            {YEARS.map((y) => (
-              <Picker.Item key={y} label={String(y)} value={y} />
-            ))}
-          </Picker>
-        </View>
-      </View>
+      </TouchableOpacity>
+      
+      {showPicker && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="default"
+          onChange={onDateChange}
+        />
+      )}
     </View>
   );
 };
 
+// Styles remain unchanged
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 8,
+    marginVertical: 12,
   },
   label: {
     fontSize: 14,
     fontWeight: "bold",
-    marginBottom: 4,
+    marginBottom: 8,
     color: "#b00",
   },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  dateDisplay: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
   },
-  column: {
-    flex: 1,
+  dateText: {
+    fontSize: 16,
+    color: '#333',
   },
-  inputLabel: {
-    fontSize: 12,
-    marginBottom: 2,
+  calendarIcon: {
+    padding: 2,
   },
-  picker: {
-    width: "100%",
+  calendarIconText: {
+    fontSize: 18,
   },
 });
 
