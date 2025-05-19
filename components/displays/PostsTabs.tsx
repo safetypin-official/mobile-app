@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 
 export type Post = {
-  currentVote: string;
   address: string;
   id: string;
   title: string;
@@ -283,6 +282,7 @@ const PostsTabs: React.FC<PostsTabsProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center',
   },
   tabsContainer: {
     flexDirection: 'row',
@@ -303,6 +303,7 @@ const styles = StyleSheet.create({
   activeTabText: {
     color: '#333',
     fontWeight: '600',
+    
   },
   activeTabIndicator: {
     position: 'absolute',
@@ -312,6 +313,7 @@ const styles = StyleSheet.create({
     height: 2,
     backgroundColor: '#9F3F3D',
     borderRadius: 2,
+    
   },
   loadingContainer: {
     flex: 1,

@@ -83,7 +83,6 @@ const ProfileCard = React.forwardRef<{handleSocialLinkPress: (url?: string) => v
       
       if (onFollowPress) {
         onFollowPress(newFollowingState);
-        console.log(`User Followed ${id}, Count Change: ${onFollowersCountChange}`);
       }
     };
 

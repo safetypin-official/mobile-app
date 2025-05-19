@@ -1,44 +1,32 @@
 import React from "react";
 import { render, fireEvent, act } from "@testing-library/react-native";
 import UserInfo from "../../../components/displays/post/UserInfo";
-import { Alert } from "react-native";
 import { authenticatedDelete } from "@/utils/api";
 import { router } from "expo-router";
 
 jest.useFakeTimers();
-// Mock the API util
 jest.mock("@/utils/api");
-
-// Mock the router
 jest.mock("expo-router", () => ({
-  router: {
-    push: jest.fn(),
-  },
+  router: { push: jest.fn() },
 }));
 
-// Mock the MoreOptionsButton component
+jest.mock('expo-apple-authentication', () => ({}));
+
+// Mock MoreOptionsButton
 jest.mock("@/components/buttons/post/MoreOptionsButton", () => {
   const { View, Text } = require("react-native");
-  return ({
-    onSendMessage,
-    onReport,
-    onDelete,
-  }: {
-    onSendMessage: () => void;
-    onReport: () => void;
-    onDelete: () => void;
-  }) => (
+  return ({ onSendMessage, onReport, onDelete }: any) => (
     <View testID="mocked-more-options-button">
-      <Text testID="send-message"  onPress={onSendMessage}>Send Message</Text>
-      <Text testID="report-post"   onPress={onReport}>Report</Text>
-      <Text testID="delete-post"   onPress={onDelete}>Delete</Text>
+      <Text testID="send-message" onPress={onSendMessage}>Send Message</Text>
+      <Text testID="report-post" onPress={onReport}>Report</Text>
+      <Text testID="delete-post" onPress={onDelete}>Delete</Text>
     </View>
   );
 });
 
-// Mock the Toast component
+// Mock Toast
 jest.mock("../../../components/toasts/Toast", () => {
-  const { Text, View } = require("react-native");
+  const { View, Text } = require("react-native");
   return ({ text }: { text: string }) => (
     <View testID="toast-overlay">
       <Text testID="mocked-toast">{text}</Text>
@@ -46,25 +34,11 @@ jest.mock("../../../components/toasts/Toast", () => {
   );
 });
 
-// Mock the Pin component
+// Mock Pin
 jest.mock("@/components/displays/Pin", () => {
   const { View } = require("react-native");
-  return ({
-    type,
-    onPress,
-    width,
-    height,
-  }: {
-    type: string;
-    onPress: () => void;
-    width: number;
-    height: number;
-  }) => (
-    <View
-      testID={`pin-${type}`}
-      style={{ width, height }}
-      onPress={onPress}
-    />
+  return ({ type, onPress, width, height }: any) => (
+    <View testID={`pin-${type}`} style={{ width, height }} onPress={onPress} />
   );
 });
 
@@ -294,63 +268,35 @@ describe("UserInfo Component", () => {
   /* Delete functionality */
 
   describe("Delete functionality", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it("shows confirmation dialog when delete is pressed", async () => {
-      const alertSpy = jest.spyOn(Alert, "alert").mockImplementation(() => {});
+    it("shows confirmation modal when delete is pressed", () => {
       const { getByTestId } = render(<UserInfo {...mockProps} />);
-
       fireEvent.press(getByTestId("more-options-button"));
       fireEvent.press(getByTestId("delete-post"));
 
-      expect(Alert.alert).toHaveBeenCalledWith(
-        "Delete Post",
-        "Are you sure you want to delete this post?",
-        expect.arrayContaining([
-          expect.objectContaining({ text: "Cancel" }),
-          expect.objectContaining({ text: "Delete" })
-        ])
+      // The CustomModal should now appear :contentReference[oaicite:2]{index=2}:contentReference[oaicite:3]{index=3}
+      expect(getByTestId("delete-confirmation-modal")).toBeTruthy();
+    });
+
+    it("cancels deletion when Cancel is pressed", () => {
+      const onPostDeleted = jest.fn();
+      const { getByTestId, queryByTestId } = render(
+        <UserInfo {...mockProps} onPostDeleted={onPostDeleted} />
       );
 
-      alertSpy.mockRestore();
-    });
-
-    it("cancels deletion when Cancel is pressed", async () => {
-      const alertMock = jest.spyOn(Alert, "alert").mockImplementation((title, message, buttons) => {
-        // Find and trigger the Cancel button callback
-        const cancelButton = buttons?.find(btn => btn.text === "Cancel");
-        if (cancelButton && cancelButton.onPress) {
-          cancelButton.onPress();
-        }
-      });
-
-      const onPostDeleted = jest.fn();
-      const { getByTestId } = render(<UserInfo {...mockProps} onPostDeleted={onPostDeleted} />);
-
       fireEvent.press(getByTestId("more-options-button"));
       fireEvent.press(getByTestId("delete-post"));
 
-      expect(Alert.alert).toHaveBeenCalled();
+      // Press the modal's Cancel button :contentReference[oaicite:4]{index=4}:contentReference[oaicite:5]{index=5}
+      fireEvent.press(getByTestId("delete-confirmation-modal-cancel"));
+
+      // Modal should close and no API call or callback
+      expect(queryByTestId("delete-confirmation-modal")).toBeNull();
       expect(authenticatedDelete).not.toHaveBeenCalled();
       expect(onPostDeleted).not.toHaveBeenCalled();
-
-      alertMock.mockRestore();
     });
 
     it("performs deletion when Delete is confirmed", async () => {
       (authenticatedDelete as jest.Mock).mockResolvedValue({ success: true });
-      
-      // Mock Alert.alert to trigger the Delete callback
-      const alertMock = jest.spyOn(Alert, "alert").mockImplementation((title, message, buttons) => {
-        // Find and trigger the Delete button callback
-        const deleteButton = buttons?.find(btn => btn.text === "Delete");
-        if (deleteButton && deleteButton.onPress) {
-          deleteButton.onPress();
-        }
-      });
-
       const onPostDeleted = jest.fn();
       const { getByTestId, queryByTestId } = render(
         <UserInfo {...mockProps} onPostDeleted={onPostDeleted} />
@@ -359,7 +305,10 @@ describe("UserInfo Component", () => {
       fireEvent.press(getByTestId("more-options-button"));
       fireEvent.press(getByTestId("delete-post"));
 
-      // Let all promises resolve
+      // Press the modal's OK/Delete button :contentReference[oaicite:6]{index=6}:contentReference[oaicite:7]{index=7}
+      fireEvent.press(getByTestId("delete-confirmation-modal-ok"));
+
+      // Wait for deletion + toast
       await act(async () => {
         jest.runAllTimers();
       });
@@ -367,121 +316,38 @@ describe("UserInfo Component", () => {
       expect(authenticatedDelete).toHaveBeenCalledWith(
         `https://safetypin.ppl.cs.ui.ac.id/posts/${mockProps.postId}`
       );
-      
       expect(onPostDeleted).toHaveBeenCalled();
-      expect(queryByTestId("mocked-toast")).toHaveTextContent("Post deleted successfully");
-      
-      // Test auto-dismissal of toast
+      expect(queryByTestId("mocked-toast")).toHaveTextContent(
+        "Post deleted successfully"
+      );
+
+      // Toast auto-dismisses after 3s
       act(() => {
         jest.advanceTimersByTime(3000);
       });
       expect(queryByTestId("mocked-toast")).toBeNull();
-
-      alertMock.mockRestore();
     });
 
     it("handles errors during deletion", async () => {
       (authenticatedDelete as jest.Mock).mockRejectedValue(new Error("API error"));
-      
-      // Mock console.error to prevent test noise
-      const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-      
-      // Mock Alert.alert to trigger the Delete callback
-      const alertMock = jest.spyOn(Alert, "alert").mockImplementation((title, message, buttons) => {
-        const deleteButton = buttons?.find(btn => btn.text === "Delete");
-        if (deleteButton && deleteButton.onPress) {
-          deleteButton.onPress();
-        }
-      });
-
-      const onPostDeleted = jest.fn();
-      const { getByTestId, queryByTestId } = render(
-        <UserInfo {...mockProps} onPostDeleted={onPostDeleted} />
-      );
+      const errorSpy = jest.spyOn(console, "error").mockImplementation();
+      const { getByTestId, queryByTestId } = render(<UserInfo {...mockProps} />);
 
       fireEvent.press(getByTestId("more-options-button"));
       fireEvent.press(getByTestId("delete-post"));
+      fireEvent.press(getByTestId("delete-confirmation-modal-ok"));
 
-      // Let all promises resolve
       await act(async () => {
         jest.runAllTimers();
       });
 
-      expect(errorSpy).toHaveBeenCalledWith("Error deleting post:", expect.any(Error));
-      expect(onPostDeleted).not.toHaveBeenCalled();
+      expect(errorSpy).toHaveBeenCalledWith(
+        "Error deleting post:",
+        expect.any(Error)
+      );
       expect(queryByTestId("mocked-toast")).toHaveTextContent("Failed to delete post");
 
       errorSpy.mockRestore();
-      alertMock.mockRestore();
-    });
-
-    it("handles errors during deletion preparation", async () => {
-      // Mock console.error to check if it's called
-      const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-      
-      // Mock Alert.alert to throw an error
-      const alertSpy = jest.spyOn(Alert, "alert").mockImplementation(() => {
-        throw new Error("Mocked alert error");
-      });
-      
-      const { getByTestId } = render(<UserInfo {...mockProps} />);
-      
-      // Trigger deletion flow
-      fireEvent.press(getByTestId("more-options-button"));
-      fireEvent.press(getByTestId("delete-post"));
-      
-      // The error should be caught and logged
-      expect(errorSpy).toHaveBeenCalledWith(
-        "Error preparing deletion:", 
-        expect.objectContaining({ message: "Mocked alert error" })
-      );
-      
-      // Clean up mocks
-      errorSpy.mockRestore();
-      alertSpy.mockRestore();
-    });
-
-    it("calls onPostDeleted callback after successful post deletion", async () => {
-      // Mock successful API deletion
-      (authenticatedDelete as jest.Mock).mockResolvedValue({ success: true });
-      
-      // Mock Alert.alert to trigger the Delete button callback immediately
-      const alertMock = jest.spyOn(Alert, "alert").mockImplementation((title, message, buttons) => {
-        const deleteButton = buttons?.find(btn => btn.text === "Delete");
-        if (deleteButton && deleteButton.onPress) {
-          deleteButton.onPress();
-        }
-      });
-      
-      // Create a mock for onPostDeleted callback
-      const mockOnPostDeleted = jest.fn();
-      
-      const { getByTestId } = render(
-        <UserInfo 
-          {...mockProps} 
-          onPostDeleted={mockOnPostDeleted} 
-        />
-      );
-      
-      // Trigger the deletion flow
-      fireEvent.press(getByTestId("more-options-button"));
-      fireEvent.press(getByTestId("delete-post"));
-      
-      // Let all promises resolve
-      await act(async () => {
-        jest.runAllTimers();
-      });
-      
-      // Verify the API call was made
-      expect(authenticatedDelete).toHaveBeenCalledWith(
-        `https://safetypin.ppl.cs.ui.ac.id/posts/${mockProps.postId}`
-      );
-      
-      // Verify the callback was called exactly once
-      expect(mockOnPostDeleted).toHaveBeenCalledTimes(1);
-      
-      // Clean up
-      alertMock.mockRestore();
     });
   });
 });

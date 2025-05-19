@@ -150,7 +150,7 @@ const performAppleSignIn = async () => {
     } else if (error.code === 'ERR_INVALID_RESPONSE') {
       throw new AuthError('Invalid response from Apple authentication');
     }
-    throw new AuthError(`Apple authentication failed: ${error.message ?? 'Unknown error'}`);
+    throw new AuthError(`Apple authentication failed: ${error.message || 'Unknown error'}`);
   }
 };
 
@@ -169,7 +169,7 @@ const sendApiRequest = async (url: string, payload: any) => {
       const errorData = await response.json().catch(() => null);
       console.log(errorData);
       throw new NetworkError(
-        errorData?.message ?? `Server responded with status: ${response.status}`,
+        errorData?.message || `Server responded with status: ${response.status}`,
         response.status
       );
     }
@@ -207,7 +207,7 @@ const parseAndSaveAuthResponse = async (response: Response, authType: string) =>
       }
     }
     
-    console.log(data.message ?? `${authType} authentication successful`);
+    console.log(data.message || `${authType} authentication successful`);
     return data;
   } catch (error: any) {
     throw new NetworkError(`Failed to parse server response: ${error.message}`);
@@ -345,7 +345,7 @@ export const verifyOTP = async (email: string, otp: string) => {
 
     if (!response.ok) {
       throw new NetworkError(
-        responseData.message ?? `Server responded with status: ${response.status}`,
+        responseData.message || `Server responded with status: ${response.status}`,
         response.status
       );
     }
