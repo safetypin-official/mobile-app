@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import { View, Text, TextInput, StyleSheet, TextStyle, ViewStyle } from "react-native";
 
 interface InputFieldProps {
   label?: string;
@@ -9,6 +9,8 @@ interface InputFieldProps {
   testID?: string;
   labelColor?: string;
   multiline?: boolean;
+  style?: TextStyle; // Only accept TextStyle for TextInput
+  value?: string; // Add value prop for controlled inputs
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -17,20 +19,24 @@ const InputField: React.FC<InputFieldProps> = ({
   secureTextEntry = false,
   onChangeText,
   testID = "input-field",
-  labelColor = "#FFFFFF", // Default to white
-  multiline = false, // Default to false
+  labelColor = "#FFFFFF", 
+  multiline = false,
+  style,
+  value,
 }) => {
   return (
     <View style={styles.container} testID={testID}>
       {label && <Text style={[styles.label, { color: labelColor }]}>{label}</Text>}
       <TextInput
-        style={styles.input}
+        style={[styles.input, multiline && styles.multilineInput, style]} // Apply custom style
         placeholder={placeholder}
         placeholderTextColor="#904a47"
         secureTextEntry={secureTextEntry}
         onChangeText={onChangeText}
         multiline={multiline}
         numberOfLines={multiline ? 5 : 1}
+        textAlignVertical={multiline ? "top" : "center"} // Fix text alignment for Android
+        value={value}
       />
     </View>
   );
@@ -52,6 +58,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: "#E8D6D4",
     fontSize: 16,
+  },
+  multilineInput: {
+    height: 100, // Default height for multiline inputs
+    paddingTop: 12,  // Ensure text starts from the top
+    textAlignVertical: "top", // Critical for Android
   },
 });
 
