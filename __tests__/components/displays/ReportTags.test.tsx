@@ -42,7 +42,7 @@ describe('ReportTags', () => {
 
   it('renders all selected tags correctly', () => {
     // Sample set of tags to test
-    const testTags = ['Lost Item', 'Found Item', 'Fire'];
+    const testTags = [...['Lost Item', 'Found Item', 'Fire'] as const];
     
     render(<ReportTags selectedTags={testTags} />);
     
@@ -56,7 +56,7 @@ describe('ReportTags', () => {
   });
 
   it('applies the correct styles and colors to each tag', () => {
-    const testTags = ['Lost Item', 'Found Item', 'Fire'] as const;
+    const testTags = [...['Lost Item', 'Found Item', 'Fire'] as const];
     
     const { UNSAFE_getAllByType } = render(<ReportTags selectedTags={testTags} />);
     
@@ -87,9 +87,12 @@ describe('ReportTags', () => {
     // Verify text style properties
     const tagText = textElements.find(text => text.props.children === 'Theft');
     expect(tagText).toBeTruthy();
-    expect(tagText.props.style.color).toBe('#FFF');
-    expect(tagText.props.style.fontSize).toBe(14);
-    expect(tagText.props.style.fontWeight).toBe('500');
+    
+    if (tagText) {
+      expect(tagText.props.style.color).toBe('#FFF');
+      expect(tagText.props.style.fontSize).toBe(14);
+      expect(tagText.props.style.fontWeight).toBe('500');
+    }
   });
 
   it('renders ScrollView with correct properties', () => {
@@ -108,7 +111,7 @@ describe('ReportTags', () => {
 
   it('renders all possible tag types', () => {
     // Test with all possible tags
-    render(<ReportTags selectedTags={TAG_KEYS} />);
+    render(<ReportTags selectedTags={[...TAG_KEYS]} />);
     
     // Verify each tag from TAG_KEYS is rendered
     TAG_KEYS.forEach(tag => {
