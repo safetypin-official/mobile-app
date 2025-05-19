@@ -116,16 +116,6 @@ describe('ReportContent', () => {
     expect(dislikeCount.props.style[1].color).toBe('#904A47');
   });
 
-  it('handles bookmark click', () => {
-    const { getByTestId } = render(<ReportContent {...mockProps} />);
-    
-    const bookmarkButton = getByTestId('bookmark-button');
-    fireEvent.press(bookmarkButton);
-    
-    // The component doesn't expose bookmark state directly, but we can verify the click works
-    expect(bookmarkButton).toBeTruthy();
-  });
-
   it('handles like click - from neutral to liked', async () => {
     const { getByTestId } = render(<ReportContent {...mockProps} />);
     

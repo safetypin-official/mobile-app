@@ -241,10 +241,10 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   socialButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
+    width: '100%',
+    alignItems: 'center',
     marginTop: 20,
-    marginBottom: 24
+    marginBottom: 24,
   },
   loginContainer: {
     flexDirection: 'row',

@@ -10,6 +10,8 @@ jest.mock("expo-router", () => ({
   router: { push: jest.fn() },
 }));
 
+jest.mock('expo-apple-authentication', () => ({}));
+
 // Mock MoreOptionsButton
 jest.mock("@/components/buttons/post/MoreOptionsButton", () => {
   const { View, Text } = require("react-native");
