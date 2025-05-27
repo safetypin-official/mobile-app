@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1747667516766" clover="3.2.0">
-  <project timestamp="1747667516767" name="All files">
+<coverage generated="1748381048481" clover="3.2.0">
+  <project timestamp="1748381048482" name="All files">
     <metrics statements="1243" coveredstatements="1034" conditionals="631" coveredconditionals="520" methods="314" coveredmethods="269" elements="2188" coveredelements="1823" complexity="0" loc="1243" ncloc="1243" packages="16" files="55" classes="55"/>
     <package name="app.forgotPassword">
       <metrics statements="27" coveredstatements="27" conditionals="4" coveredconditionals="4" methods="8" coveredmethods="8"/>
